@@ -286,6 +286,8 @@ FSHelpers.unpack = function(lines) {
   item.jsIsSwitchable = jsTemplates.includes("SWITCHABLE");
   item.jsIsComponent = jsTemplates.includes("COMPONENT");
   
+  if (item.jsExpanded === undefined) item.jsExpanded = true;
+  
   return item
 }
   

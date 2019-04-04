@@ -48,6 +48,12 @@ body {
   font-size: 11px;
 }
 
+.fieldTitle {
+  font-style: italic;
+  font-weight: bold;
+  font-size: 12px;
+}
+
 .unselectedList {
   color:grey;
 }
@@ -114,8 +120,19 @@ ul {
   color:blue;
   font-size:11px;
   padding-left: 5px;
+  padding-right: 5px;
   user-select: none; /* Prevent text selection */
-  border: black solid 1px;
+  border: #888 solid 1px;
+}
+
+.treeZone {
+  cursor: pointer; 
+  color:blue;
+  font-size:11px;
+  padding-left: 5px;
+  padding-right: 5px;
+  user-select: none; /* Prevent text selection */
+  border: white solid 1px;
 }
 
 .newButtonDiv {

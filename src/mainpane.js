@@ -19,11 +19,13 @@ export class MainPane extends React.Component {
 
   render() {
     if (this.props.object) {
+      const style = {color:this.props.object.jsColour};
       const pStyle = {backgroundColor:this.props.warning ? 'yellow' : '#eee', padding:3};
+      
       const controls=this.props.controls.find(el => el.tabName === this.state.tab).tabControls;
       // Will later need to check if this object has the current tab and set tab to zero if not
       return (<div id="mainpane">
-        <p style={pStyle}><b><i>Editing {this.props.object.jsIsRoom ? "Room" : "Item"}:</i> {this.props.object.name}</b> <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a></p>
+        <p style={pStyle}><b><i>Editing {this.props.object.jsIsRoom ? "Room" : "Item"}:</i> <span style={style}>{this.props.object.name}</span></b> <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a></p>
           <Tabs object={this.props.object} controls={this.props.controls} tab={this.state.tab} selectTab={this.selectTab.bind(this)}/>
           <TabComp tab={this.state.tab} object={this.props.object} removeFromList={this.props.removeFromList} addToList={this.props.addToList} handleChange={this.props.handleChange} handleCBChange={this.props.handleCBChange} controls={controls} objects={this.props.objects}/>
 
@@ -134,6 +136,13 @@ const InputComp = (props) => {
           title={props.input.tooltip}
           onChange={props.handleChange}
         /></td>
+      </tr>
+    )
+  }
+  else if (props.input.type === "title") {
+    return (  
+      <tr className="form-group">
+        <td colSpan="2"><span className="fieldTitle">{props.input.display}</span></td>
       </tr>
     )
   }

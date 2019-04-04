@@ -31,7 +31,6 @@ const template = [
       { label: 'Add item', },
       { label: 'Delete object', },
       { label: 'Duplicate object', },
-      { role: 'selectall' }
     ]
   },
   {
@@ -45,7 +44,12 @@ const template = [
       { role: 'zoomin' },
       { role: 'zoomout' },
       { type: 'separator' },
-      { role: 'togglefullscreen' }
+      { role: 'togglefullscreen' },
+      { type: 'separator' },
+      { 
+        label: 'Preview in browser',
+        click () { require('electron').shell.openExternal("file://" + FILENAME) }
+      }
     ]
   },
   {
@@ -59,8 +63,16 @@ const template = [
     role: 'help',
     submenu: [
       {
-        label: 'Learn More',
-        click () { require('electron').shell.openExternal('https://electronjs.org') }
+        label: 'Help',
+        click () {
+          require('electron').shell.openExternal('https://github.com/ThePix/QEdit/wiki');
+        }
+      },
+      {
+        label: 'Developer notes',
+        click () {
+          require('electron').shell.openExternal('https://github.com/ThePix/QEdit/wiki/Developer-Notes');
+        }
       }
     ]
   }
@@ -142,70 +154,81 @@ export default class App extends React.Component {
     };
     this.controls = [
       {tabName:"Home", tabControls:[
-        { name:"name",   type:"text",     tab:0, default:"unnamed", display:"Name",
+        { name:"name",   type:"text",     default:"unnamed", display:"Name",
           tooltip:"The object's name; this is how it is identified in code. It can only contain letters, digits and underscores; it cannot start with a number.",
         },
         
-        { name:"loc",    type:"objects",  tab:0, default:"---", display:"Location",
+        { name:"loc",    type:"objects",  default:"---", display:"Location",
           tooltip:"Where the object is at the start of the game, the room or container. Should usually be blank for rooms (as they are not inside anything).",
         },
         
-        { name:"jsMobilityType", type:"select",   tab:0, default:"Immobile", display:"Mobility",  
+        { name:"title2", type:"title", display:"Editor settings" },
+
+        { name:"jsColour", type:"text",   default:"blue", display:"Editor colour",  
+          tooltip:"Colour of the text in the left pane.",
+        },
+        
+        { name:"jsIsZone", type:"flag",   default:false, display:"Zone?",  
+          tooltip:"Zones are a way to group rooms, making it easier to build large maps (in fact, they are just rooms in a different colour).",
+          displayIf:function(object) { return object.jsIsRoom; },
+        },
+        
+        { name:"title1", type:"title", display:"Templates", displayIf:function(object) { return !object.jsIsRoom; }, },
+        
+        { name:"jsMobilityType", type:"select",   default:"Immobile", display:"Mobility",  
           options:["Immobile", "Takeable", "Player", "NPC"],
           tooltip:"If the item never moves, it is immobile. If it can be taken by the player or a character, it is takeable",
           displayIf:function(object) { return !object.jsIsRoom; },
         },
         
-        { name:"jsContainerType", type:"select",   tab:0, default:"No", display:"Container/openable",  
+        { name:"jsContainerType", type:"select",   default:"No", display:"Container/openable",  
           options:["No", "Container", "Surface", "Openable", "Vessel"],
           tooltip:"A container might be a box or chest that perhaps can be opened or locked. A surface can have things put on it; a table or shelf. A door or gate is openable, but you cannot put things inside it. A vessel will hold liquids.",
           displayIf:function(object) { return !object.jsIsRoom; },
         },
         
-        { name:"jsIsLockable", type:"flag",   tab:0, default:false, display:"Can this be locked?",
+        { name:"jsIsLockable", type:"flag",   default:false, display:"Can this be locked?",
           tooltip:"What it says.",
           displayIf:function(object) { return !object.jsIsRoom && (object.jsContainerType === "Container" || object.jsContainerType === "Openable"); },
         },
         
-        { name:"jsIsWearable", type:"flag",   tab:0, default:false, display:"Can this be worn?",  
+        { name:"jsIsWearable", type:"flag",   default:false, display:"Wearable?",  
           tooltip:"What it says.",
           displayIf:function(object) { return !object.jsIsRoom && object.jsMobilityType === "Takeable"; },
         },
         
-        { name:"jsIsSwitchable", type:"flag",   tab:0, default:false, display:"Switchable?",  
-          tooltip:"Can the player tirn it on and off?",
+        { name:"jsIsSwitchable", type:"flag",   default:false, display:"Switchable?",  
+          tooltip:"Can the player turn it on and off?",
           displayIf:function(object) { return !object.jsIsRoom; },
         },
         
-        { name:"jsIsFurniture", type:"flag",   tab:0, default:false, display:"Is it furniture?",  
+        { name:"jsIsFurniture", type:"flag",   default:false, display:"Furniture?",  
           tooltip:"The player can stand, sit or lie on furniture.",
           displayIf:function(object) { return !object.jsIsRoom; },
         },
         
-        { name:"jsIsCountable", type:"flag",   tab:0, default:false, display:"Countable?",  
+        { name:"jsIsCountable", type:"flag",   default:false, display:"Countable?",  
           tooltip:"An item is countable if there are several of them at a few locations, and they are to be grouped together.",
           displayIf:function(object) { return !object.jsIsRoom && object.jsMobilityType === "Takeable"; },
         },
         
-        { name:"jsIsComponent", type:"flag",   tab:0, default:false, display:"Component?",  
+        { name:"jsIsComponent", type:"flag",   default:false, display:"Component?",  
           tooltip:"An item that is permanently a part of another item.",
           displayIf:function(object) { return !object.jsIsRoom && object.jsMobilityType === "Immobile"; },
         },
         
-        { name:"age",    type:"number",   tab:0, default:18, display:"Age",
-          tooltip:"The object's age.",
-        },
-        
-        { name:"happy",  type:"flag",     tab:0, default:true, display:"Happy?",
-          tooltip:"Is the object happy?",
-        },
       ]},
       {tabName:"Text", tabControls:[
-        { name:"jsComments",   type:"textarea", tab:0, default:"", display:"Comments",
-          tooltip:"Your notes; this will not be part of the game (but is saved as a JavaScript comment).",
+        { name:"desc",   type:"textarea", default:"", display:"Description",
+          tooltip:"A description of the room.",
+          displayIf:function(object) { return object.jsIsRoom; },
         },
-        { name:"desc",   type:"textarea", tab:1, default:"", display:"Description",
-          tooltip:"A description of the object.",
+        { name:"examine",   type:"textarea", default:"", display:"Description",
+          tooltip:"A description of the item.",
+          displayIf:function(object) { return !object.jsIsRoom; },
+        },
+        { name:"jsComments",   type:"textarea", default:"", display:"Comments",
+          tooltip:"Your notes; this will not be part of the game (but is saved as a JavaScript comment).",
         },
       ]},
       {
@@ -268,8 +291,10 @@ export default class App extends React.Component {
       name:(isRoom ? "new_room" : "new_item"),
       jsIsRoom:isRoom,
     };
-    if (!isRoom) loc = this.state.currentObjectName;
+    if (!isRoom && this.state.currentObjectName) newObject.loc = this.state.currentObjectName;
     this.setDefaults(newObject);
+    
+    console.log(newObject);
       
     this.setState({
       objects: this.state.objects.concat([newObject]),
@@ -335,9 +360,12 @@ export default class App extends React.Component {
 
 
   setDefaults(o) {
-    for (let j = 0; j < this.controls.length; j++) {
-      if (o[this.controls[j].name] === undefined) {
-        o[this.controls[j].name] = this.controls[j].default;
+    for (let i = 0; i < this.controls.length; i++) {
+      const cons = this.controls[i].tabControls
+      for (let j = 0; j < cons.length; j++) {
+        if (o[cons[j].name] === undefined && cons[j].default !== undefined) {
+          o[cons[j].name] = cons[j].default;
+        }
       }
     }
   }
@@ -370,20 +398,31 @@ export default class App extends React.Component {
     this.setValue(e.target.id, e.target.checked);
   }
   
-  setValue(name, value, index) {
-    console.log("changing " + name + " to " + value + ".");
+  treeToggle(obj) {
+    this.setValue("jsExpanded", !obj.jsExpanded, obj);
+  }
+  
+  setValue(name, value, obj) {
+    const objName = (obj === undefined ? this.state.currentObjectName : obj.name);
+    console.log("changing " + name + " to " + value + " for " + objName + ".");
+
     if (name === "name") {
       if (!/^[a-zA-Z_][\w]*$/.test(value)) return;
     }
-    const control = this.controls.find(el => el.name === name);
+
+    //const control = this.controls.find(el => el.name === name);
     const newObjects = JSON.parse(JSON.stringify(this.state.objects)); // cloning the state
-    
+      
     // Need to look in new list for old name, as the name may be changing
-    const currentObject = newObjects.find(el => {
-      return (el.name == this.state.currentObjectName);
+    const newObject = newObjects.find(el => {
+      return (el.name == objName);
     });
-    
-    currentObject[name] = value;
+    if (name === "loc") {
+      if (value === newObject.name) return;
+    }
+
+    newObject[name] = value;
+
     this.setState({
       objects:newObjects, 
       currentObjectName:name === "name" ? value: this.state.currentObjectName,
@@ -408,7 +447,8 @@ export default class App extends React.Component {
       />
       <SidePane 
         objects={this.state.objects} 
-        showObject={this.showObject.bind(this)} 
+        showObject={this.showObject.bind(this)}
+        treeToggle={this.treeToggle.bind(this)}
         addObject={this.addObject.bind(this)}
       />
     </div>);
