@@ -146,6 +146,11 @@ const InputComp = (props) => {
       </tr>
     )
   }
+  else if (props.input.type === "scriptstring") {
+    return (
+      <ScriptOrStringComp input={props.input} value={value} handleChange={props.handleChange}/>
+    )
+  }
   else if (props.input.type === "stringlist") {
     //return null;
     return (  
@@ -197,3 +202,87 @@ const ListComp = (props) => {
   )
 }
 
+
+
+
+const ScriptOrStringComp = (props) => {
+  const isScript = (typeof props.value === "function");
+  let text;
+  let params;
+  if (isScript) {
+    const md = /^function\((.*?)\) {(.*)}$/.exec(props.value)
+    params = md[1];
+    console.log("----------------------------");
+    text = beautifyFunction(md[2], 0);
+    console.log(typeof text);
+    //text = md[2];
+  }
+  else {
+    text = props.value;
+  }
+  return (  
+    <tr className="form-group">
+      <td colSpan="2">
+      <span className="fieldName">{props.input.display}</span>
+      <input 
+          type="checkbox"
+          className="form-control"
+          id={props.input.name}
+          name={props.input.name}
+          checked={isScript}
+          title="Tick if this is a script, untick for a string"
+          onChange={props.handleChange}
+        /> Script?
+      <br/>
+      {isScript ? <span><span className="fieldName">Parameters (separated with commas)</span> <input
+          className="form-control"
+          id={props.input.name}
+          name={props.input.name}
+          type={props.input.type}
+          title={props.input.tooltip}
+          value={params}
+          onChange={props.handleChange}
+      /><br/></span>  : null }
+      <textarea
+        className="form-control textarea"
+        cols="500" rows="16"
+        id={props.input.name}
+        name={props.input.name}
+        value={text}
+        title={props.input.tooltip}
+        onChange={props.handleChange}
+      /></td>
+    </tr>
+  )
+}
+
+
+
+const beautifyFunction = function(str, indent) {
+    console.log("=----------------------------");
+  let res = "";
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === "{") {
+      indent++;
+      res += "{\n" + tabs(indent);
+    }
+    else if (str[i] === "}") {
+      res = res.trim();
+      indent--;
+      res += "\n" + tabs(indent) + "}\n" + tabs(indent);
+    }
+    else if (str[i] === ";") {
+      res += ";\n" + tabs(indent);
+    }
+    else {
+      res += str[i];
+    }
+  }
+  return res.trim();
+}
+
+const tabs = function(n) {
+  let res = "";
+  for (let i = 0; i < n; i++) res += "  ";
+  return res;
+}

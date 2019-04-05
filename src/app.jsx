@@ -155,10 +155,12 @@ export default class App extends React.Component {
     this.controls = [
       {tabName:"Home", tabControls:[
         { name:"name",   type:"text",     default:"unnamed", display:"Name",
+          validator:function(value, obj) { return !/^[a-zA-Z_][\w]*$/.test(value); },
           tooltip:"The object's name; this is how it is identified in code. It can only contain letters, digits and underscores; it cannot start with a number.",
         },
         
         { name:"loc",    type:"objects",  default:"---", display:"Location",
+          validator:function(value, obj) { return value === obj.name; },
           tooltip:"Where the object is at the start of the game, the room or container. Should usually be blank for rooms (as they are not inside anything).",
         },
         
@@ -219,11 +221,11 @@ export default class App extends React.Component {
         
       ]},
       {tabName:"Text", tabControls:[
-        { name:"desc",   type:"textarea", default:"", display:"Description",
+        { name:"desc",   type:"scriptstring", default:"", display:"Description",
           tooltip:"A description of the room.",
           displayIf:function(object) { return object.jsIsRoom; },
         },
-        { name:"examine",   type:"textarea", default:"", display:"Description",
+        { name:"examine",   type:"scriptstring", default:"", display:"Description",
           tooltip:"A description of the item.",
           displayIf:function(object) { return !object.jsIsRoom; },
         },
@@ -370,6 +372,18 @@ export default class App extends React.Component {
     }
   }
   
+  findControl(name) {
+    for (let i = 0; i < this.controls.length; i++) {
+      const cons = this.controls[i].tabControls
+      for (let j = 0; j < cons.length; j++) {
+        if (cons[j].name === name) {
+          return cons[j];
+        }
+      }
+    }
+    return null;
+  }
+  
   nextName(s) {
     if (/\d$/.test(s)) {
       const res = /(\d+)$/.exec(s);
@@ -404,23 +418,18 @@ export default class App extends React.Component {
   
   setValue(name, value, obj) {
     const objName = (obj === undefined ? this.state.currentObjectName : obj.name);
-    console.log("changing " + name + " to " + value + " for " + objName + ".");
-
-    if (name === "name") {
-      if (!/^[a-zA-Z_][\w]*$/.test(value)) return;
-    }
-
-    //const control = this.controls.find(el => el.name === name);
+    const control = this.findControl(name);
     const newObjects = JSON.parse(JSON.stringify(this.state.objects)); // cloning the state
       
     // Need to look in new list for old name, as the name may be changing
     const newObject = newObjects.find(el => {
       return (el.name == objName);
     });
-    if (name === "loc") {
-      if (value === newObject.name) return;
-    }
 
+    // Valid?
+    if (control.validator && control.validator(value, newObject)) return;
+
+    // Do it!
     newObject[name] = value;
 
     this.setState({
