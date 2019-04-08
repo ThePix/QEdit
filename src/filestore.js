@@ -133,8 +133,15 @@ FSHelpers.beautifyObject = function(item, indent) {
     if (FSHelpers.ignoreKeys.includes(key)) continue;
     switch (typeof item[key]) {
       case "boolean": str += FSHelpers.tabs(indent) + key + ":" + (item[key] ? "true" : "false"); break;
-      case "string": str += FSHelpers.tabs(indent) + key + ":\"" + item[key] + "\""; break;
-      case "function": str += FSHelpers.tabs(indent) + key + ":" + FSHelpers.beautifyFunction(item[key].toString(), indent); break;
+      case "string": 
+        if (/^function\(/.text(item[key]) {
+          str += FSHelpers.tabs(indent) + key + ":" + item[key];
+        }
+        else {
+          str += FSHelpers.tabs(indent) + key + ":\"" + item[key] + "\"";
+        }
+        break;
+      //case "function": str += FSHelpers.tabs(indent) + key + ":" + FSHelpers.beautifyFunction(item[key].toString(), indent); break;
       case "number": str += FSHelpers.tabs(indent) + key + ":" + item[key]; break;
       case "object": 
         if (item[key] instanceof Exit) {
@@ -167,6 +174,7 @@ FSHelpers.beautifyExit = function(dir, exit, indent) {
 
 
 FSHelpers.beautifyFunction = function(str, indent) {
+  if (indent === undefined) indent = 0;
   let res = "";
   for (let i = 0; i < str.length; i++) {
     if (str[i] === "{") {
@@ -238,7 +246,8 @@ FSHelpers.unpack = function(lines) {
       eval("FSHelpers.values = " + str);
       console.log(FSHelpers.values);
       for (var key in FSHelpers.values) {
-        item[key] = FSHelpers.values[key];
+        const value = FSHelpers.values[key];
+        item[key] = (typeof value === "function" ? FSHelpers.beautifyFunction(value.toString()) : value;
       }
     } catch (err) {
       console.log("Failed to process dictionary, with this error:");
