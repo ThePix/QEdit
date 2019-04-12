@@ -204,57 +204,165 @@ const ListComp = (props) => {
 
 
 
+export class ScriptOrStringComp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.value = props.value;
+    this.id = props.input.name
+    this.handleChange=this.props.handleChange;
+  }
+  
+  handleScriptChange(e) {
+    //console.log(e.target)
+    //console.log(this.props.value)
+    let value;
+    if (e.target.checked) {
+      value = "function() {\n" + this.props.value + "}";
+    }
+    else {
+      const md = /^function\((.*?)\) {\n?([\s\S]*)}\S*$/.exec(this.props.value)
+      value = md === null ? this.text : value = md[2];
+    }
+    //console.log(value)
+    
+    e = {target:{ id:this.id,  value:value, }};
+    this.handleChange(e);
+  }
 
-const ScriptOrStringComp = (props) => {
-  const isScript = (typeof props.value === "function");
-  let text;
-  let params;
-  if (isScript) {
-    const md = /^function\((.*?)\) {(.*)}$/.exec(props.value)
-    params = md[1];
-    console.log("----------------------------");
-    text = beautifyFunction(md[2], 0);
-    console.log(typeof text);
-    //text = md[2];
+  render() {
+    const isScript = /^function\(/.test(this.props.value);
+    return (  
+      <tr className="form-group">
+        <td colSpan="2">
+        <span className="fieldName">{this.props.input.display}</span>
+        <input 
+            type="checkbox"
+            className="form-control"
+            id={this.props.input.name}
+            name={this.props.input.name}
+            checked={isScript}
+            title="Tick if this is a script, untick for a string"
+            onChange={this.handleScriptChange.bind(this)}
+          /> Script?
+        <br/>
+        {isScript ?
+          <ScriptComp input={this.props.input} value={this.props.value} handleChange={this.props.handleChange}/>  :
+          <textarea
+            className="form-control textarea"
+            cols="500" rows="16"
+            id={this.props.input.name}
+            name={this.props.input.name}
+            value={this.props.value}
+            title={this.props.input.tooltip}
+            onChange={this.props.handleChange}
+          />
+        }
+        </td>
+      </tr>
+    )
   }
-  else {
-    text = props.value;
-  }
-  return (  
-    <tr className="form-group">
-      <td colSpan="2">
-      <span className="fieldName">{props.input.display}</span>
-      <input 
-          type="checkbox"
-          className="form-control"
-          id={props.input.name}
-          name={props.input.name}
-          checked={isScript}
-          title="Tick if this is a script, untick for a string"
-          onChange={props.handleChange}
-        /> Script?
-      <br/>
-      {isScript ? <span><span className="fieldName">Parameters (separated with commas)</span> <input
-          className="form-control"
-          id={props.input.name}
-          name={props.input.name}
-          type={props.input.type}
-          title={props.input.tooltip}
-          value={params}
-          onChange={props.handleChange}
-      /><br/></span>  : null }
-      <textarea
-        className="form-control textarea"
-        cols="500" rows="16"
-        id={props.input.name}
-        name={props.input.name}
-        value={text}
-        title={props.input.tooltip}
-        onChange={props.handleChange}
-      /></td>
-    </tr>
-  )
 }
+
+
+
+
+
+export class ScriptComp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.value = props.value;
+    this.id = props.input.name
+    this.handleChange=this.props.handleChange;
+  }
+  
+  handleScriptChange(e) {
+    //console.log("s----------------------------");
+    //console.log(e);
+    //console.log(typeof this.handleChange);
+    const value = "function(" + this.params + ") {\n" + e.target.value + "}";
+    e = {target:{ id:this.id,  value:value, }};
+    this.handleChange(e);
+  }
+
+  handleParamChange(e) {
+    const value = "function(" + e.target.value + ") {\n" + this.text + "}";
+    e = {target:{ id:this.id,  value:value, }};
+    this.handleChange(e);
+  }
+
+
+  render() {
+    let isValid = true;
+    //console.log("----------------------------");
+    //console.log(this.props.value);
+    //console.log(typeof this.props.value);
+    const md = /^function\((.*?)\) {\n?([\s\S]*)}\S*$/.exec(this.props.value)
+    if (md === null) {
+      this.params = "WARNING: Failed to parse function";
+      this.text = this.props.value
+    }
+    else {
+      this.params = md[1];
+      this.text = md[2];
+      try {
+        console.log(this.text);
+        //eval(this.text);
+        
+        let result = function(str, params){
+          console.log("-------------------");
+          console.log(params);
+          const l = params.split(",");
+          let preamble = ""
+          for (let i = 0; i < l.length; i++) {
+            const name = l[i].trim();
+            console.log("var " + name);
+            if (name.length > 0) preamble += "var " + name + ";\n";
+          }
+          console.log(preamble + str);
+          return eval(preamble + str);
+        }.call(RunEnviro, this.text, this.params);
+        
+        //eval(this.props.value);
+        console.log('Code is good');
+      }
+      catch (err) {
+        isValid = false;
+        console.log('Error in function code');
+        //console.log('------------------------');
+        console.log(err);
+        //console.log('------------------------');
+      }
+    }
+    const style = {backgroundColor:isValid ? "white" : "yellow"};
+    return (  
+      <div style={style}>
+        <span className="fieldName">Parameters (separated with commas)</span>
+        <input
+          className="form-control"
+          id={this.props.input.name}
+          name={this.props.input.name}
+          type={this.props.input.type}
+          title={this.props.input.tooltip}
+          value={this.params}
+          onChange={this.handleParamChange.bind(this)}
+        />
+        <br/>
+        <textarea
+          className="form-control textarea"
+          cols="500" rows="16"
+          id={this.props.input.name}
+          name={this.props.input.name}
+          value={this.text}
+          title={this.props.input.tooltip}
+          onChange={this.handleScriptChange.bind(this)}
+        />
+      </div>
+    )
+  }
+}
+
+
+
 
 
 
@@ -286,3 +394,11 @@ const tabs = function(n) {
   for (let i = 0; i < n; i++) res += "  ";
   return res;
 }
+
+
+
+
+const RunEnviro = {}
+
+const msg = function(s){}
+

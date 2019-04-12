@@ -3,7 +3,7 @@ import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 import {FileStore} from './filestore';
 
-const FILENAME = 'C:/Users/andyj/Documents/GitHub/QuestJS/game/data-test.js';
+const FILENAME = 'C:/Users/andyj/Documents/GitHub/QuestJS/game/data.js';
 
 
 

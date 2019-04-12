@@ -6,19 +6,19 @@ export class SidePane extends React.Component {
   // Add one item to the tree
   // Search this level, and recursively call this on lower levels
   addToTree(tree, obj) {
-    console.log(obj.name + ": Looking for " + obj.loc);
+    //console.log(obj.name + ": Looking for " + obj.loc);
     for (let i = 0; i < tree.length; i++) {
-      console.log("... in " + tree[i].name);
+      //console.log("... in " + tree[i].name);
       if (tree[i].name === obj.loc) {
         // Found on this level, add new node and quit
         const h = {name:obj.name, object:obj, branch:[]};
         tree[i].branch.push(h);
-        console.log("... added");
+        //console.log("... added");
         return true;
       }
       if (this.addToTree(tree[i].branch, obj)) {
         // Found on a lower level, so it was added there
-        console.log("... done");
+        //console.log("... done");
         return true;
       }
     }

@@ -134,7 +134,7 @@ FSHelpers.beautifyObject = function(item, indent) {
     switch (typeof item[key]) {
       case "boolean": str += FSHelpers.tabs(indent) + key + ":" + (item[key] ? "true" : "false"); break;
       case "string": 
-        if (/^function\(/.text(item[key]) {
+        if (/^function\(/.text(item[key])) {
           str += FSHelpers.tabs(indent) + key + ":" + item[key];
         }
         else {
@@ -247,7 +247,7 @@ FSHelpers.unpack = function(lines) {
       console.log(FSHelpers.values);
       for (var key in FSHelpers.values) {
         const value = FSHelpers.values[key];
-        item[key] = (typeof value === "function" ? FSHelpers.beautifyFunction(value.toString()) : value;
+        item[key] = (typeof value === "function" ? FSHelpers.beautifyFunction(value.toString()) : value);
       }
     } catch (err) {
       console.log("Failed to process dictionary, with this error:");
