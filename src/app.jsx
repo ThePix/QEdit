@@ -239,6 +239,7 @@ export default class App extends React.Component {
           return o.jsIsRoom;
         }, 
         tabControls:[
+          { name:"exits",   type:"exits", default:"", display:"Exits", },
         ]
       },
       { 
