@@ -3,6 +3,14 @@
 const fs = require('fs');
 
 
+let settings = require("./lang-en.js");
+const PRONOUNS = settings.PRONOUNS;
+const EXITS = settings.EXITS;
+const useWithDoor = function() {};
+const DSPY_SCENERY = 5;
+
+
+
 /*
 
 There is a very specific format for the output file,
@@ -60,9 +68,9 @@ export class FileStore {
     }
     if (block.length !== 0) objects.push(FSHelpers.unpack(block));
     
-    for (let i = 0; i < objects.length; i++) {
-      console.log(objects[i].name + " - " + objects[i].jsIsRoom);
-    }
+    //for (let i = 0; i < objects.length; i++) {
+    //  console.log(objects[i].name + " - " + objects[i].jsIsRoom);
+    //}
 
     return objects
   }
@@ -77,7 +85,7 @@ export class FileStore {
 
 
 
-class Exit {
+export class Exit {
   constructor (name, data) {
     this.name = name;
     this.data = data;
@@ -244,24 +252,27 @@ FSHelpers.unpack = function(lines) {
     }
     try {
       eval("FSHelpers.values = " + str);
-      console.log(FSHelpers.values);
+      //console.log(FSHelpers.values);
       for (var key in FSHelpers.values) {
         const value = FSHelpers.values[key];
         item[key] = (typeof value === "function" ? FSHelpers.beautifyFunction(value.toString()) : value);
       }
     } catch (err) {
+      console.log("===========================================");
       console.log("Failed to process dictionary, with this error:");
       console.log(err);
       console.log("This is the text that failed (possibly split across several lines in the file and with a curly brace added at the start):");
       console.log(str);
+      console.log("===========================================");
     }
   }
   else {
     console.log("Expected str to end );");
+    console.log(str);
   }
   
   jsTemplates = jsTemplates.join(",");
-  console.log("jsTemplates=" + jsTemplates);
+  //console.log("jsTemplates=" + jsTemplates);
   if (jsTemplates.includes("TAKEABLE")) {
     item.jsMobilityType = "Takeable";
   }

@@ -1,4 +1,14 @@
 import React from 'react';
+import {ExitsComp} from './exitscomp';
+
+
+let settings = require("./lang-en.js");
+const PRONOUNS = settings.PRONOUNS;
+const EXITS = settings.EXITS;
+const useWithDoor = function() {};
+const DSPY_SCENERY = 5;
+
+
 
 
 
@@ -26,8 +36,10 @@ export class MainPane extends React.Component {
       // Will later need to check if this object has the current tab and set tab to zero if not
       return (<div id="mainpane">
         <p style={pStyle}><b><i>Editing {this.props.object.jsIsRoom ? "Room" : "Item"}:</i> <span style={style}>{this.props.object.name}</span></b> <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a></p>
+        
           <Tabs object={this.props.object} controls={this.props.controls} tab={this.state.tab} selectTab={this.selectTab.bind(this)}/>
-          <TabComp tab={this.state.tab} object={this.props.object} removeFromList={this.props.removeFromList} addToList={this.props.addToList} handleChange={this.props.handleChange} handleCBChange={this.props.handleCBChange} controls={controls} objects={this.props.objects}/>
+          
+    <TabComp tab={this.state.tab} object={this.props.object} removeFromList={this.props.removeFromList} addToList={this.props.addToList} handleChange={this.props.handleChange} handleCBChange={this.props.handleCBChange} controls={controls} objects={this.props.objects} updateExit={this.props.updateExit} options={this.props.options}/>
 
           </div>);
     }
@@ -50,8 +62,7 @@ const Tabs = (props) => {
       controls.push(props.controls[i]);
     }
   }
-  console.log(controls.length);
-  //return null;
+
   return  <div>
     {controls.map((item, i) => 
         <a onClick={() => props.selectTab(item.tabName)} key={i} disabled={props.tab === item.tabName} className ="tabButton">{item.tabName}</a>
@@ -63,11 +74,10 @@ const Tabs = (props) => {
 
 const TabComp = (props) => {
   const controls = props.controls//.filter(el => el.tab == props.tab);  // double equals not triple!
-  console.log("tab=" + props.tab);
   if (props.tab === "Exits") {
     return (
       <div className="tabContent">
-      <ExitsComp handleChange={props.handleChange} object={props.object}/>
+      <ExitsComp handleChange={props.handleChange} objects={props.objects} object={props.object} updateExit={props.updateExit} options={props.options}/>
       </div>
     )
   }
@@ -374,99 +384,6 @@ export class ScriptComp extends React.Component {
 
 
 
-
-export class ExitsComp extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selected:null,
-    }
-  }
-  
-  handleSelectExit(dir) {
-    console.log("dir:" + dir);
-    this.setState({
-      selected:dir,
-    });
-  }
-  
-  render() {
-    return(<div>
-      <table width="90%"><tbody>
-      <tr>
-      <Exit name="northwest" object={this.props.object} selected={this.state.selected} handleSelectExit={this.handleSelectExit.bind(this)}/>
-      <Exit name="north" object={this.props.object} selected={this.state.selected} handleSelectExit={this.handleSelectExit.bind(this)}/>
-      <Exit name="northeast" object={this.props.object} selected={this.state.selected} handleSelectExit={this.handleSelectExit.bind(this)}/>
-      </tr>
-      <tr>
-      <Exit name="west" object={this.props.object} selected={this.state.selected} handleSelectExit={this.handleSelectExit.bind(this)}/>
-      <td></td>
-      <Exit name="east" object={this.props.object} selected={this.state.selected} handleSelectExit={this.handleSelectExit.bind(this)}/>
-      </tr>
-      <tr>
-      <Exit name="southwest" object={this.props.object} selected={this.state.selected} handleSelectExit={this.handleSelectExit.bind(this)}/>
-      <Exit name="south" object={this.props.object} selected={this.state.selected} handleSelectExit={this.handleSelectExit.bind(this)}/>
-      <Exit name="southeast" object={this.props.object} selected={this.state.selected} handleSelectExit={this.handleSelectExit.bind(this)}/>
-      </tr>
-      </tbody></table>
-      <ExitDetails object={this.props.object} selected={this.state.selected}/>
-    </div>)
-  }
-}
-
-
-
-
-const Exit = (props) => {
-  console.log(`Looking for ${props.name} in ${props.object.name}`)
-  const ex = props.object[props.name]
-  const selected = (props.selected === props.name);
-  console.log(`Found ${ex}`);
-  const style = {border:"black solid 1px", backgroundColor:selected ? "yellow" : "#ffb", cursor:"pointer",textAlign:"center" };
-  return (
-    <td width="20%" style={style} onClick={() => props.handleSelectExit(props.name)} id={props.name}>
-    {props.name}<br/><i>{ex === undefined ? "---" : "[" + ex.name + "]"}</i>
-    </td>
-  )
-}
-
-
-const ExitDetails = (props) => {
-  if (props.selected === null) {
-    return (
-    <p>No exit selected</p>
-    )
-  }
-
-  console.log("props.selected=" + props.selected);
-  const ex = props.object[props.selected]
-  console.log("ex=" + ex);
-  const options = ["---"].concat(props.objects.map((o, i) => o.name));
-  if (ex === undefined) {
-    return (
-      <div>
-      [No exit]
-      </div>
-    )
-  }
-  else {
-    return (
-      <div>
-      Destination: 
-      <select
-          className="form-control"
-          id={props.object.name + _exit_ + props.selected}
-          name={props.object.name + _exit_ + props.selected}
-          value={ex.name}
-          title="Select the destionation for this exit."
-          onChange={props.handleChange}
-        >
-        {options.map((s, i) => <option value={s} key={i}>{s}</option>)}
-        </select>
-      </div>
-    )
-  }
-}
 
 
 const beautifyFunction = function(str, indent) {

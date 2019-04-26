@@ -1,8 +1,8 @@
 {
-  "name": "my-project",
-  "productName": "my-project",
+  "name": "QEdit",
+  "productName": "QEdit",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Editor for Quest 6",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",

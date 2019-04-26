@@ -1,13 +1,17 @@
 import React from 'react';
 import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
-import {FileStore} from './filestore';
+import {FileStore, Exit} from './filestore';
 
 const FILENAME = 'C:/Users/andyj/Documents/GitHub/QuestJS/game/data.js';
 
 
 
-
+let settings = require("./lang-en.js");
+const PRONOUNS = settings.PRONOUNS;
+const EXITS = settings.EXITS;
+const useWithDoor = function() {};
+const DSPY_SCENERY = 5;
 
 
 
@@ -49,6 +53,14 @@ const template = [
       { 
         label: 'Preview in browser',
         click () { require('electron').shell.openExternal("file://" + FILENAME) }
+      }
+    ]
+  },
+  {
+    label: 'Options',
+    submenu: [
+      { 
+        label: 'Show only rooms for exits', type: 'checkbox', checked : true,
       }
     ]
   },
@@ -135,11 +147,12 @@ export default class App extends React.Component {
     this.findMenuItem(template, 'Add item').click = () => this.addObject(false);
     this.findMenuItem(template, 'Delete object').click = () => this.removeObject();
     this.findMenuItem(template, 'Duplicate object').click = () => this.duplicateObject();
+    this.findMenuItem(template, 'Show only rooms for exits').click = () => this.toggleOption("showRoomsOnly");
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
 
     const fs = new FileStore(FILENAME);
-
+    
     this.state = {
       /*objects:[
         { name:"lounge", jsIsRoom:true},
@@ -151,6 +164,7 @@ export default class App extends React.Component {
       ],*/
       objects:fs.readFile(),
       currentObjectName: false,
+      options: {showRoomsOnly:true, },
     };
     this.controls = [
       {tabName:"Home", tabControls:[
@@ -324,6 +338,21 @@ export default class App extends React.Component {
     })
   };
   
+  
+  toggleOption(name) {
+    const state = {
+      objects: this.state.objects,
+      currentObjectName: this.state.currentObjectName,
+      options: this.state.options
+    }
+    state.options[name] = !this.state.options[name];
+    this.setState(state)
+  };
+
+  
+  
+  
+  
   // remove on eitem from an attribute that is an array of strings
   removeFromList(item, att, name) {
     console.log("About to remove " + item + " from " + att);
@@ -418,8 +447,12 @@ export default class App extends React.Component {
   }
   
   setValue(name, value, obj) {
+    console.log("----------------------------");
+    console.log(name);
+    console.log(value);
+    console.log(obj);
     const objName = (obj === undefined ? this.state.currentObjectName : obj.name);
-    const control = this.findControl(name);
+    console.log(objName);
     const newObjects = JSON.parse(JSON.stringify(this.state.objects)); // cloning the state
       
     // Need to look in new list for old name, as the name may be changing
@@ -427,11 +460,20 @@ export default class App extends React.Component {
       return (el.name == objName);
     });
 
-    // Valid?
-    if (control.validator && control.validator(value, newObject)) return;
-
-    // Do it!
-    newObject[name] = value;
+    if (/_exit_/.test(name)) {
+      const dir = /_exit_(.*)$/.exec(name)[1];
+      console.log("dir=" + dir);
+      console.log("was=" + newObject[dir].name);
+      newObject[dir].name = value;
+      console.log("now=" + newObject[dir].name);
+    }
+    else {
+      // Valid?
+      const control = this.findControl(name);
+      if (control.validator && control.validator(value, newObject)) return;
+      // Do it!
+      newObject[name] = value;
+    }
 
     this.setState({
       objects:newObjects, 
@@ -439,7 +481,30 @@ export default class App extends React.Component {
     });
   }
   
-  
+  updateExit(name, action, data) {
+    console.log("X----------------------------");
+    console.log(name);
+    console.log(action);
+    console.log(data);
+    const objName = this.state.currentObjectName;
+    console.log(objName);
+
+    // clone the state
+    const newObjects = JSON.parse(JSON.stringify(this.state.objects));
+    const newObject = newObjects.find(el => {
+      return (el.name == objName);
+    });
+
+    switch (action) {
+      case "delete": if (window.confirm('Delete the exit "' + name + '"?')) newObject[name] = undefined; break;
+      case "create": newObject[name] = new Exit(objName); break;
+    }
+
+    this.setState({
+      objects:newObjects, 
+      currentObjectName:name === "name" ? value: this.state.currentObjectName,
+    });
+  }
 
   render() {
     const currentObject = this.state.objects.find(el => el.name === this.state.currentObjectName);
@@ -451,8 +516,10 @@ export default class App extends React.Component {
         removeFromList={this.removeFromList.bind(this)} 
         addToList={this.addToList.bind(this)} 
         handleCBChange={this.handleCBChange.bind(this)} 
+        updateExit={this.updateExit.bind(this)}
         controls={this.controls}
         objects={this.state.objects} 
+        options={this.state.options} 
         warning={this.nameTest(this.state.currentObjectName)}
       />
       <SidePane 

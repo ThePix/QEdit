@@ -22,7 +22,7 @@ export class SidePane extends React.Component {
         return true;
       }
     }
-    console.log("Failed to put in tree: " + obj.name);
+    //console.log("Failed to put in tree: " + obj.name);
     return false;
   }
   
