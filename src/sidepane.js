@@ -56,7 +56,7 @@ export class SidePane extends React.Component {
     }
     //console.log(JSON.stringify(tree));
     
-    return <div id="sidepane"><TreeView tree={tree} showObject={this.props.showObject} treeToggle={this.props.treeToggle}/></div>
+    return <div id="sidepane"><TreeView tree={tree} selected={this.props.object} showObject={this.props.showObject} treeToggle={this.props.treeToggle}/></div>
   }
 }
 
@@ -69,12 +69,12 @@ const TreeView = (props) => {
     if (node.branch.length === 0) {
       return (<li key={index}>
         {String.fromCharCode(9678)}
-        <TreeLink object={node.object} showObject={showObject}/>
+        <TreeLink object={node.object} showObject={showObject} selected={props.selected}/>
       </li>)
     }
     else {
       //return null;
-      return (<TreeToggler tree={node} key={index} showObject={showObject} treeToggle={treeToggle}/>)
+      return (<TreeToggler tree={node} key={index} showObject={showObject} treeToggle={treeToggle} selected={props.selected}/>)
     }
   })}
   </ul>)
@@ -86,14 +86,14 @@ const TreeToggler = (props) => {
   if (tree.object.jsExpanded) {
     return (<li>
       <a onClick={() => treeToggle(tree.object)} className="caret">{String.fromCharCode(9660)}</a>
-      <TreeLink object={tree.object} showObject={showObject}/>
-      <TreeView tree={tree.branch} showObject={showObject} treeToggle={treeToggle}/>
+      <TreeLink object={tree.object} showObject={showObject} selected={props.selected}/>
+      <TreeView tree={tree.branch} showObject={showObject} treeToggle={treeToggle} selected={props.selected}/>
     </li>)
   }
   else {
     return (<li>
       <a onClick={() => treeToggle(tree.object)} className="caret">{String.fromCharCode(9654)}</a>
-      <TreeLink object={tree.object} showObject={showObject}/>
+      <TreeLink object={tree.object} showObject={showObject} selected={props.selected}/>
     </li>)
   }      
 }
@@ -102,7 +102,7 @@ const TreeToggler = (props) => {
 
 const TreeLink = (props) => {
   const {object, showObject} = props;
-  const style = {color:object.jsColour};
+  const style = {color:object.jsColour, backgroundColor: object === props.selected ? "yellow" : "#fdf" };
   
   return  <a onClick={() => showObject(object.name)} style={style} className={object.jsIsRoom ? (object.jsIsZone ? "treeZone" : "treeRoom") : "treeItem"}>{object.name}</a>
 }

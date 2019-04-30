@@ -6,7 +6,7 @@ const fs = require('fs');
 let settings = require("./lang-en.js");
 const PRONOUNS = settings.PRONOUNS;
 const EXITS = settings.EXITS;
-const useWithDoor = function() {};
+const useWithDoor = "useWithDoor";
 const DSPY_SCENERY = 5;
 
 
@@ -88,7 +88,12 @@ export class FileStore {
 export class Exit {
   constructor (name, data) {
     this.name = name;
-    this.data = data;
+    this.data = data === undefined ? {} : data;
+
+    this.data.useType = "default";
+    if (typeof this.data.msg === "string") this.data.useType = "msg";
+    if (this.data.use === "useWithDoor") this.data.useType = "useWithDoor";
+    if (typeof this.data.use === "function") this.data.useType = "custom";
   }
 }
 

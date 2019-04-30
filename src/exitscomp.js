@@ -5,7 +5,7 @@ import React from 'react';
 let settings = require("./lang-en.js");
 const PRONOUNS = settings.PRONOUNS;
 const EXITS = settings.EXITS;
-const useWithDoor = function() {};
+//const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
 
 
@@ -40,7 +40,7 @@ export class ExitsComp extends React.Component {
       </tbody></table>
       <br/>
       <br/>
-      <ExitDetails object={this.props.object} objects={this.props.objects} options={this.props.options} selected={this.state.selected} handleChange={this.props.handleChange} updateExit={this.props.updateExit}/>
+      <ExitDetails object={this.props.object} objects={this.props.objects} options={this.props.options} selected={this.state.selected} handleChange={this.props.handleChange} updateExit={this.props.updateExit} showObject={this.props.showObject}/>
     </div>)
   }
 }
@@ -69,10 +69,10 @@ const ExitsRow = (props) => {
 const Exit = (props) => {
   const ex = props.object[props.name]
   const selected = (props.selected === props.name);
-  const style = {border:"black solid 1px", backgroundColor:selected ? "yellow" : "#ffb", cursor:"pointer",textAlign:"center", color:ex === undefined ? "grey" : "black" };
+  const style = {border:"black solid 1px", backgroundColor:selected ? "yellow" : "#ffb", cursor:"pointer",textAlign:"center", color:ex === undefined ? "grey" : "black", height:50, };
   return (
     <td width="20%" style={style} onClick={() => props.handleSelectExit(props.name)} id={props.name}>
-    {props.name}<br/><i>{ex === undefined ? "" : "[" + ex.name + "]"}</i>
+    {props.name}<br/><i>{ex === undefined ? " " : "[" + ex.name + "]"}</i>
     </td>
   )
 }
@@ -89,11 +89,15 @@ const ExitDetails = (props) => {
 
   console.log("props.selected=" + props.selected);
   const ex = props.object[props.selected]
+  const title = <b><i>{props.selected.charAt(0).toUpperCase() + props.selected.slice(1)}</i></b>
   console.log("ex=" + ex);
   if (ex === undefined) {
     return (
       <div>
-      <a onClick={() => props.updateExit(props.selected, "create")}>[Create exit]</a>
+        {title}
+        <br/>
+        <br/>
+        <a onClick={() => props.updateExit(props.selected, "create")}>[Create exit]</a>
       </div>
     )
   }
@@ -109,10 +113,14 @@ const ExitDetails = (props) => {
     console.log("options=" + options.length);
     console.log("props.handleChange=" + props.handleChange);
     console.log("1props.updateExit=" + props.updateExit);
+    console.log("exitUseType=" + ex.data.useType);
     return (
       <div>
-      Destination: 
-      <select
+        {title}
+        <br/>
+        <br/>
+        Destination: 
+        <select
           className="form-control"
           id={name}
           name={name}
@@ -123,9 +131,54 @@ const ExitDetails = (props) => {
         {options.map((s, i) => <option value={s} key={i}>{s}</option>)}
         </select>
         <a onClick={() => props.updateExit(props.selected, "delete")} className="deleteLink">(delete)</a>
+        <a onClick={() => props.showObject(ex.name)} className="deleteLink">(go to room)</a>
+        <br/>
+        <br/>
+        <input type="radio"
+               value="default"
+               checked={ex.data.useType === "default"}
+               onChange={() => props.updateExit(props.selected, "useType", "default")} />Default action
+        <input type="radio"
+               value="msg"
+               checked={ex.data.useType === "msg"}
+               onChange={() => props.updateExit(props.selected, "useType", "msg")}/>Message script
+        <input type="radio"
+               value="custom"
+               checked={ex.data.useType === "custom"}
+               onChange={() => props.updateExit(props.selected, "useType", "custom")}/>Custom script
+        <input type="radio"
+               value="useWithDoor"
+               checked={ex.data.useType === "useWithDoor"}
+               onChange={() => props.updateExit(props.selected, "useType", "useWithDoor")}/>Standard door script
+        <br/>
+        <br/>
+        <ExitOptions object={props.object} objects={props.objects} selected={props.selected} ex={ex} updateExit={props.updateExit}/>
       </div>
     )
   }
 }
 
 
+const ExitOptions = (props) => {
+  console.log("here");
+  if (props.ex.data.useType === "default") return null;
+  
+  if (props.ex.data.useType === "msg") {
+    return (<div>Text here</div>);
+  }
+
+  if (props.ex.data.useType === "custom") {
+    return (<div>Script here</div>);
+  }
+
+  if (props.ex.data.useType === "useWithDoor") {
+    return (
+    <div>
+      Door: <br/>
+      Door name:
+    </div>
+    )
+  }
+
+
+}

@@ -3,7 +3,7 @@ import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 import {FileStore, Exit} from './filestore';
 
-const FILENAME = 'C:/Users/andyj/Documents/GitHub/QuestJS/game/data.js';
+const FILENAME = 'C:/Users/andyj/Documents/GitHub/QuestJS/game-eg/data.js';
 
 
 
@@ -447,12 +447,12 @@ export default class App extends React.Component {
   }
   
   setValue(name, value, obj) {
-    console.log("----------------------------");
-    console.log(name);
-    console.log(value);
-    console.log(obj);
+    //console.log("----------------------------");
+    //console.log(name);
+    //console.log(value);
+    //console.log(obj);
     const objName = (obj === undefined ? this.state.currentObjectName : obj.name);
-    console.log(objName);
+    //console.log(objName);
     const newObjects = JSON.parse(JSON.stringify(this.state.objects)); // cloning the state
       
     // Need to look in new list for old name, as the name may be changing
@@ -462,15 +462,15 @@ export default class App extends React.Component {
 
     if (/_exit_/.test(name)) {
       const dir = /_exit_(.*)$/.exec(name)[1];
-      console.log("dir=" + dir);
-      console.log("was=" + newObject[dir].name);
+      //console.log("dir=" + dir);
+      //console.log("was=" + newObject[dir].name);
       newObject[dir].name = value;
-      console.log("now=" + newObject[dir].name);
+      //console.log("now=" + newObject[dir].name);
     }
     else {
       // Valid?
       const control = this.findControl(name);
-      if (control.validator && control.validator(value, newObject)) return;
+      if (control && control.validator && control.validator(value, newObject)) return;
       // Do it!
       newObject[name] = value;
     }
@@ -498,6 +498,7 @@ export default class App extends React.Component {
     switch (action) {
       case "delete": if (window.confirm('Delete the exit "' + name + '"?')) newObject[name] = undefined; break;
       case "create": newObject[name] = new Exit(objName); break;
+      case "useType": newObject[name].data.useType = data; break;
     }
 
     this.setState({
@@ -517,12 +518,14 @@ export default class App extends React.Component {
         addToList={this.addToList.bind(this)} 
         handleCBChange={this.handleCBChange.bind(this)} 
         updateExit={this.updateExit.bind(this)}
+        showObject={this.showObject.bind(this)}
         controls={this.controls}
         objects={this.state.objects} 
         options={this.state.options} 
         warning={this.nameTest(this.state.currentObjectName)}
       />
       <SidePane 
+        object={currentObject} 
         objects={this.state.objects} 
         showObject={this.showObject.bind(this)}
         treeToggle={this.treeToggle.bind(this)}
