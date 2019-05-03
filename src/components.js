@@ -19,9 +19,7 @@ export class SelectComp extends React.Component {
       options = this.props.options;
     }
     return (  
-      <tr className="form-group">
-        <td width="30%"><span className="fieldName">{this.props.display}</span></td>
-        <td><select
+      <select
           className="form-control"
           id={this.props.name}
           name={this.props.name}
@@ -30,8 +28,7 @@ export class SelectComp extends React.Component {
           onChange={this.props.handleChange}
         >
         {options.map((s, i) => <option value={s} key={i}>{s}</option>)}
-        </select></td>
-      </tr>
+        </select>
     )
   }
 }

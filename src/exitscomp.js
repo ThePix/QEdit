@@ -1,4 +1,5 @@
 import React from 'react';
+import {ScriptComp, SelectComp} from './components';
 
 
 
@@ -164,21 +165,54 @@ const ExitOptions = (props) => {
   if (props.ex.data.useType === "default") return null;
   
   if (props.ex.data.useType === "msg") {
-    return (<div>Text here</div>);
+    return (
+      <div>
+        <textarea
+          className="form-control textarea"
+          cols="500" rows="8"
+          id={"msgScript_" + props.selected}
+          name={"msgScript_" + props.selected}
+          value={props.ex.data.msg}
+          title="A script, with a local variable, 'char', the player or NPC."
+          onChange={props.updateExit}
+        />    
+      </div>
+    );
   }
 
   if (props.ex.data.useType === "custom") {
-    return (<div>Script here</div>);
+    return (
+      <div>
+        <textarea
+          className="form-control textarea"
+          cols="500" rows="8"
+          id={"useScript_" + props.selected}
+          name={"useScript_" + props.selected}
+          value={props.ex.data.use}
+          title="A script, with two local variables; 'char', the player or NPC and 'dir', the direction."
+          onChange={props.updateExit}
+        />    
+      </div>
+    );
   }
 
   if (props.ex.data.useType === "useWithDoor") {
     return (
-    <div>
-      Door: <br/>
-      Door name:
-    </div>
+    <table><tbody><tr>
+      <td>Door:</td>
+      <td><SelectComp name={"doorObject_" + props.selected} objects={props.objects} tooltip="Select the object that will be the door." handleChange={props.updateExit} value={props.ex.data.door}/></td>
+      </tr><tr>
+      <td>Door name:</td>
+      <td><input
+          className="form-control"
+          id={"doorName_" + props.selected}
+          name="exitDoorName"
+          type="text"
+          title="This is how the player will see the door described."
+          value={props.ex.data.doorName}
+          onChange={props.updateExit}
+        /></td>
+    </tr></tbody></table>
     )
   }
-
-
 }

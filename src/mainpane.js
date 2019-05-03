@@ -104,34 +104,24 @@ const InputComp = (props) => {
   }
   const value = props.object[props.input.name];
   if (props.input.type === "select") {
-    return (<SelectComp name={props.input.name} options={props.input.options} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>);
+    return (
+      <tr className="form-group">
+        <td width="30%"><span className="fieldName">{props.display}</span></td>
+        <td>
+          <SelectComp name={props.input.name} options={props.input.options} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>
+        </td>
+      </tr>
+    );
   }
   else if (props.input.type === "objects") {
-    return (<SelectComp name={props.input.name} objects={props.objects} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>);
-  }
-  else if (props.input.type === "select" || props.input.type === "objects") {
-    let options;
-    if (props.input.type === "objects") {
-      options = ["---"].concat(props.objects.map((o, i) => o.name));
-    }
-    else {
-      options = props.input.options;
-    }
-    return (  
+    return (
       <tr className="form-group">
-        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
-        <td><select
-          className="form-control"
-          id={props.input.name}
-          name={props.input.name}
-          value={value}
-          title={props.input.tooltip}
-          onChange={props.handleChange}
-        >
-        {options.map((s, i) => <option value={s} key={i}>{s}</option>)}
-        </select></td>
+        <td width="30%"><span className="fieldName">{props.display}</span></td>
+        <td>
+          <SelectComp name={props.input.name} objects={props.objects} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>
+        </td>
       </tr>
-    )
+    );
   }
   else if (props.input.type === "flag") {
     return (  

@@ -50,6 +50,7 @@
     "cryptiles": "^4.1.3",
     "electron-compile": "^6.4.4",
     "electron-devtools-installer": "^2.2.4",
+    "electron-prompt": "^1.3.0",
     "electron-squirrel-startup": "^1.0.0",
     "hoek": "^6.1.3",
     "mime": "^2.4.1",

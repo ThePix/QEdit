@@ -1,4 +1,6 @@
 import React from 'react';
+const prompt = require('electron-prompt');
+
 import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 import {FileStore, Exit} from './filestore';
@@ -61,6 +63,14 @@ const template = [
     submenu: [
       { 
         label: 'Show only rooms for exits', type: 'checkbox', checked : true,
+      }
+    ]
+  },
+  {
+    label: 'Search',
+    submenu: [
+      { 
+        label: 'Find',
       }
     ]
   },
@@ -148,6 +158,7 @@ export default class App extends React.Component {
     this.findMenuItem(template, 'Delete object').click = () => this.removeObject();
     this.findMenuItem(template, 'Duplicate object').click = () => this.duplicateObject();
     this.findMenuItem(template, 'Show only rooms for exits').click = () => this.toggleOption("showRoomsOnly");
+    this.findMenuItem(template, 'Find').click = () => this.find();
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
 
@@ -350,7 +361,27 @@ export default class App extends React.Component {
   };
 
   
-  
+  find() {
+    // https://www.npmjs.com/package/electron-prompt
+    prompt({
+        title: 'Search for',
+        //label: 'Search term',
+        value: '',
+        height:150,
+        inputAttrs: {
+            //type: 'url'
+        }
+    })
+    .then((r) => {
+        if(r === null) {
+            console.log('user cancelled');
+        } else {
+            console.log('result', r);
+        }
+    })
+    .catch(console.error);
+    //console.log("Searchng for: " + term);
+  };
   
   
   // remove on eitem from an attribute that is an array of strings
@@ -484,6 +515,17 @@ export default class App extends React.Component {
   updateExit(name, action, data) {
     console.log("X----------------------------");
     console.log(name);
+    if (typeof name !== "string") {
+      const target = name.target;
+      console.log(target.id);
+      console.log(target.value);
+      const l = target.id.split("_");
+      name = l[1];
+      action = l[0];
+      data = target.value;
+    }
+
+    console.log(name);
     console.log(action);
     console.log(data);
     const objName = this.state.currentObjectName;
@@ -499,6 +541,10 @@ export default class App extends React.Component {
       case "delete": if (window.confirm('Delete the exit "' + name + '"?')) newObject[name] = undefined; break;
       case "create": newObject[name] = new Exit(objName); break;
       case "useType": newObject[name].data.useType = data; break;
+      case "doorName": newObject[name].data.doorName = data; break;
+      case "doorObject": newObject[name].data.door = data; break;
+      case "msgScript": newObject[name].data.msg = data; break;
+      case "useScript": newObject[name].data.use = data; break;
     }
 
     this.setState({
