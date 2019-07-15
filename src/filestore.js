@@ -13,27 +13,8 @@ const DSPY_SCENERY = 5;
 
 /*
 
-There is a very specific format for the output file,
-but we do not need to use that exact format internally.
-
-Internally, objects are held in an array.
-Each object is a dictionary, with a "name" (a string) and a "jsTemplates"
-(array of strings) attributes. Also a "jsComments" (string) to save any comment before the create.
-
-We need to get the entire contents of data.js, and throw an error if something is not recognised
-so the author does not lose anything.
-
-Perhaps split data.js into obj.js, com.js and func.js (but merge cmd.js back in later?). 
-
-
-
-
-
 I think synchronous will be good enough because we are saving/loading locally
 and it is reasonable to expect the user to wait whilst it happens.
-
-
-
 
 */
 
@@ -42,44 +23,331 @@ export class FileStore {
     this.filename = filename
   }
 
+  getDirectChildAttributes(element, tag, attr) {
+    const types = Array.from(element.getElementsByTagName(tag));
+    const types2 = types.filter(el => el.parentNode === element);
+    return types2.map(el => el.getAttribute(attr));
+  }
+
+
+  // This should read both Quest 5 and Quest 6 XML files,
+  // which hopefully are pretty much the same
   readFile() {
-    const str = fs.readFileSync(this.filename, "utf8");
-    const arr = str.split(/\r?\n/);
+    const str = fs.readFileSync(this.filename + ".aslx", "utf8");
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(str, "text/xml");
+    
+    const version = parseInt(xmlDoc.getElementsByTagName("asl")[0].getAttribute('version'));
+    
+    console.log("Opening XML file, version " + version);
     
     const objects = [];
-    let block = [];
-    let s;
-    
+    const arr = xmlDoc.getElementsByTagName("object");
     for (let i = 0; i < arr.length; i++) {
-      s = arr[i].trim();
-      //console.log(s);
-      // skip "use strict"
-      if (/^(\"|\')use strict(\"|\')\;?$/.test(s)) continue;
-      
-      if (s.length === 0) {
-        if (block.length === 0) continue;
-        objects.push(FSHelpers.unpack(block));
-        block = [];
-        //console.log("New block!");
-      }
-      else {     
-        block.push(s);
+      objects.push(this.translateObjectFromXml(arr[i], version));
+    }
+    
+    if (version < 600) {
+      for (let i = 0; i < objects.length; i++) {
+        if (objects[i].jsOldName) {
+          console.log(objects[i].jsOldName)
+          for (let j = 0; j < objects.length; j++) {
+            if (objects[j].loc === objects[i].jsOldName) objects[j].loc = objects[i].name;
+            if (i !== j && objects[j].name === objects[i].name) objects[i].jsConversionNotes.push("Renaming has caused a naming collision!!!");
+          }
+        }
       }
     }
-    if (block.length !== 0) objects.push(FSHelpers.unpack(block));
     
-    //for (let i = 0; i < objects.length; i++) {
-    //  console.log(objects[i].name + " - " + objects[i].jsIsRoom);
-    //}
-
     return objects
   }
-  
+
+
+  // Used by readFile to create one object from its XML
+  translateObjectFromXml(xml, version) {
+    const object = {};
+    object.jsConversionNotes = [];
+
+    object.name = xml.getAttribute('name');
+    if (/ /.test(object.name)) {
+      object.jsConversionNotes.push("Object name had spaces removed; update any references (locations have been updates automatically); check no naming collision.");
+      object.jsOldName = object.name;
+      object.name = object.name.replace(/ /, "_");
+    }
+
+    
+    // Parent -> loc
+    if (xml.parentNode.nodeType === 1) {
+      //console.log("Parent is: " + xml.parentNode.tagName);
+      if (xml.parentNode.tagName === 'object') {
+        object.loc = xml.parentNode.getAttribute('name');
+        //console.log("Added parent: " + xml.parentNode.getAttribute('name'));
+      }
+    }
+
+    // Attributes
+    for (let j = 0; j < xml.childNodes.length; j++) {
+      if (xml.childNodes[j].nodeType === 1 && xml.childNodes[j].tagName !== 'object') {
+        const attType = xml.childNodes[j].getAttribute('type');
+        if (xml.childNodes[j].tagName === "attr") {
+          object[xml.childNodes[j].getAttribute('name')] = xml.childNodes[j].innerHTML;
+          object.jsConversionNotes.push("Attribute may not have being converted properly: " + xml.childNodes[j].getAttribute('name'));
+        }
+        else if (xml.childNodes[j].tagName === "inherit") {
+          object.inherit = xml.childNodes[j].getAttribute('name');
+        }
+        else if (attType === 'boolean') {
+          object[xml.childNodes[j].tagName] = xml.childNodes[j].innerHTML === 'true' || xml.childNodes[j].innerHTML === '';
+          //console.log("Boolean");
+        }
+        else if (attType === 'int') {
+          object[xml.childNodes[j].tagName] = parseInt(xml.childNodes[j].innerHTML);
+          //console.log("Int");
+        }
+        else if (attType === 'stringlist') {
+          const els = xml.childNodes[j].getElementsByTagName('value');
+          const arr = [];
+          for (let k = 0; k < els.length; k++) arr.push(els[k].innerHTML);
+          object[xml.childNodes[j].tagName] = arr;
+          //console.log("stringlist");
+        }
+        else if (attType === 'script') {
+          object[xml.childNodes[j].tagName] = { lang: 'script', code:xml.childNodes[j].innerHTML };
+          //console.log("Script");
+        }
+        else if (attType === 'js') {
+          object[xml.childNodes[j].tagName] = { lang: 'js', code:xml.childNodes[j].innerHTML };
+          //console.log("JavaScript");
+        }
+        else if (attType === 'blockly') {
+          object[xml.childNodes[j].tagName] = { lang: 'blockly', code:xml.childNodes[j].innerHTML };
+          //console.log("XML code");
+        }
+        else if (xml.childNodes[j].tagName === 'exit') {
+          object[xml.childNodes[j].getAttribute('alias')] = new Exit(xml.childNodes[j].getAttribute('to'), {});
+          //console.log("Exit");
+        }
+        else if (attType === 'string' || attType === '' || attType === null || attType === 'object') {
+          object[xml.childNodes[j].tagName] = xml.childNodes[j].innerHTML;
+        }
+        else {
+          object[xml.childNodes[j].tagName] = xml.childNodes[j].innerHTML;
+          object.jsConversionNotes.push("Attribute has not have being converted properly: " + xml.childNodes[j].tagName);
+        }
+      }
+    }
+
+    // If this is a conversion from Quest 5 we need to handle the "inherit"
+    // elements, which correspond approximately to templates
+    if (version < 600) {
+      let inherits = this.getDirectChildAttributes(xml, "inherit", 'name');
+      //console.log(inherits);
+      
+      object.jsIsRoom = inherits.includes("editor_room");
+      inherits = this.removeFromArray(inherits, "editor_room");
+      inherits = this.removeFromArray(inherits, "editor_object");
+      
+      // I think we can safely remove these as the defaults handle it
+      inherits = this.removeFromArray(inherits, "talkingchar");
+
+      if (!object.jsIsRoom) {
+        if (object.take) {
+          object.jsMobilityType = "Takeable";
+        }
+        
+        else if (inherits.includes("editor_player")) {
+          object.jsMobilityType = "Player";
+          inherits = this.removeFromArray(inherits, "editor_player");
+        }
+        
+        else if (inherits.includes("namedfemale")) {
+          object.jsMobilityType = "NPC";
+          object.jsFemale = true;
+          object.properName = true;
+          inherits = this.removeFromArray(inherits, "namedfemale");
+        }
+          
+        else if (inherits.includes("namedmale")) {
+          object.jsMobilityType = "NPC";
+          object.jsFemale = false;
+          object.properName = true;
+          inherits = this.removeFromArray(inherits, "namedmale");
+        }
+          
+        else if (inherits.includes("female")) {
+          object.jsMobilityType = "NPC";
+          object.jsFemale = true;
+          object.properName = false;
+          inherits = this.removeFromArray(inherits, "female");
+        }
+          
+        else if (inherits.includes("male")) {
+          object.jsMobilityType = "NPC";
+          object.jsFemale = false;
+          object.properName = false;
+          inherits = this.removeFromArray(inherits, "male");
+        }
+        
+        else if (inherits.includes("topic")) {
+          object.jsMobilityType = "Topic";
+          object.jsFromStart = false;
+          inherits = this.removeFromArray(inherits, "topic");
+        }
+        
+        else if (inherits.includes("startingtopic")) {
+          object.jsMobilityType = "Topic";
+          object.jsFromStart = true;
+          inherits = this.removeFromArray(inherits, "startingtopic");
+        }
+        
+        else {
+          object.jsMobilityType = "Immobile";
+        }
+
+
+        if (inherits.includes("surface")) {
+          object.jsContainerType = "Surface";
+          inherits = this.removeFromArray(inherits, "surface");
+        }
+
+        else if (inherits.includes("container_open")) {
+          object.jsContainerType = "Container";
+          object.jsContainerClosed = false;
+          inherits = this.removeFromArray(inherits, "container_open");
+        }
+
+        else if (inherits.includes("container_closed")) {
+          object.jsContainerType = "Container";
+          object.jsContainerClosed = true;
+          inherits = this.removeFromArray(inherits, "container_closed");
+        }
+
+        else if (inherits.includes("container_limited")) {
+          object.jsContainerType = "Container";
+          object.jsContainerClosed = false;
+          inherits = this.removeFromArray(inherits, "container_limited");
+          object.jsConversionNotes.push("Currently editor may not translate limited container properly");
+        }
+
+        else if (inherits.includes("openable")) {
+          object.jsContainerType = "Openable";
+          inherits = this.removeFromArray(inherits, "openable");
+        }
+        else {
+          object.jsContainerType = "No";
+        }
+        
+        if (inherits.includes("wearable")) {
+          object.jsIsWearable = true;
+          inherits = this.removeFromArray(inherits, "wearable");
+        }
+        else {
+          object.jsIsWearable = false;
+        }
+        
+        if (inherits.includes("switchable")) {
+          object.jsIsSwitchable = true;
+          inherits = this.removeFromArray(inherits, "switchable");
+        }
+        else {
+          object.jsIsSwitchable = false;
+        }
+        
+        if (inherits.includes("edible")) {
+          object.jsIsEdible = true;
+          inherits = this.removeFromArray(inherits, "edible");
+        }
+        else {
+          object.jsIsEdible = false;
+        }
+        
+      }
+      if (inherits.length > 0) object.jsConversionNotes.push("Failed to do anything with these inherited types: " + inherits);
+    }
+
+    if (object.jsConversionNotes.length > 0) {
+      console.log(object.jsConversionNotes);
+    }
+    else {
+      delete object.jsConversionNotes;
+    }
+
+    //console.log(object);
+    return object;    
+  }
+
+
   writeFile(objects) {
+    let str = "<!--Saved by Quest 6.0.0-->\n<asl version=\"600\">\n"
+
+    for (let i = 0; i < objects.length; i++) {
+      str += this.translateObjectToXml(objects[i]);
+    }
+    fs.writeFileSync(this.filename + ".asl6", str, "utf8");
+  }
+
+
+  translateObjectToXml(object) {
+    let str = "  <object name=\"" + object.name + "\">\n";
+    for (let property in object) {
+      if (property !== "name" && object.hasOwnProperty(property)) {
+        const value = object[property];
+        if (typeof value === "string") {
+          str += "    <" + property + ">" + value + "</" + property + ">\n";
+        }
+        else if (typeof value === "boolean") {
+          str += "    <" + property + " type=\"boolean\">" + value + "</" + property + ">\n";
+        }
+        else if (typeof value === "number") {
+          str += "    <" + property + " type=\"int\">" + value + "</" + property + ">\n";
+        }
+        else if (value instanceof Exit) {
+          str += "    <exit alias=\"" + property + "\" to=\"" + value + "\">\n";
+          // TODO !!!
+          str += "    </exit>\n";
+        }
+        else if (value instanceof Array) {
+          str += "    <" + property + " type=\"stringlist\">\n";
+          for (let i = 0; i < value.length; i++) {
+            str += "      <value>" + value[i] + "</value>\n";
+          }
+          str += "    </" + property + ">\n";
+        }
+        else if (value.lang) {
+          str += "    <" + property + " type=\"" + value.lang + "\">" + value.code + "</" + property + ">\n";
+        }
+        else  {
+          console.log("Not saving type: " + property + "/" + value);
+        }
+      }
+    }    
+
+    //console.log(object);
+    return str + "  </object>\n\n";
+  }
+
+
+
+
+  
+  writeFileJS(objects) {
     let str = "\"use strict\";";
     for (let i = 0; i < objects.length; i++) str += FSHelpers.pack(objects[i]);
     fs.writeFileSync(this.filename + "2", str, "utf8");
   }
+  
+  
+  
+  
+  removeFromArray(arr, el) {
+    const index = arr.indexOf(el);
+    if (index > -1) {
+      arr.splice(index, 1);
+    }
+    return arr;
+  }  
+  
+  
 }
 
 
@@ -103,16 +371,14 @@ const FSHelpers = {}
 
 FSHelpers.ignoreKeys = [
   "name", "jsIsRoom", "jsComments", "jsMobilityType", "jsContainerType", "jsIsLockable",
-  "jsIsWearable", "jsIsCountable", "jsIsFurniture", "jsIsSwitchable", "jsIsComponent"
+  "jsIsWearable", "jsIsCountable", "jsIsFurniture", "jsIsSwitchable", "jsIsComponent",
+  "jsIsEdible",
 ];
 
+// Converts one item to JavaScript code
 FSHelpers.pack = function(item) {
   let str = "\n\n\n";
 
-  const comments = item.jsComments.split("\n");
-  for (let i = 0; i < comments.length; i++) {
-    str += "// " + comments[i] + "\n";
-  }
   str += "create" + (item.jsIsRoom ? "Room" : "Item") + "(\"" + item.name + "\",\n";
 
   const jsTemplates = [];
@@ -124,6 +390,7 @@ FSHelpers.pack = function(item) {
   if (item.jsContainerType === "Openable") jsTemplates.push("OPENABLE");
   if (item.jsIsLockable) jsTemplates.push("LOCKED_WITH");
   if (item.jsIsWearable) jsTemplates.push("WEARABLE");
+  if (item.jsIsEdible) jsTemplates.push("EDIBLE");
   if (item.jsIsCountable) jsTemplates.push("COUNTABLE");
   if (item.jsIsFurniture) jsTemplates.push("FURNITURE");
   if (item.jsIsSwitchable) jsTemplates.push("SWITCHABLE");
@@ -131,13 +398,11 @@ FSHelpers.pack = function(item) {
   for (let i = 0; i < jsTemplates.length; i++) {
     str += "  " + jsTemplates[i] + "\n";
   }
-
   
   str += FSHelpers.beautifyObject(item, 1);
   str += ");";
   return str;
 }
-
 
 FSHelpers.beautifyObject = function(item, indent) {
   let str = FSHelpers.tabs(indent) + "{\n";
@@ -171,8 +436,6 @@ FSHelpers.beautifyObject = function(item, indent) {
   return str;
 }
 
-
-
 FSHelpers.beautifyExit = function(dir, exit, indent) {
   let res = FSHelpers.tabs(indent) + dir + ":new Exit(\"" + exit.name + "\"";
   if (exit.data) {
@@ -182,9 +445,6 @@ FSHelpers.beautifyExit = function(dir, exit, indent) {
     return res + ")";
   }
 }
-
-
-
 
 FSHelpers.beautifyFunction = function(str, indent) {
   if (indent === undefined) indent = 0;
@@ -209,7 +469,7 @@ FSHelpers.beautifyFunction = function(str, indent) {
   return res.trim();
 }
 
-
+// Used by beautifyX to help formatting JavaScript
 FSHelpers.tabs = function(n) {
   let res = "";
   for (let i = 0; i < n; i++) res += "  ";
@@ -218,102 +478,6 @@ FSHelpers.tabs = function(n) {
 
 
 
-FSHelpers.unpack = function(lines) {
-  const item = {jsComments:'', name:"test"};
-  let jsTemplates = [];
-  let str = "", md;
-  for (let i = 0; i < lines.length; i++) {
-    // Collect comments in the jsComments array
-    if (/^ *\/\//.test(lines[i])) {
-      md = /^ *\/\/ ?(.*)/.exec(lines[i])
-      item.jsComments += "\n" + md[1];
-    }
-    // Collect templates in the jsTemplates array
-    else if (/^ *[A-Z][A-Z][A-Z]/.test(lines[i])) {
-      jsTemplates.push(lines[i]);
-    }
-    // Get the create function call
-    else if (/^ *create/.test(lines[i])) {
-      md = /^ *create(Room|Item)\(\"(.+)\"/.exec(lines[i]);
-      if (!md) {
-        console.log("Bad formating with '" + lines[i] + "'");
-      }
-      else {
-        item.jsIsRoom = (md[1] === "Room");
-        item.name = md[2];
-      }
-    }
-    else if (lines[i] === undefined) {
-      console.log("Expected lines[i] to be!");
-    }
-    else {
-      str += lines[i];
-    }
-  }
-  if (/\)\;$/.test(str)) {
-    str = str.substring(0, str.length - 2);
-    if (!/^\{/.test(str)) {
-      str = "{" + str;
-    }
-    try {
-      eval("FSHelpers.values = " + str);
-      //console.log(FSHelpers.values);
-      for (var key in FSHelpers.values) {
-        const value = FSHelpers.values[key];
-        item[key] = (typeof value === "function" ? FSHelpers.beautifyFunction(value.toString()) : value);
-      }
-    } catch (err) {
-      console.log("===========================================");
-      console.log("Failed to process dictionary, with this error:");
-      console.log(err);
-      console.log("This is the text that failed (possibly split across several lines in the file and with a curly brace added at the start):");
-      console.log(str);
-      console.log("===========================================");
-    }
-  }
-  else {
-    console.log("Expected str to end );");
-    console.log(str);
-  }
-  
-  jsTemplates = jsTemplates.join(",");
-  //console.log("jsTemplates=" + jsTemplates);
-  if (jsTemplates.includes("TAKEABLE")) {
-    item.jsMobilityType = "Takeable";
-  }
-  else if (jsTemplates.includes("PLAYER")) {
-    item.jsMobilityType = "Player";
-  }
-  else if (jsTemplates.includes("NPC")) {
-    item.jsMobilityType = "NPC";
-  }
-  else {
-    item.jsMobilityType = "Immobile";
-  }
-  
-  if (jsTemplates.includes("CONTAINER")) {
-    item.jsContainerType = "Container";
-  }
-  else if (jsTemplates.includes("SURFACE")) {
-    item.jsContainerType = "Surface";
-  }
-  else if (jsTemplates.includes("OPENABLE")) {
-    item.jsContainerType = "Openable";
-  }
-  else {
-    item.jsContainerType = "No";
-  }
-  
-  item.jsIsLockable = jsTemplates.includes("LOCKED_WITH");
-  item.jsIsWearable = jsTemplates.includes("WEARABLE");
-  item.jsIsCountable = jsTemplates.includes("COUNTABLE");
-  item.jsIsFurniture = jsTemplates.includes("FURNITURE");
-  item.jsIsSwitchable = jsTemplates.includes("SWITCHABLE");
-  item.jsIsComponent = jsTemplates.includes("COMPONENT");
-  
-  if (item.jsExpanded === undefined) item.jsExpanded = true;
-  
-  return item
-}
-  
+
+
 

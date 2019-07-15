@@ -1,13 +1,13 @@
 body {
   font: caption;
-  background:#eee;  
+  background:white;  
 }
 
 
 
 
 #sidepane {
-  height: 100%; /* Full-height: remove this if you want "auto" height */
+  height: calc(100% - 24px); /* Full-height: remove this if you want "auto" height */
   width: 240px; /* Set the width of the sidebar */
   position: fixed; /* Fixed Sidebar (stay in place on scroll) */
   z-index: 1; /* Stay on top */
@@ -16,6 +16,7 @@ body {
   background-image:url("images/back.png");
   overflow-x: hidden; /* Disable horizontal scroll */
   padding-top: 5px;
+  margin-bottom: 20px;
   font-size: 9pt;
   left: 0;
 }
@@ -25,8 +26,25 @@ body {
   margin-left: 240px; /* Same as the width of the sidebar */
   margin-right: 80px; /* Same as the width of the sidebar */
   padding: 0px 10px;
+  margin-bottom: 20px;
+  background:white;  
 }
 
+
+
+
+#statusbar {
+  margin-left: 0px;
+  margin-right: 0px;
+  height: 20px;
+  width: 100%;
+  background-color: white;
+  position:fixed;
+  bottom:0px;
+  z-index: 2; /* Stay on top */
+  border: 1 solid black;
+  font-size: 10pt;
+}
 
 .textarea {
   height: 70px;

@@ -70,14 +70,25 @@ const ExitsRow = (props) => {
 const Exit = (props) => {
   const ex = props.object[props.name]
   const selected = (props.selected === props.name);
-  const style = {border:"black solid 1px", backgroundColor:selected ? "yellow" : "#ffb", cursor:"pointer",textAlign:"center", color:ex === undefined ? "grey" : "black", height:50, };
+  const style = {border:"black solid 1px", backgroundColor:selected ? "yellow" : "#ffb", cursor:"pointer",textAlign:"center", color:ex === undefined ? "grey" : "black", height:60, };
   return (
     <td width="20%" style={style} onClick={() => props.handleSelectExit(props.name)} id={props.name}>
-    {props.name}<br/><i>{ex === undefined ? " " : "[" + ex.name + "]"}</i>
+    {props.name}<br/><i><ExitDest ex={ex}/></i>
     </td>
   )
 }
+// <ExitDest ex={ex}/>
 
+const ExitDest = (props) => {
+  if (props.ex === undefined) return (<span> </span>);
+  
+  const style = {border:"grey solid 1px", backgroundColor:'white', textAlign:  "center", color:"black", width:'90%', margin:'0 auto', padding:5};
+  return (
+    <div  style={style}>{props.ex.name}</div>
+  )
+}
+
+//  style={style}
 
 const ExitDetails = (props) => {
   if (props.selected === null) {

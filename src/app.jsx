@@ -6,6 +6,7 @@ import {MainPane} from './mainpane';
 import {FileStore, Exit} from './filestore';
 
 const FILENAME = 'C:/Users/andyj/Documents/GitHub/QuestJS/game-eg/data.js';
+const XML_FILE = 'Blood Witch';
 
 
 
@@ -24,6 +25,13 @@ const DSPY_SCENERY = 5;
 const {Menu} = require('electron').remote;
 
 const template = [
+  {
+    label: 'File',
+    submenu: [
+      { label: 'Save XML', },
+      { label: 'Save JavaScript', },
+    ]
+  },
   {
     label: 'Edit',
     submenu: [
@@ -153,6 +161,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
 
+    this.findMenuItem(template, 'Save XML').click = () => this.saveXml();
     this.findMenuItem(template, 'Add room').click = () => this.addObject(true);
     this.findMenuItem(template, 'Add item').click = () => this.addObject(false);
     this.findMenuItem(template, 'Delete object').click = () => this.removeObject();
@@ -162,7 +171,7 @@ export default class App extends React.Component {
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
 
-    const fs = new FileStore(FILENAME);
+    this.fs = new FileStore(XML_FILE);
     
     this.state = {
       /*objects:[
@@ -173,7 +182,7 @@ export default class App extends React.Component {
         { name:"teapot", desc:"A silly blue teapot.", loc:"lounge"},
         { name:"tiger", desc:"Big and stripey.", jsTemplates:["NPC"], loc:"lounge"},
       ],*/
-      objects:fs.readFile(),
+      objects:this.fs.readFile(),
       currentObjectName: false,
       options: {showRoomsOnly:true, },
     };
@@ -288,6 +297,16 @@ export default class App extends React.Component {
   }
   
   
+  message(s) {
+    document.getElementById('statusbar').innerHTML = "Status: <i>" + s + "</i>";
+  }
+  
+  saveXml() {
+    this.fs.writeFile(this.state.objects);
+    console.log("Saved");
+    this.message("Saved");
+  }
+  
   removeObject(name) {
     if (name === undefined) {
       name = this.state.currentObjectName;
@@ -364,8 +383,8 @@ export default class App extends React.Component {
   find() {
     // https://www.npmjs.com/package/electron-prompt
     prompt({
-        title: 'Search for',
-        //label: 'Search term',
+        title: 'Quest',
+        label: 'Search fr',
         value: '',
         height:150,
         inputAttrs: {
@@ -577,6 +596,7 @@ export default class App extends React.Component {
         treeToggle={this.treeToggle.bind(this)}
         addObject={this.addObject.bind(this)}
       />
+      <div id="statusbar">Status:</div>
     </div>);
   }
   
