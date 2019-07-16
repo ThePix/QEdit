@@ -17,30 +17,53 @@ export class MainPane extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tab:this.props.controls[0].tabName,
+      suggestedTab:this.props.controls[0].tabName,
     }
   }
   
   selectTab(s) {
     console.log(s);
     this.setState({
-      tab:s,
+      suggestedTab:s,
     })
   };
 
   render() {
+
+    let tab = this.state.suggestedTab;
+    let control = this.props.controls.find(el => el.tabName === this.state.suggestedTab)
+    if (control.displayIf && !control.displayIf(this.props.object)) {
+      tab = this.props.controls[0].tabName
+      control = this.props.controls[0];
+    } 
+
+
+
     if (this.props.object) {
       const style = {color:this.props.object.jsColour};
-      const pStyle = {backgroundColor:this.props.warning ? 'yellow' : '#eee', padding:3};
+      const pStyle = {backgroundColor:this.props.warning ? 'yellow' : 'white', padding:3};
       
-      const controls=this.props.controls.find(el => el.tabName === this.state.tab).tabControls;
+      
+      const controls = control.tabControls;
       // Will later need to check if this object has the current tab and set tab to zero if not
       return (<div id="mainpane">
         <p style={pStyle}><b><i>Editing {this.props.object.jsIsRoom ? "Room" : "Item"}:</i> <span style={style}>{this.props.object.name}</span></b> <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a></p>
         
-          <Tabs object={this.props.object} controls={this.props.controls} tab={this.state.tab} selectTab={this.selectTab.bind(this)}/>
+          <Tabs object={this.props.object} controls={this.props.controls} tab={tab} selectTab={this.selectTab.bind(this)}/>
           
-    <TabComp tab={this.state.tab} object={this.props.object} removeFromList={this.props.removeFromList} addToList={this.props.addToList} handleChange={this.props.handleChange} handleCBChange={this.props.handleCBChange} controls={controls} objects={this.props.objects} updateExit={this.props.updateExit} showObject={this.props.showObject} options={this.props.options}/>
+          <TabComp 
+            tab={tab}
+            object={this.props.object} 
+            removeFromList={this.props.removeFromList} 
+            addToList={this.props.addToList} 
+            handleChange={this.props.handleChange} 
+            handleCBChange={this.props.handleCBChange}
+            removeConversionNotes={this.props.removeConversionNotes}
+            controls={controls} 
+            objects={this.props.objects} 
+            updateExit={this.props.updateExit} 
+            showObject={this.props.showObject} 
+            options={this.props.options}/>
 
           </div>);
     }
@@ -86,7 +109,16 @@ const TabComp = (props) => {
     return (
       <div className="tabContent">
       <table><tbody>
-        {controls.map((item, i) => <InputComp removeFromList={props.removeFromList} addToList={props.addToList} handleChange={props.handleChange} handleCBChange={props.handleCBChange} input={item} key={i} objects={props.objects} object={props.object}/>
+        {controls.map((item, i) => <InputComp 
+          removeFromList={props.removeFromList} 
+          addToList={props.addToList} 
+          handleChange={props.handleChange} 
+          handleCBChange={props.handleCBChange}
+          removeConversionNotes={props.removeConversionNotes}
+          input={item} 
+          key={i} 
+          objects={props.objects} 
+          object={props.object}/>
       )}
       </tbody></table>
       </div>
@@ -106,7 +138,7 @@ const InputComp = (props) => {
   if (props.input.type === "select") {
     return (
       <tr className="form-group">
-        <td width="30%"><span className="fieldName">{props.display}</span></td>
+        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td>
           <SelectComp name={props.input.name} options={props.input.options} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>
         </td>
@@ -116,7 +148,7 @@ const InputComp = (props) => {
   else if (props.input.type === "objects") {
     return (
       <tr className="form-group">
-        <td width="30%"><span className="fieldName">{props.display}</span></td>
+        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td>
           <SelectComp name={props.input.name} objects={props.objects} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>
         </td>
@@ -136,6 +168,24 @@ const InputComp = (props) => {
           title={props.input.tooltip}
           onChange={props.handleCBChange}
         /></td>
+      </tr>
+    )
+  }
+  else if (props.input.type === "todolist") {
+    return (  
+      <tr className="form-group">
+        <td colSpan="2">
+        <br/>
+        These issues were identified when this game was converted from Quest 5. Click
+        <a onClick={() => props.removeConversionNotes()} className="stdLink"> here </a>
+        when you are certain they are resolved to delete the whole list.
+        <br/>
+        <ul>
+          {value.map((x, index) => {
+            return <li key={index}>{x}</li>
+          })}
+        </ul>
+        </td>
       </tr>
     )
   }
@@ -279,8 +329,6 @@ export class ScriptOrStringComp extends React.Component {
     )
   }
 }
-
-
 
 
 

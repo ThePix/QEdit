@@ -212,15 +212,15 @@ export default class App extends React.Component {
         { name:"title1", type:"title", display:"Templates", displayIf:function(object) { return !object.jsIsRoom; }, },
         
         { name:"jsMobilityType", type:"select",   default:"Immobile", display:"Mobility",  
-          options:["Immobile", "Takeable", "Player", "NPC"],
-          tooltip:"If the item never moves, it is immobile. If it can be taken by the player or a character, it is takeable",
+          options:["Immobile", "Takeable", "Player", "NPC", "Topic"],
+          tooltip:"If the item never moves, it is immobile. If it can be taken by the player or a character, it is takeable.",
           displayIf:function(object) { return !object.jsIsRoom; },
         },
         
         { name:"jsContainerType", type:"select",   default:"No", display:"Container/openable",  
           options:["No", "Container", "Surface", "Openable", "Vessel"],
           tooltip:"A container might be a box or chest that perhaps can be opened or locked. A surface can have things put on it; a table or shelf. A door or gate is openable, but you cannot put things inside it. A vessel will hold liquids.",
-          displayIf:function(object) { return !object.jsIsRoom; },
+          displayIf:function(object) { return !object.jsIsRoom && (object.jsMobilityType === "Immobile" || object.jsMobilityType === "Takeable"); },
         },
         
         { name:"jsIsLockable", type:"flag",   default:false, display:"Can this be locked?",
@@ -235,12 +235,12 @@ export default class App extends React.Component {
         
         { name:"jsIsSwitchable", type:"flag",   default:false, display:"Switchable?",  
           tooltip:"Can the player turn it on and off?",
-          displayIf:function(object) { return !object.jsIsRoom; },
+          displayIf:function(object) { return !object.jsIsRoom && (object.jsMobilityType === "Immobile" || object.jsMobilityType === "Takeable"); },
         },
         
         { name:"jsIsFurniture", type:"flag",   default:false, display:"Furniture?",  
           tooltip:"The player can stand, sit or lie on furniture.",
-          displayIf:function(object) { return !object.jsIsRoom; },
+          displayIf:function(object) { return !object.jsIsRoom && (object.jsMobilityType === "Immobile" || object.jsMobilityType === "Takeable"); },
         },
         
         { name:"jsIsCountable", type:"flag",   default:false, display:"Countable?",  
@@ -264,14 +264,12 @@ export default class App extends React.Component {
           displayIf:function(object) { return !object.jsIsRoom; },
         },
         { name:"jsComments",   type:"textarea", default:"", display:"Comments",
-          tooltip:"Your notes; this will not be part of the game (but is saved as a JavaScript comment).",
+          tooltip:"Your notes; this will not be part of the game when you publish it.",
         },
       ]},
       {
         tabName:"Exits", 
-        displayIf:function(o) {
-          return o.jsIsRoom;
-        }, 
+        displayIf:function(o) { return o.jsIsRoom; }, 
         tabControls:[
           { name:"exits",   type:"exits", default:"", display:"Exits", },
         ]
@@ -280,6 +278,13 @@ export default class App extends React.Component {
         tabName:"Container",
         displayIf:function(o) {return o.jsContainerType === "Container"}, 
         tabControls:[
+        ]
+      },
+      { 
+        tabName:"Conversion",
+        displayIf:function(o) {return o.jsConversionNotes && o.jsConversionNotes.length > 0}, 
+        tabControls:[
+          { name:"jsConversionNotes",   type:"todolist", default:"", display:"Conversion Notes", },
         ]
       },
     ];
@@ -313,15 +318,20 @@ export default class App extends React.Component {
     }
     if (name === false) return;
     if (window.confirm('Delete the object "' + name + '"?')) {
-    
-    let s = this.state.currentObjectName === name ? false : this.state.currentObjectName;
-    this.setState({
-      objects: this.state.objects.filter((o, i) => {
-        return name !== o.name;
-      }),
-      currentObjectName: s,
-    });
-    
+      let s = this.state.currentObjectName === name ? false : this.state.currentObjectName;
+      this.setState({
+        objects: this.state.objects.filter((o, i) => {
+          return name !== o.name;
+        }),
+        currentObjectName: s,
+      });
+    }
+  };
+
+  removeConversionNotes(name) {
+    console.log("In removeConversionNotes")
+    if (window.confirm('Delete the conversion notes for this object?')) {
+      this.setValue("jsConversionNotes", null);
     }
   };
 
@@ -403,7 +413,7 @@ export default class App extends React.Component {
   };
   
   
-  // remove on eitem from an attribute that is an array of strings
+  // remove on item from an attribute that is an array of strings
   removeFromList(item, att, name) {
     console.log("About to remove " + item + " from " + att);
 
@@ -422,7 +432,7 @@ export default class App extends React.Component {
     });
   }
   
-  // remove on eitem from an attribute that is an array of strings
+  // remove on item from an attribute that is an array of strings
   addToList(item, att, name) {
     console.log("About to add " + item + " to " + att);
     if (name === undefined) name = this.state.currentObjectName;
@@ -497,10 +507,10 @@ export default class App extends React.Component {
   }
   
   setValue(name, value, obj) {
-    //console.log("----------------------------");
-    //console.log(name);
-    //console.log(value);
-    //console.log(obj);
+    console.log("----------------------------");
+    console.log(name);
+    console.log(value);
+    console.log(obj);
     const objName = (obj === undefined ? this.state.currentObjectName : obj.name);
     //console.log(objName);
     const newObjects = JSON.parse(JSON.stringify(this.state.objects)); // cloning the state
@@ -522,13 +532,20 @@ export default class App extends React.Component {
       const control = this.findControl(name);
       if (control && control.validator && control.validator(value, newObject)) return;
       // Do it!
-      newObject[name] = value;
+      if (value === null) {
+        delete newObject[name];
+      }
+      else {
+        newObject[name] = value;
+      }
     }
 
+    console.log("Here1");
     this.setState({
       objects:newObjects, 
       currentObjectName:name === "name" ? value: this.state.currentObjectName,
     });
+    console.log("Here2");
   }
   
   updateExit(name, action, data) {
@@ -573,13 +590,16 @@ export default class App extends React.Component {
   }
 
   render() {
+//
+
     const currentObject = this.state.objects.find(el => el.name === this.state.currentObjectName);
     return (<div>
       <MainPane
         object={currentObject} 
-        handleChange={this.handleChange.bind(this)} 
+        handleChange={this.handleChange.bind(this)}
         removeObject={this.removeObject.bind(this)} 
         removeFromList={this.removeFromList.bind(this)} 
+        removeConversionNotes={this.removeConversionNotes.bind(this)} 
         addToList={this.addToList.bind(this)} 
         handleCBChange={this.handleCBChange.bind(this)} 
         updateExit={this.updateExit.bind(this)}

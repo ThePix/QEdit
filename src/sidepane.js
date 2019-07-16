@@ -64,7 +64,7 @@ const TreeView = (props) => {
   const {tree, showObject, treeToggle} = props;
 
   if (tree.length === 0) return null;
-  return (<ul className="active">
+  return (<ul className="active sidepane">
   {tree.map(function(node, index) {
     if (node.branch.length === 0) {
       return (<li key={index}>

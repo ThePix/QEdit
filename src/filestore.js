@@ -112,11 +112,11 @@ export class FileStore {
           //console.log("stringlist");
         }
         else if (attType === 'script') {
-          object[xml.childNodes[j].tagName] = { lang: 'script', code:xml.childNodes[j].innerHTML };
+          object[xml.childNodes[j].tagName] = { lang: 'script', code:this.removeCDATA(xml.childNodes[j].innerHTML) };
           //console.log("Script");
         }
         else if (attType === 'js') {
-          object[xml.childNodes[j].tagName] = { lang: 'js', code:xml.childNodes[j].innerHTML };
+          object[xml.childNodes[j].tagName] = { lang: 'js', code:this.removeCDATA(xml.childNodes[j].innerHTML) };
           //console.log("JavaScript");
         }
         else if (attType === 'blockly') {
@@ -128,7 +128,7 @@ export class FileStore {
           //console.log("Exit");
         }
         else if (attType === 'string' || attType === '' || attType === null || attType === 'object') {
-          object[xml.childNodes[j].tagName] = xml.childNodes[j].innerHTML;
+          object[xml.childNodes[j].tagName] = this.removeBR(this.removeCDATA(xml.childNodes[j].innerHTML));
         }
         else {
           object[xml.childNodes[j].tagName] = xml.childNodes[j].innerHTML;
@@ -260,7 +260,24 @@ export class FileStore {
         else {
           object.jsIsEdible = false;
         }
-        
+      }
+      if (object.look) {
+        if (object.examine) {
+          object.jsConversionNotes.push("Cannot convert 'look' to 'examine' as object already has an 'examine' attribute");
+        }
+        else {
+          object.examine = object.look;
+          delete object.look;
+        }
+      }
+      if (object.description) {
+        if (object.desc) {
+          object.jsConversionNotes.push("Cannot convert 'description' to 'desc' as object already has an 'desc' attribute");
+        }
+        else {
+          object.desc = object.description;
+          delete object.description;
+        }
       }
       if (inherits.length > 0) object.jsConversionNotes.push("Failed to do anything with these inherited types: " + inherits);
     }
@@ -293,7 +310,7 @@ export class FileStore {
       if (property !== "name" && object.hasOwnProperty(property)) {
         const value = object[property];
         if (typeof value === "string") {
-          str += "    <" + property + ">" + value + "</" + property + ">\n";
+          str += "    <" + property + "><![CDATA[" + value + "]]></" + property + ">\n";
         }
         else if (typeof value === "boolean") {
           str += "    <" + property + " type=\"boolean\">" + value + "</" + property + ">\n";
@@ -314,7 +331,7 @@ export class FileStore {
           str += "    </" + property + ">\n";
         }
         else if (value.lang) {
-          str += "    <" + property + " type=\"" + value.lang + "\">" + value.code + "</" + property + ">\n";
+          str += "    <" + property + " type=\"" + value.lang + "\"><![CDATA[" + value.code + "]]></" + property + ">\n";
         }
         else  {
           console.log("Not saving type: " + property + "/" + value);
@@ -347,7 +364,18 @@ export class FileStore {
     return arr;
   }  
   
+  removeCDATA(s) {
+    if (s.startsWith('<![CDATA[')) {
+      return s.substring(9, s.length - 3);
+    }
+    else {
+      return s;
+    }
+  }
   
+  removeBR(s) {
+    return s.replace(/\<br\/\>/i, "\n");
+  }
 }
 
 
@@ -372,7 +400,7 @@ const FSHelpers = {}
 FSHelpers.ignoreKeys = [
   "name", "jsIsRoom", "jsComments", "jsMobilityType", "jsContainerType", "jsIsLockable",
   "jsIsWearable", "jsIsCountable", "jsIsFurniture", "jsIsSwitchable", "jsIsComponent",
-  "jsIsEdible",
+  "jsIsEdible", "jsExpanded", "jsIsZone", "jsColour",
 ];
 
 // Converts one item to JavaScript code

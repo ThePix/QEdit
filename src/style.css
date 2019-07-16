@@ -36,14 +36,15 @@ body {
 #statusbar {
   margin-left: 0px;
   margin-right: 0px;
-  height: 20px;
+  height: 14px;
   width: 100%;
   background-color: white;
   position:fixed;
   bottom:0px;
   z-index: 2; /* Stay on top */
-  border: 1 solid black;
+  border: 1px solid black;
   font-size: 10pt;
+  padding: 2px;
 }
 
 .textarea {
@@ -109,7 +110,7 @@ body {
 
 
 /* Remove default bullets */
-ul {
+ul.sidepane {
   list-style-type: none;
   padding-left: 20px;
 }
@@ -124,6 +125,11 @@ ul {
   cursor: pointer; 
   color:grey;
   font-size:10px;  
+}
+
+.stdLink {
+  cursor: pointer; 
+  color:blue;
 }
 
 .treeItem {
