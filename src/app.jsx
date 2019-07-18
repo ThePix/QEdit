@@ -5,6 +5,24 @@ import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 import {FileStore, Exit} from './filestore';
 
+// Next four lines disable warning from React-hot-loader
+import { hot, setConfig } from 'react-hot-loader'
+setConfig({
+    showReactDomPatchNotification: false
+})
+
+
+window.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
+// Just disabling warning is not great, but so far I cannot see how to implement CSP
+// The below does not work, but I do not know what
+/*
+const { session } = require('electron')
+session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+    callback({ responseHeaders: Object.assign({
+        "Content-Security-Policy": [ "default-src 'self'" ]
+    }, details.responseHeaders)});
+});*/
+
 const FILENAME = 'C:/Users/andyj/Documents/GitHub/QuestJS/game-eg/data.js';
 const XML_FILE = 'Blood Witch';
 
@@ -254,30 +272,27 @@ export default class App extends React.Component {
         },
         
       ]},
-      {tabName:"Text", tabControls:[
-        { name:"desc",   type:"scriptstring", default:"", display:"Description",
-          tooltip:"A description of the room.",
-          displayIf:function(object) { return object.jsIsRoom; },
-        },
-        { name:"examine",   type:"scriptstring", default:"", display:"Description",
-          tooltip:"A description of the item.",
-          displayIf:function(object) { return !object.jsIsRoom; },
-        },
-        { name:"jsComments",   type:"textarea", default:"", display:"Comments",
-          tooltip:"Your notes; this will not be part of the game when you publish it.",
-        },
-      ]},
       {
-        tabName:"Exits", 
+        tabName:"Text",
+        tabControls:[
+          { name:"desc",   type:"scriptstring", default:"", display:"Description",
+            tooltip:"A description of the room.",
+            displayIf:function(object) { return object.jsIsRoom; },
+          },
+          { name:"examine",   type:"scriptstring", default:"", display:"Description",
+            tooltip:"A description of the item.",
+            displayIf:function(object) { return !object.jsIsRoom; },
+          },
+          { name:"jsComments",   type:"textarea", default:"", display:"Comments",
+            tooltip:"Your notes; this will not be part of the game when you publish it.",
+          },
+        ]
+      },
+      {
+        tabName:"Exits",
         displayIf:function(o) { return o.jsIsRoom; }, 
         tabControls:[
           { name:"exits",   type:"exits", default:"", display:"Exits", },
-        ]
-      },
-      { 
-        tabName:"Container",
-        displayIf:function(o) {return o.jsContainerType === "Container"}, 
-        tabControls:[
         ]
       },
       { 
@@ -285,6 +300,37 @@ export default class App extends React.Component {
         displayIf:function(o) {return o.jsConversionNotes && o.jsConversionNotes.length > 0}, 
         tabControls:[
           { name:"jsConversionNotes",   type:"todolist", default:"", display:"Conversion Notes", },
+        ]
+      },
+      {
+        tabName:"Container",
+        displayIf:function(o) { return !o.jsIsRoom && o.jsContainerType !== "No"; }, 
+        tabControls:[
+          { name:"desc",   type:"scriptstring", default:"", display:"Description",
+            tooltip:"A description of the room.",
+            displayIf:function(object) { return object.jsIsRoom; },
+          },
+          { name:"examine",   type:"scriptstring", default:"", display:"Description",
+            tooltip:"A description of the item.",
+            displayIf:function(object) { return !object.jsIsRoom; },
+          },
+          { name:"jsComments",   type:"textarea", default:"", display:"Comments",
+            tooltip:"Your notes; this will not be part of the game when you publish it.",
+          },
+        ]
+      },
+      {
+        tabName:"Wearable",
+        displayIf:function(o) { return o.jsIsWearable; }, 
+        tabControls:[
+          { name:"layer", type:"int",   default:1, display:"Layer",  
+            tooltip:"Clothing must be assighned to a layer, for example, 1 for underwear, 2 for outer wear, 3 for jewellery, 4 for over coat.",
+          },
+          
+          { name:"slots", type:"text",   default:"", display:"Body slots",  
+            tooltip:"Each body slot this item covers should be listed, separated by semi-colons.",
+          },
+          
         ]
       },
     ];
@@ -378,6 +424,20 @@ export default class App extends React.Component {
     })
   };
   
+  selectTab(s) {
+    console.log("app.jsx: " + s);
+    const state = {
+      objects: this.state.objects,
+      currentObjectName: this.state.currentObjectName,
+    }
+    const currentObject = state.objects.find(el => {
+      return (el.name == this.state.currentObjectName);
+    });
+    currentObject.jsTabName = s;
+    
+    this.setState(state)
+  };
+
   
   toggleOption(name) {
     const state = {
@@ -497,6 +557,13 @@ export default class App extends React.Component {
     this.setValue(e.target.id, e.target.value);
   }
   
+  // numbers need their own handler so they get converted to numbers
+  handleIntChange(e) {
+    console.log(e.target.value);
+    console.log(typeof e.target.value);
+    this.setValue(e.target.id, parseInt(e.target.value));
+  }
+
   // Checkboxes need their own handler as they use the "checked" property...
   handleCBChange(e) {
     this.setValue(e.target.id, e.target.checked);
@@ -590,7 +657,6 @@ export default class App extends React.Component {
   }
 
   render() {
-//
 
     const currentObject = this.state.objects.find(el => el.name === this.state.currentObjectName);
     return (<div>
@@ -600,10 +666,12 @@ export default class App extends React.Component {
         removeObject={this.removeObject.bind(this)} 
         removeFromList={this.removeFromList.bind(this)} 
         removeConversionNotes={this.removeConversionNotes.bind(this)} 
-        addToList={this.addToList.bind(this)} 
+        addToList={this.addToList.bind(this)}
         handleCBChange={this.handleCBChange.bind(this)} 
+        handleIntChange={this.handleIntChange.bind(this)} 
         updateExit={this.updateExit.bind(this)}
         showObject={this.showObject.bind(this)}
+        selectTab={this.selectTab.bind(this)}
         controls={this.controls}
         objects={this.state.objects} 
         options={this.state.options} 

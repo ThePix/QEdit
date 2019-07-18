@@ -16,30 +16,19 @@ const DSPY_SCENERY = 5;
 export class MainPane extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      suggestedTab:this.props.controls[0].tabName,
-    }
   }
   
-  selectTab(s) {
-    console.log(s);
-    this.setState({
-      suggestedTab:s,
-    })
-  };
-
   render() {
 
-    let tab = this.state.suggestedTab;
-    let control = this.props.controls.find(el => el.tabName === this.state.suggestedTab)
-    if (control.displayIf && !control.displayIf(this.props.object)) {
-      tab = this.props.controls[0].tabName
-      control = this.props.controls[0];
-    } 
-
-
-
     if (this.props.object) {
+      let tab = (this.props.object.jsTabName ? this.props.object.jsTabName : this.props.controls[0].tabName);
+      let control = this.props.controls.find(el => el.tabName === tab);
+      if (!control) console.log("Failed to find control: " + this.props.object.jsTabName);
+      if (control.displayIf && !control.displayIf(this.props.object)) {
+        tab = this.props.controls[0].tabName
+        control = this.props.controls[0];
+      } 
+
       const style = {color:this.props.object.jsColour};
       const pStyle = {backgroundColor:this.props.warning ? 'yellow' : 'white', padding:3};
       
@@ -49,7 +38,7 @@ export class MainPane extends React.Component {
       return (<div id="mainpane">
         <p style={pStyle}><b><i>Editing {this.props.object.jsIsRoom ? "Room" : "Item"}:</i> <span style={style}>{this.props.object.name}</span></b> <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a></p>
         
-          <Tabs object={this.props.object} controls={this.props.controls} tab={tab} selectTab={this.selectTab.bind(this)}/>
+          <Tabs object={this.props.object} controls={this.props.controls} tab={tab} selectTab={this.props.selectTab}/>
           
           <TabComp 
             tab={tab}
@@ -57,6 +46,7 @@ export class MainPane extends React.Component {
             removeFromList={this.props.removeFromList} 
             addToList={this.props.addToList} 
             handleChange={this.props.handleChange} 
+            handleIntChange={this.props.handleIntChange}
             handleCBChange={this.props.handleCBChange}
             removeConversionNotes={this.props.removeConversionNotes}
             controls={controls} 
@@ -112,7 +102,8 @@ const TabComp = (props) => {
         {controls.map((item, i) => <InputComp 
           removeFromList={props.removeFromList} 
           addToList={props.addToList} 
-          handleChange={props.handleChange} 
+          handleChange={props.handleChange}
+          handleIntChange={props.handleIntChange}
           handleCBChange={props.handleCBChange}
           removeConversionNotes={props.removeConversionNotes}
           input={item} 
@@ -235,7 +226,7 @@ const InputComp = (props) => {
       </tr>
     )
   }
-  else {
+  else if (props.input.type === "text") {
     return (  
       <tr className="form-group">
         <td><span className="fieldName">{props.input.display}</span></td>
@@ -251,10 +242,34 @@ const InputComp = (props) => {
       </tr>
     )
   }
+  else if (props.input.type === "int") {
+    return (  
+      <tr className="form-group">
+        <td><span className="fieldName">{props.input.display}</span></td>
+        <td><input
+          className="form-control"
+          id={props.input.name}
+          name={props.input.name}
+          type="number"
+          title={props.input.tooltip}
+          value={value}
+          onChange={props.handleIntChange}
+        /></td>
+      </tr>
+    )
+  }
+  else {
+    console.log("Type not recognised: " + props.input.type);
+    return null;
+  }
 }
 
 
 const ListComp = (props) => {
+  if (!props.options) {
+    console.log("No options set for the control: " + props.name);
+    return null;
+  }
   const notSelected = props.options.filter(el => !props.value.includes(el));
   return (
     <div>
