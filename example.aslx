@@ -1,0 +1,91 @@
+<!--Saved by Quest 5.8.6836.13983-->
+<asl version="580">
+  <include ref="English.aslx" />
+  <include ref="Core.aslx" />
+  <game name="example">
+    <gameid>16dbe23f-3d52-4f87-834c-87f80fa279d1</gameid>
+    <version>1.0</version>
+    <firstpublished>2019</firstpublished>
+    <start type="script">
+      msg ("The game is starting.")
+    </start>
+    <roomenter type="script">
+      msg ("You walk into a room.")
+    </roomenter>
+  </game>
+  <object name="lounge">
+    <inherit name="editor_room" />
+    <isroom />
+    <description>The lounge is big.</description>
+    <object name="player">
+      <inherit name="editor_object" />
+      <inherit name="editor_player" />
+    </object>
+    <object name="trousers">
+      <inherit name="editor_object" />
+      <inherit name="wearable" />
+      <inherit name="plural" />
+      <feature_wearable />
+      <attr name="wear_layer" type="int">1</attr>
+      <wear_slots type="stringlist">
+        <value>head</value>
+      </wear_slots>
+      <look>Some red trousers.</look>
+    </object>
+    <object name="box">
+      <inherit name="editor_object" />
+      <inherit name="container_closed" />
+      <feature_container />
+      <alias>cardboard box</alias>
+      <look type="script">
+        msg ("This is a box.")
+      </look>
+      <take />
+    </object>
+    <exit alias="east" to="kitchen">
+      <inherit name="eastdirection" />
+    </exit>
+  </object>
+  <object name="kitchen">
+    <inherit name="editor_room" />
+    <description type="script">
+      msg ("A small kitchen.")
+    </description>
+    <exit alias="west" to="lounge">
+      <inherit name="westdirection" />
+    </exit>
+    <exit alias="north" to="garden">
+      <inherit name="northdirection" />
+    </exit>
+    <object name="table">
+      <inherit name="editor_object" />
+      <inherit name="surface" />
+      <feature_container />
+      <object name="apple">
+        <inherit name="editor_object" />
+        <inherit name="edible" />
+        <feature_edible />
+      </object>
+    </object>
+    <object name="tap">
+      <inherit name="editor_object" />
+      <inherit name="switchable" />
+      <feature_switchable />
+      <switchonmsg>You turn it on, water pours out.</switchonmsg>
+      <switchoffmsg>You turn it off; the water stops.</switchoffmsg>
+      <switchedondesc>Water is pouring from it.</switchedondesc>
+      <look>A tap.</look>
+    </object>
+  </object>
+  <object name="garden">
+    <inherit name="editor_room" />
+    <exit alias="south" to="kitchen">
+      <inherit name="southdirection" />
+    </exit>
+    <object name="mary quest">
+      <inherit name="editor_object" />
+      <inherit name="namedfemale" />
+      <alias>Mary Quest</alias>
+    </object>
+  </object>
+</asl>

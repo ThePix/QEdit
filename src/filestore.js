@@ -50,7 +50,6 @@ export class FileStore {
     if (version < 600) {
       for (let i = 0; i < objects.length; i++) {
         if (objects[i].jsOldName) {
-          console.log(objects[i].jsOldName)
           for (let j = 0; j < objects.length; j++) {
             if (objects[j].loc === objects[i].jsOldName) objects[j].loc = objects[i].name;
             if (i !== j && objects[j].name === objects[i].name) objects[i].jsConversionNotes.push("Renaming has caused a naming collision!!!");
@@ -59,7 +58,7 @@ export class FileStore {
       }
     }
     
-    return objects
+    return objects;
   }
 
 
@@ -89,50 +88,49 @@ export class FileStore {
     for (let j = 0; j < xml.childNodes.length; j++) {
       if (xml.childNodes[j].nodeType === 1 && xml.childNodes[j].tagName !== 'object') {
         const attType = xml.childNodes[j].getAttribute('type');
-        if (xml.childNodes[j].tagName === "attr") {
-          object[xml.childNodes[j].getAttribute('name')] = xml.childNodes[j].innerHTML;
-          object.jsConversionNotes.push("Attribute may not have being converted properly: " + xml.childNodes[j].getAttribute('name'));
-        }
-        else if (xml.childNodes[j].tagName === "inherit") {
+        const value = xml.childNodes[j].innerHTML;
+        const name = (xml.childNodes[j].tagName === "attr" ? xml.childNodes[j].getAttribute('name') : xml.childNodes[j].tagName);
+        
+        if (name === "inherit") {
           object.inherit = xml.childNodes[j].getAttribute('name');
         }
         else if (attType === 'boolean') {
-          object[xml.childNodes[j].tagName] = xml.childNodes[j].innerHTML === 'true' || xml.childNodes[j].innerHTML === '';
+          object[name] = value === 'true' || value === '';
           //console.log("Boolean");
         }
         else if (attType === 'int') {
-          object[xml.childNodes[j].tagName] = parseInt(xml.childNodes[j].innerHTML);
+          object[name] = parseInt(value);
           //console.log("Int");
         }
         else if (attType === 'stringlist') {
           const els = xml.childNodes[j].getElementsByTagName('value');
           const arr = [];
           for (let k = 0; k < els.length; k++) arr.push(els[k].innerHTML);
-          object[xml.childNodes[j].tagName] = arr;
+          object[name] = arr;
           //console.log("stringlist");
         }
         else if (attType === 'script') {
-          object[xml.childNodes[j].tagName] = { lang: 'script', code:this.removeCDATA(xml.childNodes[j].innerHTML) };
+          object[name] = { lang: 'script', code:this.removeCDATA(value) };
           //console.log("Script");
         }
         else if (attType === 'js') {
-          object[xml.childNodes[j].tagName] = { lang: 'js', code:this.removeCDATA(xml.childNodes[j].innerHTML) };
+          object[name] = { lang: 'js', code:this.removeCDATA(value) };
           //console.log("JavaScript");
         }
         else if (attType === 'blockly') {
-          object[xml.childNodes[j].tagName] = { lang: 'blockly', code:xml.childNodes[j].innerHTML };
+          object[name] = { lang: 'blockly', code:value };
           //console.log("XML code");
         }
-        else if (xml.childNodes[j].tagName === 'exit') {
+        else if (name === 'exit') {
           object[xml.childNodes[j].getAttribute('alias')] = new Exit(xml.childNodes[j].getAttribute('to'), {});
           //console.log("Exit");
         }
         else if (attType === 'string' || attType === '' || attType === null || attType === 'object') {
-          object[xml.childNodes[j].tagName] = this.removeBR(this.removeCDATA(xml.childNodes[j].innerHTML));
+          object[name] = this.removeBR(this.removeCDATA(value));
         }
         else {
-          object[xml.childNodes[j].tagName] = xml.childNodes[j].innerHTML;
-          object.jsConversionNotes.push("Attribute has not have being converted properly: " + xml.childNodes[j].tagName);
+          object[name] = value;
+          object.jsConversionNotes.push("Attribute has not have being converted properly: " + name);
         }
       }
     }
@@ -149,8 +147,12 @@ export class FileStore {
       
       // I think we can safely remove these as the defaults handle it
       inherits = this.removeFromArray(inherits, "talkingchar");
+      object.jsPronoun = "thirdperson";
 
-      if (!object.jsIsRoom) {
+      if (object.jsIsRoom) {
+        object.jsExpanded = true;
+      }
+      else {
         if (object.take) {
           object.jsMobilityType = "Takeable";
         }
@@ -158,6 +160,7 @@ export class FileStore {
         else if (inherits.includes("editor_player")) {
           object.jsMobilityType = "Player";
           inherits = this.removeFromArray(inherits, "editor_player");
+          object.jsPronoun = "secondperson";
         }
         
         else if (inherits.includes("namedfemale")) {
@@ -165,6 +168,7 @@ export class FileStore {
           object.jsFemale = true;
           object.properName = true;
           inherits = this.removeFromArray(inherits, "namedfemale");
+          object.jsPronoun = "female";
         }
           
         else if (inherits.includes("namedmale")) {
@@ -172,6 +176,7 @@ export class FileStore {
           object.jsFemale = false;
           object.properName = true;
           inherits = this.removeFromArray(inherits, "namedmale");
+          object.jsPronoun = "male";
         }
           
         else if (inherits.includes("female")) {
@@ -179,6 +184,7 @@ export class FileStore {
           object.jsFemale = true;
           object.properName = false;
           inherits = this.removeFromArray(inherits, "female");
+          object.jsPronoun = "female";
         }
           
         else if (inherits.includes("male")) {
@@ -186,6 +192,7 @@ export class FileStore {
           object.jsFemale = false;
           object.properName = false;
           inherits = this.removeFromArray(inherits, "male");
+          object.jsPronoun = "male";
         }
         
         else if (inherits.includes("topic")) {
@@ -240,6 +247,7 @@ export class FileStore {
         if (inherits.includes("wearable")) {
           object.jsIsWearable = true;
           inherits = this.removeFromArray(inherits, "wearable");
+          object.jsMobilityType = "Takeable";
         }
         else {
           object.jsIsWearable = false;
@@ -256,9 +264,15 @@ export class FileStore {
         if (inherits.includes("edible")) {
           object.jsIsEdible = true;
           inherits = this.removeFromArray(inherits, "edible");
+          object.jsMobilityType = "Takeable";
         }
         else {
           object.jsIsEdible = false;
+        }
+
+        if (inherits.includes("plural")) {
+          object.jsIsPronoun = "plural";
+          inherits = this.removeFromArray(inherits, "plural");
         }
       }
       if (object.look) {

@@ -23,8 +23,8 @@ session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     }, details.responseHeaders)});
 });*/
 
-const FILENAME = 'C:/Users/andyj/Documents/GitHub/QuestJS/game-eg/data.js';
-const XML_FILE = 'Blood Witch';
+//const FILENAME = 'C:/Users/andyj/Documents/GitHub/QuestJS/game-eg/data.js';
+const XML_FILE = 'example';
 
 
 
@@ -35,6 +35,8 @@ const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
 
 
+
+// Not sure how default values will get saved; they may not be set if the user does nothing ith it.
 
 
 
@@ -216,6 +218,12 @@ export default class App extends React.Component {
           tooltip:"Where the object is at the start of the game, the room or container. Should usually be blank for rooms (as they are not inside anything).",
         },
         
+        { name:"jsPronoun", type:"select",   default:"thirdperson", display:"Pronouns",
+          options:Object.keys(PRONOUNS),
+          tooltip:"How should the game refer to this?",
+          displayIf:function(object) { return !object.jsIsRoom; },
+        },
+
         { name:"title2", type:"title", display:"Editor settings" },
 
         { name:"jsColour", type:"text",   default:"blue", display:"Editor colour",  
@@ -248,6 +256,11 @@ export default class App extends React.Component {
         
         { name:"jsIsWearable", type:"flag",   default:false, display:"Wearable?",  
           tooltip:"What it says.",
+          displayIf:function(object) { return !object.jsIsRoom && object.jsMobilityType === "Takeable"; },
+        },
+        
+        { name:"jsIsEdible", type:"flag",   default:false, display:"Edible?",  
+          tooltip:"Can this item be eaten or drunk?",
           displayIf:function(object) { return !object.jsIsRoom && object.jsMobilityType === "Takeable"; },
         },
         
@@ -323,8 +336,8 @@ export default class App extends React.Component {
         tabName:"Wearable",
         displayIf:function(o) { return o.jsIsWearable; }, 
         tabControls:[
-          { name:"layer", type:"int",   default:1, display:"Layer",  
-            tooltip:"Clothing must be assighned to a layer, for example, 1 for underwear, 2 for outer wear, 3 for jewellery, 4 for over coat.",
+          { name:"wear_layer", type:"int",   default:1, display:"Layer",  
+            tooltip:"Clothing must be assigned to a layer, for example, 1 for underwear, 2 for outer wear, 3 for jewellery, 4 for over coat.",
           },
           
           { name:"slots", type:"text",   default:"", display:"Body slots",  
