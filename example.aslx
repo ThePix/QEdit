@@ -1,7 +1,8 @@
-<!--Saved by Quest 5.8.6836.13983-->
+<!--Saved by Quest 5.8.6809.15141-->
 <asl version="580">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
+  <include ref="ConvLib.aslx" />
   <game name="example">
     <gameid>16dbe23f-3d52-4f87-834c-87f80fa279d1</gameid>
     <version>1.0</version>
@@ -37,10 +38,10 @@
       <inherit name="container_closed" />
       <feature_container />
       <alias>cardboard box</alias>
+      <take />
       <look type="script">
         msg ("This is a box.")
       </look>
-      <take />
     </object>
     <exit alias="east" to="kitchen">
       <inherit name="eastdirection" />
@@ -86,6 +87,21 @@
       <inherit name="editor_object" />
       <inherit name="namedfemale" />
       <alias>Mary Quest</alias>
+      <object name="mary_how_are_you">
+        <inherit name="editor_object" />
+        <inherit name="startingtopic" />
+        <alias>How are you?</alias>
+        <nowshow type="stringlist">
+          <value>mary_her_quest</value>
+        </nowshow>
+        <exchange><![CDATA[So how is it going?<br/>Great?]]></exchange>
+      </object>
+      <object name="mary_her_quest">
+        <inherit name="editor_object" />
+        <inherit name="topic" />
+        <alias>What is your quest?</alias>
+        <exchange><![CDATA[What is your quest?<br/>That is just my name.]]></exchange>
+      </object>
     </object>
   </object>
 </asl>
