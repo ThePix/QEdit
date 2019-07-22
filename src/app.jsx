@@ -1,6 +1,7 @@
 import React from 'react';
 const prompt = require('electron-prompt');
 
+
 import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 import {FileStore, Exit} from './filestore';
@@ -61,8 +62,10 @@ const template = [
       { role: 'cut' },
       { role: 'copy' },
       { role: 'paste' },
+      { type: 'separator' },
       { label: 'Add room', },
       { label: 'Add item', },
+      { label: 'Add stub', },
       { label: 'Delete object', },
       { label: 'Duplicate object', },
     ]
@@ -119,9 +122,21 @@ const template = [
         }
       },
       {
-        label: 'Developer notes',
+        label: 'About',
         click () {
-          require('electron').shell.openExternal('https://github.com/ThePix/QEdit/wiki/Developer-Notes');
+          
+const { dialog } = require('electron')
+
+const response = dialog.showMessageBox(null);
+console.log(response);          
+          
+          /*
+          const dialog = require('electron');
+          dialog.showMessageBox({
+            type:"info",
+            title:"About",
+            message:"QEdit is under development.\nCopyright 2019",
+          });*/
         }
       }
     ]
@@ -182,8 +197,9 @@ export default class App extends React.Component {
     super(props);
 
     this.findMenuItem(template, 'Save XML').click = () => this.saveXml();
-    this.findMenuItem(template, 'Add room').click = () => this.addObject(true);
-    this.findMenuItem(template, 'Add item').click = () => this.addObject(false);
+    this.findMenuItem(template, 'Add room').click = () => this.addObject("room");
+    this.findMenuItem(template, 'Add item').click = () => this.addObject("item");
+    this.findMenuItem(template, 'Add stub').click = () => this.addObject("stub");
     this.findMenuItem(template, 'Delete object').click = () => this.removeObject();
     this.findMenuItem(template, 'Duplicate object').click = () => this.duplicateObject();
     this.findMenuItem(template, 'Show only rooms for exits').click = () => this.toggleOption("showRoomsOnly");
@@ -221,7 +237,7 @@ export default class App extends React.Component {
         { name:"jsPronoun", type:"select",   default:"thirdperson", display:"Pronouns",
           options:Object.keys(PRONOUNS),
           tooltip:"How should the game refer to this?",
-          displayIf:function(object) { return !object.jsIsRoom; },
+          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub; },
         },
 
         { name:"title2", type:"title", display:"Editor settings" },
@@ -232,56 +248,56 @@ export default class App extends React.Component {
         
         { name:"jsIsZone", type:"flag",   default:false, display:"Zone?",  
           tooltip:"Zones are a way to group rooms, making it easier to build large maps (in fact, they are just rooms in a different colour).",
-          displayIf:function(object) { return object.jsIsRoom; },
+          displayIf:function(object) { return object.jsIsRoom || object.jsIsStub; },
         },
         
-        { name:"title1", type:"title", display:"Templates", displayIf:function(object) { return !object.jsIsRoom; }, },
+        { name:"title1", type:"title", display:"Templates", displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub; }, },
         
         { name:"jsMobilityType", type:"select",   default:"Immobile", display:"Mobility",  
           options:["Immobile", "Takeable", "Player", "NPC", "Topic"],
           tooltip:"If the item never moves, it is immobile. If it can be taken by the player or a character, it is takeable.",
-          displayIf:function(object) { return !object.jsIsRoom; },
+          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub; },
         },
         
         { name:"jsContainerType", type:"select",   default:"No", display:"Container/openable",  
           options:["No", "Container", "Surface", "Openable", "Vessel"],
           tooltip:"A container might be a box or chest that perhaps can be opened or locked. A surface can have things put on it; a table or shelf. A door or gate is openable, but you cannot put things inside it. A vessel will hold liquids.",
-          displayIf:function(object) { return !object.jsIsRoom && (object.jsMobilityType === "Immobile" || object.jsMobilityType === "Takeable"); },
+          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && (object.jsMobilityType === "Immobile" || object.jsMobilityType === "Takeable"); },
         },
         
         { name:"jsIsLockable", type:"flag",   default:false, display:"Can this be locked?",
           tooltip:"What it says.",
-          displayIf:function(object) { return !object.jsIsRoom && (object.jsContainerType === "Container" || object.jsContainerType === "Openable"); },
+          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && (object.jsContainerType === "Container" || object.jsContainerType === "Openable"); },
         },
         
         { name:"jsIsWearable", type:"flag",   default:false, display:"Wearable?",  
           tooltip:"What it says.",
-          displayIf:function(object) { return !object.jsIsRoom && object.jsMobilityType === "Takeable"; },
+          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && object.jsMobilityType === "Takeable"; },
         },
         
         { name:"jsIsEdible", type:"flag",   default:false, display:"Edible?",  
           tooltip:"Can this item be eaten or drunk?",
-          displayIf:function(object) { return !object.jsIsRoom && object.jsMobilityType === "Takeable"; },
+          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && object.jsMobilityType === "Takeable"; },
         },
         
         { name:"jsIsSwitchable", type:"flag",   default:false, display:"Switchable?",  
           tooltip:"Can the player turn it on and off?",
-          displayIf:function(object) { return !object.jsIsRoom && (object.jsMobilityType === "Immobile" || object.jsMobilityType === "Takeable"); },
+          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && (object.jsMobilityType === "Immobile" || object.jsMobilityType === "Takeable"); },
         },
         
         { name:"jsIsFurniture", type:"flag",   default:false, display:"Furniture?",  
           tooltip:"The player can stand, sit or lie on furniture.",
-          displayIf:function(object) { return !object.jsIsRoom && (object.jsMobilityType === "Immobile" || object.jsMobilityType === "Takeable"); },
+          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && (object.jsMobilityType === "Immobile" || object.jsMobilityType === "Takeable"); },
         },
         
         { name:"jsIsCountable", type:"flag",   default:false, display:"Countable?",  
           tooltip:"An item is countable if there are several of them at a few locations, and they are to be grouped together.",
-          displayIf:function(object) { return !object.jsIsRoom && object.jsMobilityType === "Takeable"; },
+          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && object.jsMobilityType === "Takeable"; },
         },
         
         { name:"jsIsComponent", type:"flag",   default:false, display:"Component?",  
           tooltip:"An item that is permanently a part of another item.",
-          displayIf:function(object) { return !object.jsIsRoom && object.jsMobilityType === "Immobile"; },
+          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && object.jsMobilityType === "Immobile"; },
         },
         
       ]},
@@ -290,11 +306,11 @@ export default class App extends React.Component {
         tabControls:[
           { name:"desc",   type:"scriptstring", default:"", display:"Description",
             tooltip:"A description of the room.",
-            displayIf:function(object) { return object.jsIsRoom; },
+            displayIf:function(object) { return object.jsIsRoom && !object.jsIsStub; },
           },
           { name:"examine",   type:"scriptstring", default:"", display:"Description",
             tooltip:"A description of the item.",
-            displayIf:function(object) { return !object.jsIsRoom; },
+            displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub; },
           },
           { name:"jsComments",   type:"textarea", default:"", display:"Comments",
             tooltip:"Your notes; this will not be part of the game when you publish it.",
@@ -317,7 +333,7 @@ export default class App extends React.Component {
       },
       {
         tabName:"Container",
-        displayIf:function(o) { return !o.jsIsRoom && o.jsContainerType !== "No"; }, 
+        displayIf:function(o) { return o.jsContainerType && o.jsContainerType !== "No"; }, 
         tabControls:[
           { name:"desc",   type:"scriptstring", default:"", display:"Description",
             tooltip:"A description of the room.",
@@ -402,12 +418,17 @@ export default class App extends React.Component {
     })
   };
 
-  addObject(isRoom) {
+  addObject(objectType) {
     const newObject = {
-      name:(isRoom ? "new_room" : "new_item"),
-      jsIsRoom:isRoom,
+      name:"new_" + objectType,
+      jsIsStub:(objectType === "stub"),
+      jsIsRoom:(objectType === "room"),
     };
-    if (!isRoom && this.state.currentObjectName) newObject.loc = this.state.currentObjectName;
+    console.log("objectType=" + objectType);
+    if (objectType !== "room" && this.state.currentObjectName) {
+      newObject.loc = this.state.currentObjectName;
+      console.log("Set location");
+    }
     this.setDefaults(newObject);
     
     console.log(newObject);

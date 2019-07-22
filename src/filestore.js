@@ -107,7 +107,7 @@ export class FileStore {
           const arr = [];
           for (let k = 0; k < els.length; k++) arr.push(els[k].innerHTML);
           object[name] = arr;
-          //console.log("stringlist");
+          //console.log("stringlist for " + object.name);
         }
         else if (attType === 'script') {
           object[name] = { lang: 'script', code:this.removeCDATA(value) };
@@ -130,7 +130,7 @@ export class FileStore {
         }
         else {
           object[name] = value;
-          object.jsConversionNotes.push("Attribute has not have being converted properly: " + name);
+          object.jsConversionNotes.push("Attribute type '" + attType + "' not recognised; attribute may not have been converted properly: " + name);
         }
       }
     }
@@ -293,6 +293,11 @@ export class FileStore {
           delete object.description;
         }
       }
+      if (object.displayverbs || object.inventoryverbs) {
+        object.jsConversionNotes.push("This object has custom inventory/display verbs set. These are handled very differently in Quest 6, so cannot be converted. You should modify the 'getVerbs' function yourself.");
+        delete object.inventoryverbs;
+        delete object.displayverbs;
+      }
       if (inherits.length > 0) object.jsConversionNotes.push("Failed to do anything with these inherited types: " + inherits);
     }
 
@@ -414,11 +419,13 @@ const FSHelpers = {}
 FSHelpers.ignoreKeys = [
   "name", "jsIsRoom", "jsComments", "jsMobilityType", "jsContainerType", "jsIsLockable",
   "jsIsWearable", "jsIsCountable", "jsIsFurniture", "jsIsSwitchable", "jsIsComponent",
-  "jsIsEdible", "jsExpanded", "jsIsZone", "jsColour",
+  "jsIsEdible", "jsExpanded", "jsIsZone", "jsColour", "jsIsStub",
 ];
 
 // Converts one item to JavaScript code
 FSHelpers.pack = function(item) {
+  if (item.jsIsStub) return '';
+  
   let str = "\n\n\n";
 
   str += "create" + (item.jsIsRoom ? "Room" : "Item") + "(\"" + item.name + "\",\n";

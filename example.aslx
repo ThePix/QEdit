@@ -1,4 +1,4 @@
-<!--Saved by Quest 5.8.6809.15141-->
+<!--Saved by Quest 5.8.6836.13983-->
 <asl version="580">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
@@ -66,6 +66,11 @@
         <inherit name="editor_object" />
         <inherit name="edible" />
         <feature_edible />
+        <inventoryverbs type="stringlist">
+          <value>Look at</value>
+          <value>Drop</value>
+          <value>Eat</value>
+        </inventoryverbs>
       </object>
     </object>
     <object name="tap">
