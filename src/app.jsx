@@ -5,6 +5,7 @@ const prompt = require('electron-prompt');
 import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 import {FileStore, Exit} from './filestore';
+import {TabControls} from './tabcontrols';
 
 // Next four lines disable warning from React-hot-loader
 import { hot, setConfig } from 'react-hot-loader'
@@ -210,159 +211,11 @@ export default class App extends React.Component {
     this.fs = new FileStore(XML_FILE);
     
     this.state = {
-      /*objects:[
-        { name:"lounge", jsIsRoom:true},
-        { name:"player", jsTemplates:["PLAYER"], loc:"lounge"},
-        { name:"box", loc:"player", gender:"Other", happy:false, jsContainerType:"Container", },
-        { name:"hat", loc:"box", gender:"Other", happy:false, jsIsWearable:true, jsMobilityType:"Takeable"},
-        { name:"teapot", desc:"A silly blue teapot.", loc:"lounge"},
-        { name:"tiger", desc:"Big and stripey.", jsTemplates:["NPC"], loc:"lounge"},
-      ],*/
       objects:this.fs.readFile(),
       currentObjectName: false,
       options: {showRoomsOnly:true, },
     };
-    this.controls = [
-      {tabName:"Home", tabControls:[
-        { name:"name",   type:"text",     default:"unnamed", display:"Name",
-          validator:function(value, obj) { return !/^[a-zA-Z_][\w]*$/.test(value); },
-          tooltip:"The object's name; this is how it is identified in code. It can only contain letters, digits and underscores; it cannot start with a number.",
-        },
-        
-        { name:"loc",    type:"objects",  default:"---", display:"Location",
-          validator:function(value, obj) { return value === obj.name; },
-          tooltip:"Where the object is at the start of the game, the room or container. Should usually be blank for rooms (as they are not inside anything).",
-        },
-        
-        { name:"jsPronoun", type:"select",   default:"thirdperson", display:"Pronouns",
-          options:Object.keys(PRONOUNS),
-          tooltip:"How should the game refer to this?",
-          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub; },
-        },
-
-        { name:"title2", type:"title", display:"Editor settings" },
-
-        { name:"jsColour", type:"text",   default:"blue", display:"Editor colour",  
-          tooltip:"Colour of the text in the left pane.",
-        },
-        
-        { name:"jsIsZone", type:"flag",   default:false, display:"Zone?",  
-          tooltip:"Zones are a way to group rooms, making it easier to build large maps (in fact, they are just rooms in a different colour).",
-          displayIf:function(object) { return object.jsIsRoom || object.jsIsStub; },
-        },
-        
-        { name:"title1", type:"title", display:"Templates", displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub; }, },
-        
-        { name:"jsMobilityType", type:"select",   default:"Immobile", display:"Mobility",  
-          options:["Immobile", "Takeable", "Player", "NPC", "Topic"],
-          tooltip:"If the item never moves, it is immobile. If it can be taken by the player or a character, it is takeable.",
-          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub; },
-        },
-        
-        { name:"jsContainerType", type:"select",   default:"No", display:"Container/openable",  
-          options:["No", "Container", "Surface", "Openable", "Vessel"],
-          tooltip:"A container might be a box or chest that perhaps can be opened or locked. A surface can have things put on it; a table or shelf. A door or gate is openable, but you cannot put things inside it. A vessel will hold liquids.",
-          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && (object.jsMobilityType === "Immobile" || object.jsMobilityType === "Takeable"); },
-        },
-        
-        { name:"jsIsLockable", type:"flag",   default:false, display:"Can this be locked?",
-          tooltip:"What it says.",
-          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && (object.jsContainerType === "Container" || object.jsContainerType === "Openable"); },
-        },
-        
-        { name:"jsIsWearable", type:"flag",   default:false, display:"Wearable?",  
-          tooltip:"What it says.",
-          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && object.jsMobilityType === "Takeable"; },
-        },
-        
-        { name:"jsIsEdible", type:"flag",   default:false, display:"Edible?",  
-          tooltip:"Can this item be eaten or drunk?",
-          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && object.jsMobilityType === "Takeable"; },
-        },
-        
-        { name:"jsIsSwitchable", type:"flag",   default:false, display:"Switchable?",  
-          tooltip:"Can the player turn it on and off?",
-          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && (object.jsMobilityType === "Immobile" || object.jsMobilityType === "Takeable"); },
-        },
-        
-        { name:"jsIsFurniture", type:"flag",   default:false, display:"Furniture?",  
-          tooltip:"The player can stand, sit or lie on furniture.",
-          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && (object.jsMobilityType === "Immobile" || object.jsMobilityType === "Takeable"); },
-        },
-        
-        { name:"jsIsCountable", type:"flag",   default:false, display:"Countable?",  
-          tooltip:"An item is countable if there are several of them at a few locations, and they are to be grouped together.",
-          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && object.jsMobilityType === "Takeable"; },
-        },
-        
-        { name:"jsIsComponent", type:"flag",   default:false, display:"Component?",  
-          tooltip:"An item that is permanently a part of another item.",
-          displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub && object.jsMobilityType === "Immobile"; },
-        },
-        
-      ]},
-      {
-        tabName:"Text",
-        tabControls:[
-          { name:"desc",   type:"scriptstring", default:"", display:"Description",
-            tooltip:"A description of the room.",
-            displayIf:function(object) { return object.jsIsRoom && !object.jsIsStub; },
-          },
-          { name:"examine",   type:"scriptstring", default:"", display:"Description",
-            tooltip:"A description of the item.",
-            displayIf:function(object) { return !object.jsIsRoom && !object.jsIsStub; },
-          },
-          { name:"jsComments",   type:"textarea", default:"", display:"Comments",
-            tooltip:"Your notes; this will not be part of the game when you publish it.",
-          },
-        ]
-      },
-      {
-        tabName:"Exits",
-        displayIf:function(o) { return o.jsIsRoom; }, 
-        tabControls:[
-          { name:"exits",   type:"exits", default:"", display:"Exits", },
-        ]
-      },
-      { 
-        tabName:"Conversion",
-        displayIf:function(o) {return o.jsConversionNotes && o.jsConversionNotes.length > 0}, 
-        tabControls:[
-          { name:"jsConversionNotes",   type:"todolist", default:"", display:"Conversion Notes", },
-        ]
-      },
-      {
-        tabName:"Container",
-        displayIf:function(o) { return o.jsContainerType && o.jsContainerType !== "No"; }, 
-        tabControls:[
-          { name:"desc",   type:"scriptstring", default:"", display:"Description",
-            tooltip:"A description of the room.",
-            displayIf:function(object) { return object.jsIsRoom; },
-          },
-          { name:"examine",   type:"scriptstring", default:"", display:"Description",
-            tooltip:"A description of the item.",
-            displayIf:function(object) { return !object.jsIsRoom; },
-          },
-          { name:"jsComments",   type:"textarea", default:"", display:"Comments",
-            tooltip:"Your notes; this will not be part of the game when you publish it.",
-          },
-        ]
-      },
-      {
-        tabName:"Wearable",
-        displayIf:function(o) { return o.jsIsWearable; }, 
-        tabControls:[
-          { name:"wear_layer", type:"int",   default:1, display:"Layer",  
-            tooltip:"Clothing must be assigned to a layer, for example, 1 for underwear, 2 for outer wear, 3 for jewellery, 4 for over coat.",
-          },
-          
-          { name:"slots", type:"text",   default:"", display:"Body slots",  
-            tooltip:"Each body slot this item covers should be listed, separated by semi-colons.",
-          },
-          
-        ]
-      },
-    ];
+    this.controls = new TabControls(["wearable"]).getControls();
     for (let i = 0; i < this.state.objects.length; i++) {
       this.setDefaults(this.state.objects[i]);
     }
@@ -608,10 +461,10 @@ export default class App extends React.Component {
   }
   
   setValue(name, value, obj) {
-    console.log("----------------------------");
-    console.log(name);
-    console.log(value);
-    console.log(obj);
+    //console.log("----------------------------");
+    //console.log(name);
+    //console.log(value);
+    //console.log(obj);
     const objName = (obj === undefined ? this.state.currentObjectName : obj.name);
     //console.log(objName);
     const newObjects = JSON.parse(JSON.stringify(this.state.objects)); // cloning the state
@@ -641,12 +494,10 @@ export default class App extends React.Component {
       }
     }
 
-    console.log("Here1");
     this.setState({
       objects:newObjects, 
       currentObjectName:name === "name" ? value: this.state.currentObjectName,
     });
-    console.log("Here2");
   }
   
   updateExit(name, action, data) {

@@ -9,7 +9,18 @@ const EXITS = settings.EXITS;
 const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
 
-
+const controlDisplayIf = function(o, control) {
+  try {
+    return !control.displayIf || eval(control.displayIf);
+  }
+  catch (err) {
+    console.log("------------------------------");
+    console.log("Error in displayIf");
+    console.log(err.message);
+    console.log(o.name);
+    console.log(control.displayIf);
+  }
+}
 
 
 
@@ -18,13 +29,16 @@ export class MainPane extends React.Component {
     super(props);
   }
   
+  
+  
   render() {
 
     if (this.props.object) {
       let tab = (this.props.object.jsTabName ? this.props.object.jsTabName : this.props.controls[0].tabName);
       let control = this.props.controls.find(el => el.tabName === tab);
       if (!control) console.log("Failed to find control: " + this.props.object.jsTabName);
-      if (control.displayIf && !control.displayIf(this.props.object)) {
+      if (!controlDisplayIf(this.props.object, control)) {
+        console.log("Here");
         tab = this.props.controls[0].tabName
         control = this.props.controls[0];
       } 
@@ -72,7 +86,7 @@ export class MainPane extends React.Component {
 const Tabs = (props) => {
   const controls = [];
   for (let i = 0; i < props.controls.length; i++) {
-    if (props.controls[i].displayIf === undefined || props.controls[i].displayIf(props.object)) {
+    if (controlDisplayIf(props.object, props.controls[i])) {
       controls.push(props.controls[i]);
     }
   }
@@ -122,9 +136,8 @@ const TabComp = (props) => {
 
 
 const InputComp = (props) => {
-  if (props.input.displayIf !== undefined && !props.input.displayIf(props.object)) {
-    return null;
-  }
+  if (!controlDisplayIf(props.object, props.input)) return null;
+
   const value = props.object[props.input.name];
   if (props.input.type === "select") {
     return (
