@@ -43,12 +43,6 @@ export class TabControls {
           displayIf:"!o.jsIsRoom && !o.jsIsStub",
         },
         
-        { name:"jsContainerType", type:"select",   default:"No", display:"Container/openable",  
-          options:["No", "Container", "Surface", "Openable", "Vessel"],
-          tooltip:"A container might be a box or chest that perhaps can be opened or locked. A surface can have things put on it; a table or shelf. A door or gate is openable, but you cannot put things inside it. A vessel will hold liquids.",
-          displayIf:"!o.jsIsRoom && !o.jsIsStub && (o.jsMobilityType === 'Immobile' || o.jsMobilityType === 'Takeable')",
-        },
-        
         { name:"jsIsLockable", type:"flag",   default:false, display:"Can this be locked?",
           tooltip:"What it says.",
           displayIf:"!o.jsIsRoom && !o.jsIsStub && (o.jsContainerType === 'Container' || o.jsContainerType === 'Openable')",
@@ -110,23 +104,6 @@ export class TabControls {
           { name:"jsConversionNotes",   type:"todolist", default:"", display:"Conversion Notes", },
         ]
       },
-      {
-        tabName:"Container",
-        displayIf:"o.jsContainerType && o.jsContainerType !== 'No'", 
-        tabControls:[
-          { name:"desc",   type:"scriptstring", default:"", display:"Description",
-            tooltip:"A description of the room.",
-            displayIf:"o.jsIsRoom",
-          },
-          { name:"examine",   type:"scriptstring", default:"", display:"Description",
-            tooltip:"A description of the item.",
-            displayIf:"!o.jsIsRoom",
-          },
-          { name:"jsComments",   type:"textarea", default:"", display:"Comments",
-            tooltip:"Your notes; this will not be part of the game when you publish it.",
-          },
-        ]
-      },
     ];
     
     for (let i = 0; i < files.length; i++) {
@@ -138,14 +115,14 @@ export class TabControls {
           this.controls.push(json[j]);
         }
         if (json[j].action === "extend") {
-          const tabName = json[j].tab
+          //const tabName = json[j].tabName
           const tab = this.controls.find(function(el) {
-            return el.tabName === tabName;
+            return el.tabName === json[j].tabName;
           });
           if (!tab) {
             console.log("------------------------------");
             console.log("Error with extending tab");
-            console.log("Failed to find a tab called: " + tabName);
+            console.log("Failed to find a tab called: " + json[j].tabName);
             console.log("File: " + files[i] + ".json");
             console.log("Note that this is case senstive!");
           }
@@ -160,6 +137,9 @@ export class TabControls {
   }
   
   getControls() {
+    for (let i = 0; i < this.controls.length; i++) {
+      console.log(this.controls[i].tabName);
+    }    
     return this.controls;
   }
 

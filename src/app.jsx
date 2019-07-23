@@ -215,7 +215,7 @@ export default class App extends React.Component {
       currentObjectName: false,
       options: {showRoomsOnly:true, },
     };
-    this.controls = new TabControls(["wearable"]).getControls();
+    this.controls = new TabControls(["container", "wearable"]).getControls();
     for (let i = 0; i < this.state.objects.length; i++) {
       this.setDefaults(this.state.objects[i]);
     }

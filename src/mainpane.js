@@ -162,7 +162,7 @@ const InputComp = (props) => {
   else if (props.input.type === "flag") {
     return (  
       <tr className="form-group">
-        <td><span className="fieldName">{props.input.display}</span></td>
+        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td><input 
           type="checkbox"
           className="form-control"
@@ -226,7 +226,7 @@ const InputComp = (props) => {
     //return null;
     return (  
       <tr className="form-group">
-        <td><span className="fieldName">{props.input.display}</span></td>
+        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td><ListComp 
           name={props.input.name}
           title={props.input.tooltip}
@@ -242,7 +242,7 @@ const InputComp = (props) => {
   else if (props.input.type === "text") {
     return (  
       <tr className="form-group">
-        <td><span className="fieldName">{props.input.display}</span></td>
+        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td><input
           className="form-control"
           id={props.input.name}
@@ -258,7 +258,7 @@ const InputComp = (props) => {
   else if (props.input.type === "int") {
     return (  
       <tr className="form-group">
-        <td><span className="fieldName">{props.input.display}</span></td>
+        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td><input
           className="form-control"
           id={props.input.name}

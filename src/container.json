@@ -1,0 +1,46 @@
+[
+  {
+    "action":"tab",
+    "tabName":"Container",
+    "displayIf":"o.jsContainerType && o.jsContainerType !== 'No'", 
+    "tabControls":[
+      {
+        "name":"openable",   
+        "type":"flag", 
+        "default":true, 
+        "display":"Openable?",
+        "tooltip":"Can this item be opened and closed?",
+        "displayIf":"o.jsContainerType === 'Container'"
+      },
+      { 
+        "name":"closed",
+        "type":"flag",
+        "default":true, 
+        "display":"Start closed?",
+        "tooltip":"Is the item closed at the start of the game?",
+        "displayIf":"(o.jsContainerType === 'Container' && o.openable) || o.jsContainerType === 'Openable'"
+      },
+      { 
+        "name":"transparent", 
+        "type":"flag", 
+        "default":false, 
+        "display":"Transparent?",
+        "tooltip":"Can the contents of the container be seen even when it is closed?",
+        "displayIf":"o.jsContainerType === 'Container'"
+      }
+    ]
+  },
+
+  {
+    "action":"extend",
+    "tabName":"Home",
+    "name":"jsContainerType", 
+    "type":"select",   
+    "default":"No", 
+    "display":"Container/openable",  
+    "options":["No", "Container", "Surface", "Openable", "Vessel"],
+    "tooltip":"A container might be a box or chest that perhaps can be opened or locked. A surface can have things put on it; a table or shelf. A door or gate is openable, but you cannot put things inside it. A vessel will hold liquids.",
+    "displayIf":"!o.jsIsRoom && !o.jsIsStub && (o.jsMobilityType === 'Immobile' || o.jsMobilityType === 'Takeable')"
+  }
+        
+]
