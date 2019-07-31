@@ -1,4 +1,6 @@
 import React from 'react';
+import Blockly from 'blockly/blockly_compressed';
+
 const prompt = require('electron-prompt');
 
 
@@ -25,7 +27,6 @@ session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     }, details.responseHeaders)});
 });*/
 
-//const FILENAME = 'C:/Users/andyj/Documents/GitHub/QuestJS/game-eg/data.js';
 const XML_FILE = 'example';
 
 
@@ -210,12 +211,14 @@ export default class App extends React.Component {
 
     this.fs = new FileStore(XML_FILE);
     
+    this.controls = new TabControls(["settings", "container", "wearable"]).getControls();
     this.state = {
       objects:this.fs.readFile(),
       currentObjectName: false,
       options: {showRoomsOnly:true, },
     };
-    this.controls = new TabControls(["container", "wearable"]).getControls();
+    const settings = this.controls.find(function (el) { return el.jsIsSettings; });
+    this.state.objects.unshift(this.createDefaultSettings(settings));
     for (let i = 0; i < this.state.objects.length; i++) {
       this.setDefaults(this.state.objects[i]);
     }
@@ -233,6 +236,13 @@ export default class App extends React.Component {
   message(s) {
     document.getElementById('statusbar').innerHTML = "Status: <i>" + s + "</i>";
   }
+  
+  
+  createDefaultSettings(settings) {
+    console.log(settings);
+    return { name:"Settings", jsIsSettings:true };
+  }
+  
   
   saveXml() {
     this.fs.writeFile(this.state.objects);
@@ -399,6 +409,7 @@ export default class App extends React.Component {
 
 
   setDefaults(o) {
+    //return;
     for (let i = 0; i < this.controls.length; i++) {
       const cons = this.controls[i].tabControls
       for (let j = 0; j < cons.length; j++) {

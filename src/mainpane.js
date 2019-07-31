@@ -37,8 +37,16 @@ export class MainPane extends React.Component {
       let tab = (this.props.object.jsTabName ? this.props.object.jsTabName : this.props.controls[0].tabName);
       let control = this.props.controls.find(el => el.tabName === tab);
       if (!control) console.log("Failed to find control: " + this.props.object.jsTabName);
+      
       if (!controlDisplayIf(this.props.object, control)) {
-        console.log("Here");
+        console.log("Not got a suitable tab, so find the first that is");
+        control = this.props.controls.find(el => {return controlDisplayIf(this.props.object, el);} );
+        //control = this.props.controls.find(function(el) { return controlDisplayIf(this.props.object, el) });
+        if (control !== undefined) tab = control.tabName;
+      } 
+
+      if (!controlDisplayIf(this.props.object, control)) {
+        console.log("Still not found a suitable default tab, so just going with zero");
         tab = this.props.controls[0].tabName
         control = this.props.controls[0];
       } 
@@ -255,6 +263,23 @@ const InputComp = (props) => {
       </tr>
     )
   }
+  else if (props.input.type === "longtext") {
+    return (  
+      <tr className="form-group">
+        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
+        <td><input
+          className="form-control"
+          id={props.input.name}
+          name={props.input.name}
+          type={props.input.type}
+          size="120"
+          title={props.input.tooltip}
+          value={value}
+          onChange={props.handleChange}
+        /></td>
+      </tr>
+    )
+  }
   else if (props.input.type === "int") {
     return (  
       <tr className="form-group">
@@ -264,6 +289,7 @@ const InputComp = (props) => {
           id={props.input.name}
           name={props.input.name}
           type="number"
+          size="2"
           title={props.input.tooltip}
           value={value}
           onChange={props.handleIntChange}

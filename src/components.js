@@ -18,7 +18,13 @@ export class SelectComp extends React.Component {
     else {
       options = this.props.options;
     }
-    return (  
+    if (options === undefined) {
+      console.log("WARNING: No options provided for select on this tab.");
+      console.log(this.props);
+      return null;
+    }
+    
+    return (
       <select
           className="form-control"
           id={this.props.name}

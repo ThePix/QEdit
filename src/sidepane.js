@@ -102,14 +102,20 @@ const TreeToggler = (props) => {
 
 const TreeLink = (props) => {
   const {object, showObject} = props;
-  const style = {color:object.jsColour, backgroundColor: object === props.selected ? "yellow" : "#fdf" };
-  let className
-  if (object.jsIsRoom) {
-    className = object.jsIsZone ? "treeZone" : "treeRoom";
+  let className = "tree ";
+  if (object.jsIsSettings) {
+    className += "treeSettings";
+  }
+  else if (object.jsIsRoom) {
+    className += object.jsIsZone ? "treeZone" : "treeRoom";
   }
   else {
-    className = object.jsIsStub ? "treeStub" : "treeItem";
+    className += object.jsIsStub ? "treeStub" : "treeItem";
   }
+  if (object === props.selected) className += " treeSelected";
+    
+  //const style = {color:object.jsColour, backgroundColor: object === props.selected ? "yellow" : "#fdf" };
+
   
-  return  <a onClick={() => showObject(object.name)} style={style} className={className}>{object.name}</a>
+  return  <a onClick={() => showObject(object.name)} className={className}>{object.name}</a>
 }

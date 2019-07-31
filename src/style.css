@@ -6,20 +6,6 @@ body {
 
 
 
-#sidepane {
-  height: calc(100% - 24px); /* Full-height: remove this if you want "auto" height */
-  width: 240px; /* Set the width of the sidebar */
-  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-  z-index: 1; /* Stay on top */
-  top: 0; /* Stay at the top */
-  background-color: #fdf;
-  background-image:url("images/back.png");
-  overflow-x: hidden; /* Disable horizontal scroll */
-  padding-top: 5px;
-  margin-bottom: 20px;
-  font-size: 9pt;
-  left: 0;
-}
 
 
 #mainpane {
@@ -132,44 +118,61 @@ ul.sidepane {
   color:blue;
 }
 
-.treeItem {
-  cursor: pointer; 
-  color:blue;
-  font-size:11px;
-  padding-left: 5px;
-  user-select: none; /* Prevent text selection */
-}
-
-.treeRoom {
-  cursor: pointer; 
-  color:blue;
-  font-size:11px;
-  padding-left: 5px;
-  padding-right: 5px;
-  user-select: none; /* Prevent text selection */
-  border: #888 solid 1px;
-}
-
-.treeZone {
-  cursor: pointer; 
-  color:blue;
-  font-size:11px;
-  padding-left: 5px;
-  padding-right: 5px;
-  user-select: none; /* Prevent text selection */
-  border: white solid 1px;
-}
-
-.treeStub {
-  cursor: pointer; 
-  color:blue;
-  font-size:11px;
-  padding-left: 5px;
-  padding-right: 5px;
-  user-select: none; /* Prevent text selection */
-  border: #888 dotted 1px;
-}
 
 .newButtonDiv {
    text-align: center;
 }
+
+
+
+
+
+
+
+#sidepane {
+  height: calc(100% - 24px); /* Full-height: remove this if you want "auto" height */
+  width: 240px; /* Set the width of the sidebar */
+  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+  z-index: 1; /* Stay on top */
+  top: 0; /* Stay at the top */
+  background-color: #fdf;
+  background-image:url("images/back.png");
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 5px;
+  margin-bottom: 20px;
+  font-size: 9pt;
+  left: 0;
+  user-select: none; /* Prevent text selection */
+}
+
+
+.tree {
+  color:blue;
+  cursor: pointer; 
+  font-size:11px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.treeSettings {
+  color: green;
+}
+
+.treeItem {
+}
+
+.treeRoom {
+  border: #888 solid 1px;
+}
+
+.treeZone {
+  border: white solid 1px;
+}
+
+.treeStub {
+  border: #888 dotted 1px;
+}
+
+.treeSelected {
+  background-color: yellow;
+}  

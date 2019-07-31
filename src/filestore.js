@@ -372,6 +372,12 @@ export class FileStore {
     fs.writeFileSync(this.filename + "2", str, "utf8");
   }
   
+  writeSettingsFile(objects) {
+    let str = "\"use strict\";";
+    for (let i = 0; i < objects.length; i++) str += FSHelpers.packSettings(objects[i]);
+    fs.writeFileSync("settings.js", str, "utf8");
+  }
+  
   
   
   
@@ -424,7 +430,7 @@ FSHelpers.ignoreKeys = [
 
 // Converts one item to JavaScript code
 FSHelpers.pack = function(item) {
-  if (item.jsIsStub) return '';
+  if (item.jsIsStub || item.jsIsSettings) return '';
   
   let str = "\n\n\n";
 
@@ -452,6 +458,40 @@ FSHelpers.pack = function(item) {
   str += ");";
   return str;
 }
+
+// Converts one item to JavaScript code
+FSHelpers.packSettings = function(item) {
+  if (!item.jsIsSettings) return '';
+  
+  let str = "\n\n\n";
+  
+  // These are (currently) not editable
+  str += 'const LANG_FILENAME = "lang-en.js";\n'
+  str += 'const DEBUG = true;\n'
+  str += 'const PARSER_DEBUG = false;\n'
+  str += 'const FILES = ["code", "data", "npcs"];\n'
+  str += 'const SPLIT_LINES_ON = "<br>";\n'
+  str += 'const DATE_TIME_OPTIONS = {};\n'
+
+  for (let key in item) {
+    if (FSHelpers.ignoreKeys.includes(key)) continue;
+    const inDict = key.includes("__");
+    if (inDict) {
+      str += key.replace("__", ".") + " = ";
+    }
+    else {    
+      str += "const " + key + " = ";
+    }
+    switch (typeof item[key]) {
+      case "boolean": str += (item[key] ? "true" : "false"); break;
+      case "string":  str += "\"" + item[key] + "\""; break;
+      case "number": str += item[key]; break;
+    }
+    str += "\n";
+  }
+  return str;
+}
+
 
 FSHelpers.beautifyObject = function(item, indent) {
   let str = FSHelpers.tabs(indent) + "{\n";
