@@ -8,6 +8,7 @@ import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 import {FileStore, Exit} from './filestore';
 import {TabControls} from './tabcontrols';
+import {QuestObject} from './questobject';
 
 // Next four lines disable warning from React-hot-loader
 import { hot, setConfig } from 'react-hot-loader'

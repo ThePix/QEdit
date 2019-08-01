@@ -1,0 +1,873 @@
+<!--Saved by Quest 6.0.0-->
+<asl version="600">
+  <object name="Settings">
+    <jsIsSettings type="boolean">true</jsIsSettings>
+    <TITLE><![CDATA[The Example Game]]></TITLE>
+    <SUBTITLE><![CDATA[My Sub-title]]></SUBTITLE>
+    <AUTHOR><![CDATA[The Pixie]]></AUTHOR>
+    <loc><![CDATA[---]]></loc>
+    <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsMobilityType><![CDATA[Immobile]]></jsMobilityType>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsEdible type="boolean">false</jsIsEdible>
+    <jsIsSwitchable type="boolean">false</jsIsSwitchable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <jsContainerType><![CDATA[No]]></jsContainerType>
+    <jsIsWearable type="boolean">false</jsIsWearable>
+    <desc><![CDATA[]]></desc>
+    <examine><![CDATA[]]></examine>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <jsConversionNotes><![CDATA[]]></jsConversionNotes>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <wear_layer type="int">1</wear_layer>
+    <slots><![CDATA[]]></slots>
+  </object>
+
+  <object name="lounge">
+    <inherit><![CDATA[editor_room]]></inherit>
+    <isroom><![CDATA[]]></isroom>
+    <exit alias="east" to="[object Object]">
+    </exit>
+    <jsIsRoom type="boolean">true</jsIsRoom>
+    <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
+    <jsExpanded type="boolean">true</jsExpanded>
+    <desc><![CDATA[The lounge is big.]]></desc>
+    <loc><![CDATA[---]]></loc>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsMobilityType><![CDATA[Immobile]]></jsMobilityType>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsEdible type="boolean">false</jsIsEdible>
+    <jsIsSwitchable type="boolean">false</jsIsSwitchable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <jsContainerType><![CDATA[No]]></jsContainerType>
+    <jsIsWearable type="boolean">false</jsIsWearable>
+    <examine><![CDATA[]]></examine>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <jsConversionNotes><![CDATA[]]></jsConversionNotes>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <wear_layer type="int">1</wear_layer>
+    <slots><![CDATA[]]></slots>
+  </object>
+
+  <object name="player">
+    <loc><![CDATA[lounge]]></loc>
+    <inherit><![CDATA[editor_player]]></inherit>
+    <jsIsRoom type="boolean">false</jsIsRoom>
+    <jsPronoun><![CDATA[secondperson]]></jsPronoun>
+    <jsMobilityType><![CDATA[Player]]></jsMobilityType>
+    <jsContainerType><![CDATA[No]]></jsContainerType>
+    <jsIsWearable type="boolean">false</jsIsWearable>
+    <jsIsSwitchable type="boolean">false</jsIsSwitchable>
+    <jsIsEdible type="boolean">false</jsIsEdible>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <desc><![CDATA[]]></desc>
+    <examine><![CDATA[]]></examine>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <jsConversionNotes><![CDATA[]]></jsConversionNotes>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <wear_layer type="int">1</wear_layer>
+    <slots><![CDATA[]]></slots>
+  </object>
+
+  <object name="trousers">
+    <loc><![CDATA[lounge]]></loc>
+    <inherit><![CDATA[plural]]></inherit>
+    <feature_wearable><![CDATA[]]></feature_wearable>
+    <wear_layer type="int">1</wear_layer>
+    <wear_slots type="stringlist">
+      <value>head</value>
+    </wear_slots>
+    <jsIsRoom type="boolean">false</jsIsRoom>
+    <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
+    <jsMobilityType><![CDATA[Takeable]]></jsMobilityType>
+    <jsContainerType><![CDATA[No]]></jsContainerType>
+    <jsIsWearable type="boolean">true</jsIsWearable>
+    <jsIsSwitchable type="boolean">false</jsIsSwitchable>
+    <jsIsEdible type="boolean">false</jsIsEdible>
+    <jsIsPronoun><![CDATA[plural]]></jsIsPronoun>
+    <examine><![CDATA[Some red trousers.]]></examine>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <desc><![CDATA[]]></desc>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <jsConversionNotes><![CDATA[]]></jsConversionNotes>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <slots><![CDATA[]]></slots>
+    <jsTabName><![CDATA[Text]]></jsTabName>
+  </object>
+
+  <object name="box">
+    <loc><![CDATA[lounge]]></loc>
+    <inherit><![CDATA[container_closed]]></inherit>
+    <feature_container><![CDATA[]]></feature_container>
+    <alias><![CDATA[cardboard box]]></alias>
+    <take><![CDATA[]]></take>
+    <jsIsRoom type="boolean">false</jsIsRoom>
+    <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
+    <jsMobilityType><![CDATA[Immobile]]></jsMobilityType>
+    <jsContainerType><![CDATA[Container]]></jsContainerType>
+    <jsContainerClosed type="boolean">true</jsContainerClosed>
+    <jsIsWearable type="boolean">false</jsIsWearable>
+    <jsIsSwitchable type="boolean">false</jsIsSwitchable>
+    <jsIsEdible type="boolean">false</jsIsEdible>
+    <examine type="script"><![CDATA[
+        msg ("This is a box.")
+      ]]></examine>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <desc><![CDATA[]]></desc>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <jsConversionNotes><![CDATA[]]></jsConversionNotes>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <wear_layer type="int">1</wear_layer>
+    <slots><![CDATA[]]></slots>
+    <jsTabName><![CDATA[Container]]></jsTabName>
+  </object>
+
+  <object name="kitchen">
+    <inherit><![CDATA[editor_room]]></inherit>
+    <exit alias="west" to="[object Object]">
+    </exit>
+    <exit alias="north" to="[object Object]">
+    </exit>
+    <jsIsRoom type="boolean">true</jsIsRoom>
+    <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
+    <jsExpanded type="boolean">true</jsExpanded>
+    <desc type="script"><![CDATA[
+      msg ("A small kitchen.")
+    ]]></desc>
+    <loc><![CDATA[---]]></loc>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsMobilityType><![CDATA[Immobile]]></jsMobilityType>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsEdible type="boolean">false</jsIsEdible>
+    <jsIsSwitchable type="boolean">false</jsIsSwitchable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <jsContainerType><![CDATA[No]]></jsContainerType>
+    <jsIsWearable type="boolean">false</jsIsWearable>
+    <examine><![CDATA[]]></examine>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <jsConversionNotes><![CDATA[]]></jsConversionNotes>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <wear_layer type="int">1</wear_layer>
+    <slots><![CDATA[]]></slots>
+    <jsTabName><![CDATA[Home]]></jsTabName>
+  </object>
+
+  <object name="table">
+    <loc><![CDATA[kitchen]]></loc>
+    <inherit><![CDATA[surface]]></inherit>
+    <feature_container><![CDATA[]]></feature_container>
+    <jsIsRoom type="boolean">false</jsIsRoom>
+    <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
+    <jsMobilityType><![CDATA[Immobile]]></jsMobilityType>
+    <jsContainerType><![CDATA[Surface]]></jsContainerType>
+    <jsIsWearable type="boolean">false</jsIsWearable>
+    <jsIsSwitchable type="boolean">false</jsIsSwitchable>
+    <jsIsEdible type="boolean">false</jsIsEdible>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <desc><![CDATA[]]></desc>
+    <examine><![CDATA[]]></examine>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <jsConversionNotes><![CDATA[]]></jsConversionNotes>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <wear_layer type="int">1</wear_layer>
+    <slots><![CDATA[]]></slots>
+  </object>
+
+  <object name="apple">
+    <jsConversionNotes type="stringlist">
+      <value>This object has custom inventory/display verbs set. These are handled very differently in Quest 6, so cannot be converted. You should modify the 'getVerbs' function yourself.</value>
+    </jsConversionNotes>
+    <loc><![CDATA[table]]></loc>
+    <inherit><![CDATA[edible]]></inherit>
+    <feature_edible><![CDATA[]]></feature_edible>
+    <jsIsRoom type="boolean">false</jsIsRoom>
+    <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
+    <jsMobilityType><![CDATA[Takeable]]></jsMobilityType>
+    <jsContainerType><![CDATA[No]]></jsContainerType>
+    <jsIsWearable type="boolean">false</jsIsWearable>
+    <jsIsSwitchable type="boolean">false</jsIsSwitchable>
+    <jsIsEdible type="boolean">true</jsIsEdible>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <desc><![CDATA[]]></desc>
+    <examine><![CDATA[]]></examine>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <wear_layer type="int">1</wear_layer>
+    <slots><![CDATA[]]></slots>
+  </object>
+
+  <object name="tap">
+    <loc><![CDATA[kitchen]]></loc>
+    <inherit><![CDATA[switchable]]></inherit>
+    <feature_switchable><![CDATA[]]></feature_switchable>
+    <switchonmsg><![CDATA[You turn it on, water pours out.]]></switchonmsg>
+    <switchoffmsg><![CDATA[You turn it off; the water stops.]]></switchoffmsg>
+    <switchedondesc><![CDATA[Water is pouring from it.]]></switchedondesc>
+    <jsIsRoom type="boolean">false</jsIsRoom>
+    <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
+    <jsMobilityType><![CDATA[Immobile]]></jsMobilityType>
+    <jsContainerType><![CDATA[No]]></jsContainerType>
+    <jsIsWearable type="boolean">false</jsIsWearable>
+    <jsIsSwitchable type="boolean">true</jsIsSwitchable>
+    <jsIsEdible type="boolean">false</jsIsEdible>
+    <examine><![CDATA[A tap.]]></examine>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <desc><![CDATA[]]></desc>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <jsConversionNotes><![CDATA[]]></jsConversionNotes>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <wear_layer type="int">1</wear_layer>
+    <slots><![CDATA[]]></slots>
+  </object>
+
+  <object name="garden">
+    <inherit><![CDATA[editor_room]]></inherit>
+    <exit alias="south" to="[object Object]">
+    </exit>
+    <jsIsRoom type="boolean">true</jsIsRoom>
+    <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
+    <jsExpanded type="boolean">true</jsExpanded>
+    <loc><![CDATA[---]]></loc>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsMobilityType><![CDATA[Immobile]]></jsMobilityType>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsEdible type="boolean">false</jsIsEdible>
+    <jsIsSwitchable type="boolean">false</jsIsSwitchable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <jsContainerType><![CDATA[No]]></jsContainerType>
+    <jsIsWearable type="boolean">false</jsIsWearable>
+    <desc><![CDATA[]]></desc>
+    <examine><![CDATA[]]></examine>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <jsConversionNotes><![CDATA[]]></jsConversionNotes>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <wear_layer type="int">1</wear_layer>
+    <slots><![CDATA[]]></slots>
+  </object>
+
+  <object name="mary_quest">
+    <jsConversionNotes type="stringlist">
+      <value>Object name had spaces removed; update any references (locations have been updates automatically); check no naming collision.</value>
+    </jsConversionNotes>
+    <jsOldName><![CDATA[mary quest]]></jsOldName>
+    <loc><![CDATA[garden]]></loc>
+    <inherit><![CDATA[namedfemale]]></inherit>
+    <alias><![CDATA[Mary Quest]]></alias>
+    <jsIsRoom type="boolean">false</jsIsRoom>
+    <jsPronoun><![CDATA[female]]></jsPronoun>
+    <jsMobilityType><![CDATA[NPC]]></jsMobilityType>
+    <jsFemale type="boolean">true</jsFemale>
+    <properName type="boolean">true</properName>
+    <jsContainerType><![CDATA[No]]></jsContainerType>
+    <jsIsWearable type="boolean">false</jsIsWearable>
+    <jsIsSwitchable type="boolean">false</jsIsSwitchable>
+    <jsIsEdible type="boolean">false</jsIsEdible>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <desc><![CDATA[]]></desc>
+    <examine><![CDATA[]]></examine>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <wear_layer type="int">1</wear_layer>
+    <slots><![CDATA[]]></slots>
+  </object>
+
+  <object name="mary_how_are_you">
+    <loc><![CDATA[mary_quest]]></loc>
+    <inherit><![CDATA[startingtopic]]></inherit>
+    <alias><![CDATA[How are you?]]></alias>
+    <nowshow type="stringlist">
+      <value>mary_her_quest</value>
+    </nowshow>
+    <exchange><![CDATA[So how is it going?
+Great?]]></exchange>
+    <jsIsRoom type="boolean">false</jsIsRoom>
+    <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
+    <jsMobilityType><![CDATA[Topic]]></jsMobilityType>
+    <jsFromStart type="boolean">true</jsFromStart>
+    <jsContainerType><![CDATA[No]]></jsContainerType>
+    <jsIsWearable type="boolean">false</jsIsWearable>
+    <jsIsSwitchable type="boolean">false</jsIsSwitchable>
+    <jsIsEdible type="boolean">false</jsIsEdible>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <desc><![CDATA[]]></desc>
+    <examine><![CDATA[]]></examine>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <jsConversionNotes><![CDATA[]]></jsConversionNotes>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <wear_layer type="int">1</wear_layer>
+    <slots><![CDATA[]]></slots>
+  </object>
+
+  <object name="mary_her_quest">
+    <loc><![CDATA[mary_quest]]></loc>
+    <inherit><![CDATA[topic]]></inherit>
+    <alias><![CDATA[What is your quest?]]></alias>
+    <exchange><![CDATA[What is your quest?
+That is just my name.]]></exchange>
+    <jsIsRoom type="boolean">false</jsIsRoom>
+    <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
+    <jsMobilityType><![CDATA[Topic]]></jsMobilityType>
+    <jsFromStart type="boolean">false</jsFromStart>
+    <jsContainerType><![CDATA[No]]></jsContainerType>
+    <jsIsWearable type="boolean">false</jsIsWearable>
+    <jsIsSwitchable type="boolean">false</jsIsSwitchable>
+    <jsIsEdible type="boolean">false</jsIsEdible>
+    <jsColour><![CDATA[blue]]></jsColour>
+    <jsIsZone type="boolean">false</jsIsZone>
+    <jsIsLockable type="boolean">false</jsIsLockable>
+    <jsIsFurniture type="boolean">false</jsIsFurniture>
+    <jsIsCountable type="boolean">false</jsIsCountable>
+    <jsIsComponent type="boolean">false</jsIsComponent>
+    <desc><![CDATA[]]></desc>
+    <examine><![CDATA[]]></examine>
+    <jsComments><![CDATA[]]></jsComments>
+    <exits><![CDATA[]]></exits>
+    <jsConversionNotes><![CDATA[]]></jsConversionNotes>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
+    <VERSION><![CDATA[]]></VERSION>
+    <THANKS><![CDATA[]]></THANKS>
+    <PANES><![CDATA[Left]]></PANES>
+    <COMPASS><![CDATA[]]></COMPASS>
+    <DIVIDER><![CDATA[]]></DIVIDER>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_PANE><![CDATA[]]></STATUS_PANE>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <FAILS_COUNT_AS_TURNS type="boolean">false</FAILS_COUNT_AS_TURNS>
+    <LOOK_COUNTS_AS_TURN type="boolean">false</LOOK_COUNTS_AS_TURN>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <SAVE_DISABLED type="boolean">false</SAVE_DISABLED>
+    <CUSTOM_EXITS type="boolean">false</CUSTOM_EXITS>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <openable type="boolean">true</openable>
+    <closed type="boolean">true</closed>
+    <transparent type="boolean">false</transparent>
+    <wear_layer type="int">1</wear_layer>
+    <slots><![CDATA[]]></slots>
+  </object>
+

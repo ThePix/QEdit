@@ -1,6 +1,7 @@
 import React from 'react';
 import {ExitsComp} from './exitscomp';
 import {ScriptComp, SelectComp} from './components';
+import {QuestObject} from './questobject';
 
 
 let settings = require("./lang-en.js");
@@ -9,18 +10,6 @@ const EXITS = settings.EXITS;
 const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
 
-const controlDisplayIf = function(o, control) {
-  try {
-    return !control.displayIf || eval(control.displayIf);
-  }
-  catch (err) {
-    console.log("------------------------------");
-    console.log("Error in displayIf");
-    console.log(err.message);
-    console.log(o.name);
-    console.log(control.displayIf);
-  }
-}
 
 
 
@@ -34,28 +23,12 @@ export class MainPane extends React.Component {
   render() {
 
     if (this.props.object) {
-      let tab = (this.props.object.jsTabName ? this.props.object.jsTabName : this.props.controls[0].tabName);
-      let control = this.props.controls.find(el => el.tabName === tab);
-      if (!control) console.log("Failed to find control: " + this.props.object.jsTabName);
-      
-      if (!controlDisplayIf(this.props.object, control)) {
-        console.log("Not got a suitable tab, so find the first that is");
-        control = this.props.controls.find(el => {return controlDisplayIf(this.props.object, el);} );
-        //control = this.props.controls.find(function(el) { return controlDisplayIf(this.props.object, el) });
-        if (control !== undefined) tab = control.tabName;
-      } 
-
-      if (!controlDisplayIf(this.props.object, control)) {
-        console.log("Still not found a suitable default tab, so just going with zero");
-        tab = this.props.controls[0].tabName
-        control = this.props.controls[0];
-      } 
-
+      const control = this.props.object.getCurrentTab(this.props.controls);
+      const tab = control.tabName;
       const style = {color:this.props.object.jsColour};
       const pStyle = {backgroundColor:this.props.warning ? 'yellow' : 'white', padding:3};
-      
-      
       const controls = control.tabControls;
+      
       // Will later need to check if this object has the current tab and set tab to zero if not
       return (<div id="mainpane">
         <p style={pStyle}><b><i>Editing {this.props.object.jsIsRoom ? "Room" : "Item"}:</i> <span style={style}>{this.props.object.name}</span></b> <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a></p>
@@ -94,7 +67,7 @@ export class MainPane extends React.Component {
 const Tabs = (props) => {
   const controls = [];
   for (let i = 0; i < props.controls.length; i++) {
-    if (controlDisplayIf(props.object, props.controls[i])) {
+    if (props.object.displayIf(props.controls[i])) {
       controls.push(props.controls[i]);
     }
   }
@@ -144,7 +117,7 @@ const TabComp = (props) => {
 
 
 const InputComp = (props) => {
-  if (!controlDisplayIf(props.object, props.input)) return null;
+  if (!props.object.displayIf(props.input)) return null;
 
   const value = props.object[props.input.name];
   if (props.input.type === "select") {

@@ -23,7 +23,6 @@ export class ExitsComp extends React.Component {
   }
   
   handleSelectExit(dir) {
-    console.log("dir:" + dir);
     this.setState({
       selected:dir,
     });
@@ -99,10 +98,8 @@ const ExitDetails = (props) => {
     )
   }
 
-  console.log("props.selected=" + props.selected);
   const ex = props.object[props.selected]
   const title = <b><i>{props.selected.charAt(0).toUpperCase() + props.selected.slice(1)}</i></b>
-  console.log("ex=" + ex);
   if (ex === undefined) {
     return (
       <div>
@@ -114,18 +111,10 @@ const ExitDetails = (props) => {
     )
   }
   else {
-    console.log("name=" + props.object.name);
-    console.log("name=" + props.selected);
     const name = props.object.name + "_exit_" + props.selected;
-    console.log("name=" + name);
-    console.log("props.objects=" + props.objects.length);
     let list = props.objects;
     if (props.options.showRoomsOnly) list = props.objects.filter(o => o.jsIsRoom);
     const options = ["---"].concat(list.map((o, i) => o.name));
-    console.log("options=" + options.length);
-    console.log("props.handleChange=" + props.handleChange);
-    console.log("1props.updateExit=" + props.updateExit);
-    console.log("exitUseType=" + ex.data.useType);
     return (
       <div>
         {title}
@@ -172,7 +161,6 @@ const ExitDetails = (props) => {
 
 
 const ExitOptions = (props) => {
-  console.log("here");
   if (props.ex.data.useType === "default") return null;
   
   if (props.ex.data.useType === "msg") {
