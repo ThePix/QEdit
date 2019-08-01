@@ -3,7 +3,7 @@
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <include ref="ConvLib.aslx" />
-  <game name="example">
+  <game name="The Example Game">
     <gameid>16dbe23f-3d52-4f87-834c-87f80fa279d1</gameid>
     <version>1.0</version>
     <firstpublished>2019</firstpublished>
@@ -13,6 +13,8 @@
     <roomenter type="script">
       msg ("You walk into a room.")
     </roomenter>
+    <subtitle>My Sub-title</subtitle>
+    <author>The Pixie</author>
   </game>
   <object name="lounge">
     <inherit name="editor_room" />

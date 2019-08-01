@@ -212,13 +212,12 @@ export default class App extends React.Component {
     this.fs = new FileStore(XML_FILE);
     
     this.controls = new TabControls(["settings", "container", "wearable"]).getControls();
+    const settings = this.createDefaultSettings();
     this.state = {
-      objects:this.fs.readFile(),
+      objects:this.fs.readFile(settings),
       currentObjectName: false,
       options: {showRoomsOnly:true, },
     };
-    const settings = this.controls.find(function (el) { return el.jsIsSettings; });
-    this.state.objects.unshift(this.createDefaultSettings(settings));
     for (let i = 0; i < this.state.objects.length; i++) {
       this.setDefaults(this.state.objects[i]);
     }
@@ -240,7 +239,12 @@ export default class App extends React.Component {
   
   createDefaultSettings(settings) {
     console.log(settings);
-    return { name:"Settings", jsIsSettings:true };
+    const obj = { name:"Settings", jsIsSettings:true };
+    //for (let i = 0; i < this.controls.length; i++) {
+      
+      
+    //}  
+    return obj;
   }
   
   

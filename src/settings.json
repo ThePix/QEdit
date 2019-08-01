@@ -10,6 +10,13 @@
 				"tooltip": "Title of the game."
 			},
 			{
+				"name": "SUBTITLE",
+				"type": "text",
+				"default": "",
+				"display": "Sub-title",
+				"tooltip": "Sub-title of the game (if you want it)."
+			},
+			{
 				"name": "AUTHOR",
 				"type": "text",
 				"default": "",

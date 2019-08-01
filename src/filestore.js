@@ -32,7 +32,7 @@ export class FileStore {
 
   // This should read both Quest 5 and Quest 6 XML files,
   // which hopefully are pretty much the same
-  readFile() {
+  readFile(settings) {
     const str = fs.readFileSync(this.filename + ".aslx", "utf8");
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(str, "text/xml");
@@ -42,6 +42,14 @@ export class FileStore {
     console.log("Opening XML file, version " + version);
     
     const objects = [];
+    if (version < 600) {
+      const gameObject = xmlDoc.getElementsByTagName("game")[0];
+      settings.TITLE = gameObject.getAttribute('name');
+      settings.SUBTITLE = gameObject.getElementsByTagName("subtitle")[0].innerHTML;
+      settings.AUTHOR = gameObject.getElementsByTagName("author")[0].innerHTML;
+      objects.push(settings);
+    }
+    
     const arr = xmlDoc.getElementsByTagName("object");
     for (let i = 0; i < arr.length; i++) {
       objects.push(this.translateObjectFromXml(arr[i], version));
