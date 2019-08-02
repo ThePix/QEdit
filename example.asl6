@@ -2,9 +2,6 @@
 <asl version="600">
   <object name="Settings">
     <jsIsSettings type="boolean">true</jsIsSettings>
-    <TITLE><![CDATA[The Example Game]]></TITLE>
-    <SUBTITLE><![CDATA[My Sub-title]]></SUBTITLE>
-    <AUTHOR><![CDATA[The Pixie]]></AUTHOR>
     <loc><![CDATA[---]]></loc>
     <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
     <jsColour><![CDATA[blue]]></jsColour>
@@ -23,6 +20,9 @@
     <jsComments><![CDATA[]]></jsComments>
     <exits><![CDATA[]]></exits>
     <jsConversionNotes><![CDATA[]]></jsConversionNotes>
+    <TITLE><![CDATA[]]></TITLE>
+    <SUBTITLE><![CDATA[]]></SUBTITLE>
+    <AUTHOR><![CDATA[]]></AUTHOR>
     <VERSION><![CDATA[]]></VERSION>
     <THANKS><![CDATA[]]></THANKS>
     <PANES><![CDATA[Left]]></PANES>
@@ -55,6 +55,14 @@
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>
@@ -122,6 +130,14 @@
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>
@@ -185,6 +201,14 @@
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>
@@ -254,11 +278,18 @@
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>
     <slots><![CDATA[]]></slots>
-    <jsTabName><![CDATA[Text]]></jsTabName>
   </object>
 
   <object name="box">
@@ -323,12 +354,19 @@
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>
     <wear_layer type="int">1</wear_layer>
     <slots><![CDATA[]]></slots>
-    <jsTabName><![CDATA[Container]]></jsTabName>
   </object>
 
   <object name="kitchen">
@@ -394,12 +432,19 @@
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>
     <wear_layer type="int">1</wear_layer>
     <slots><![CDATA[]]></slots>
-    <jsTabName><![CDATA[Home]]></jsTabName>
   </object>
 
   <object name="table">
@@ -459,6 +504,14 @@
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>
@@ -525,6 +578,14 @@
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>
@@ -592,6 +653,14 @@
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>
@@ -658,6 +727,14 @@
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>
@@ -727,6 +804,14 @@
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>
@@ -797,6 +882,14 @@ Great?]]></exchange>
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>
@@ -864,6 +957,14 @@ That is just my name.]]></exchange>
     <DATE_TIME_OPTIONS__day><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
     <DATE_TIME_OPTIONS__hour><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
     <DATE_TIME_OPTIONS__minute><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color><![CDATA[blue]]></jsStyleSide_background_color>
     <openable type="boolean">true</openable>
     <closed type="boolean">true</closed>
     <transparent type="boolean">false</transparent>

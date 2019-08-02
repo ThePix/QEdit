@@ -38,7 +38,6 @@ export class QuestObject {
     this.jsTabName = control.tabName
     return control;
   }
-  
 
   displayIf(control) {
     if (!control.displayIf) return true;
@@ -70,7 +69,7 @@ export class QuestObject {
 
 
 
-  //------------------  OUTPUT FUNCTIONS  -------------------------
+  //------------------  INPUT FUNCTIONS  -------------------------
 
   // Used by readFile to create one object from its XML
   translateObjectFromXml(xml, version) {
@@ -311,12 +310,7 @@ export class QuestObject {
       if (inherits.length > 0) this.jsConversionNotes.push("Failed to do anything with these inherited types: " + inherits);
     }
 
-    if (this.jsConversionNotes.length > 0) {
-      console.log(this.jsConversionNotes);
-    }
-    else {
-      delete this.jsConversionNotes;
-    }
+    if (this.jsConversionNotes.length === 0) delete this.jsConversionNotes;
 
     //console.log(this);
     return this;    
@@ -350,11 +344,47 @@ export class QuestObject {
   }  
   
   
+  importSettings(xmlDoc) {
+    const gameObject = xmlDoc.getElementsByTagName("game")[0];
+    this.TITLE = gameObject.getAttribute('name');
+
+    this.importSetting(gameObject, "subtitle", "SUBTITLE");
+    this.importSetting(gameObject, "author", "AUTHOR");
+    this.importSetting(gameObject, "version", "VERSION");
+    this.importSetting(gameObject, "echocommand", "CMD_ECHO", "boolean");
+    this.importSetting(gameObject, "showcommandbar", "TEXT_INPUT", "boolean");
+
+
+    this.importSetting(gameObject, "defaultfont", "jsStyleMain_font_family");
+    this.importSetting(gameObject, "defaultfontsize", "jsStyleMain_font_size", "int");
+    this.importSetting(gameObject, "defaultforeground", "jsStyleMain_color");
+    this.importSetting(gameObject, "defaultbackground", "jsStyleMain_background_color");
+    this.importSetting(gameObject, "backgroundimage", "jsStyleMain_background_image");
+
+    this.importSetting(gameObject, "moneyformat", "MONEY_FORMAT");
+
+
+    // If there is a web font, we will use that, but flag that we need extrea code in style.css
+    if (gameObject.getElementsByTagName("defaultwebfont").length > 0) {
+      this.jsStyleMain_font_family = gameObject.getElementsByTagName("defaultwebfont")[0].innerHTML;
+      this.jsStyleUseWebFont = true;
+    }
+    console.log(this);
+  }
   
-  
-  
-  
-  
+  importSetting(gameObject, tagName, attName, type) {
+    const els = gameObject.getElementsByTagName(tagName)
+    if (els.length === 0) return;
+    if (type === "int") {
+      this[attName] = parseInt(els[0].innerHTML);
+    }
+    else if (type === "boolean") {
+      this[attName] = els[0].innerHTML === "true" || els[0].innerHTML === "";
+    }
+    else {
+      this[attName] = els[0].innerHTML;
+    }
+  }
   
   
   

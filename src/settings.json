@@ -2,7 +2,8 @@
 		"action": "tab",
 		"tabName": "Meta-Data",
 		"displayIf": "o.jsIsSettings",
-		"tabControls": [{
+		"tabControls": [
+      {
 				"name": "TITLE",
 				"type": "text",
 				"default": "",
@@ -44,7 +45,8 @@
 		"action": "tab",
 		"tabName": "Side Pane",
 		"displayIf": "o.jsIsSettings",
-		"tabControls": [{
+		"tabControls": [
+      {
 				"name": "PANES",
 				"type": "select",
 				"options": ["Left", "Right", "None"],
@@ -107,7 +109,8 @@
 		"action": "tab",
 		"tabName": "Main Pane",
 		"displayIf": "o.jsIsSettings",
-		"tabControls": [{
+		"tabControls": [
+      {
 				"name": "USE_DROPDOWN_FOR_CONV",
 				"type": "flag",
 				"default": true,
@@ -150,7 +153,8 @@
 		"action": "tab",
 		"tabName": "Gameplay",
 		"displayIf": "o.jsIsSettings",
-		"tabControls": [{
+		"tabControls": [
+      {
 				"name": "FAILS_COUNT_AS_TURNS",
 				"type": "flag",
 				"default": false,
@@ -229,6 +233,13 @@
 				"display": "No TALK TO",
 				"displayIf": "o.jsDynamicConv",
 				"tooltip": "You can customise the message saying TALK TO is not available, perhaps hinting at an alternative."
+			},
+			{
+				"name": "MONEY_FORMAT",
+				"type": "text",
+				"default": "$!",
+				"display": "Money format",
+				"tooltip": "How money should be displayed; use an exclamation mark as a stand-in for the actual value."
 			}
 		]
 	},
@@ -237,7 +248,8 @@
 		"action": "tab",
 		"tabName": "Date/Time",
 		"displayIf": "o.jsIsSettings",
-		"tabControls": [{
+		"tabControls": [
+      {
 				"name": "SECONDS_PER_TURN",
 				"type": "int",
 				"default": 60,
@@ -301,5 +313,78 @@
 				"tooltip": "How to display the minute, 'numeric' or '2-digit'."
 			}
 		]
+	},
+
+	{
+		"action": "tab",
+		"tabName": "Style: Main",
+		"displayIf": "o.jsIsSettings",
+		"tabControls": [
+      {
+				"name": "jsStyleMain_font_family",
+				"type": "text",
+				"default": "'Arial Black', Gadget, sans-serif",
+				"display": "Font",
+				"tooltip": "Font for the main text."
+			},
+		  {
+				"name": "jsStyleMain_font_size",
+				"type": "int",
+				"default": 12,
+				"display": "Font size",
+				"tooltip": "Font size for the main text."
+			},
+		  {
+				"name": "jsStyleMain_color",
+				"type": "text",
+				"default": "black",
+				"display": "Colour",
+				"tooltip": "The colour of the text for the main text."
+			},
+		  {
+				"name": "jsStyleMain_background_color",
+				"type": "text",
+				"default": "white",
+				"display": "Background",
+				"tooltip": "The background colour for the main text."
+			}
+		]
+	},
+
+	{
+		"action": "tab",
+		"tabName": "Style: Side",
+		"displayIf": "o.jsIsSettings",
+		"tabControls": [
+      {
+				"name": "jsStyleSide_font_family",
+				"type": "text",
+				"default": "'Arial Black', Gadget, sans-serif",
+				"display": "Font",
+				"tooltip": "Font for the side text."
+			},
+		  {
+				"name": "jsStyleSide_font_size",
+				"type": "int",
+				"default": 10,
+				"display": "Font size",
+				"tooltip": "Font size for the side text."
+			},
+		  {
+				"name": "jsStyleSide_color",
+				"type": "text",
+				"default": "white",
+				"display": "Colour",
+				"tooltip": "The colour of the text for the side text."
+			},
+		  {
+				"name": "jsStyleSide_background_color",
+				"type": "text",
+				"default": "blue",
+				"display": "Background",
+				"tooltip": "The background colour for the side text."
+			}
+		]
 	}
+
 ]

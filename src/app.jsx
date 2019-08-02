@@ -19,7 +19,7 @@ setConfig({
 
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 // Just disabling warning is not great, but so far I cannot see how to implement CSP
-// The below does not work, but I do not know what
+// The below does not work, but I do not know what will
 /*
 const { session } = require('electron')
 session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -45,145 +45,9 @@ const DSPY_SCENERY = 5;
 
 
 
-//import { app, Menu } from 'electron';
 const {Menu} = require('electron').remote;
-
-const template = [
-  {
-    label: 'File',
-    submenu: [
-      { label: 'Save XML', },
-      { label: 'Save JavaScript', },
-    ]
-  },
-  {
-    label: 'Edit',
-    submenu: [
-      { role: 'undo' },
-      { role: 'redo' },
-      { type: 'separator' },
-      { role: 'cut' },
-      { role: 'copy' },
-      { role: 'paste' },
-      { type: 'separator' },
-      { label: 'Add room', },
-      { label: 'Add item', },
-      { label: 'Add stub', },
-      { label: 'Delete object', },
-      { label: 'Duplicate object', },
-    ]
-  },
-  {
-    label: 'View',
-    submenu: [
-      { role: 'reload' },
-      { role: 'forcereload' },
-      { role: 'toggledevtools' },
-      { type: 'separator' },
-      { role: 'resetzoom' },
-      { role: 'zoomin' },
-      { role: 'zoomout' },
-      { type: 'separator' },
-      { role: 'togglefullscreen' },
-      { type: 'separator' },
-      { 
-        label: 'Preview in browser',
-        click () { require('electron').shell.openExternal("file://" + FILENAME) }
-      }
-    ]
-  },
-  {
-    label: 'Options',
-    submenu: [
-      { 
-        label: 'Show only rooms for exits', type: 'checkbox', checked : true,
-      }
-    ]
-  },
-  {
-    label: 'Search',
-    submenu: [
-      { 
-        label: 'Find',
-      }
-    ]
-  },
-  {
-    role: 'window',
-    submenu: [
-      { role: 'minimize' },
-      { role: 'close' }
-    ]
-  },
-  {
-    role: 'help',
-    submenu: [
-      {
-        label: 'Help',
-        click () {
-          require('electron').shell.openExternal('https://github.com/ThePix/QEdit/wiki');
-        }
-      },
-      {
-        label: 'About',
-        click () {
-          
-const { dialog } = require('electron')
-
-const response = dialog.showMessageBox(null);
-console.log(response);          
-          
-          /*
-          const dialog = require('electron');
-          dialog.showMessageBox({
-            type:"info",
-            title:"About",
-            message:"QEdit is under development.\nCopyright 2019",
-          });*/
-        }
-      }
-    ]
-  }
-]
-
-if (process.platform === 'darwin') {
-  template.unshift({
-    label: app.getName(),
-    submenu: [
-      { role: 'about' },
-      { type: 'separator' },
-      { role: 'services' },
-      { type: 'separator' },
-      { role: 'hide' },
-      { role: 'hideothers' },
-      { role: 'unhide' },
-      { type: 'separator' },
-      { role: 'quit' }
-    ]
-  })
-
-  // Edit menu
-  template[1].submenu.push(
-    { type: 'separator' },
-    {
-      label: 'Speech',
-      submenu: [
-        { role: 'startspeaking' },
-        { role: 'stopspeaking' }
-      ]
-    }
-  )
-
-  // Window menu
-  template[3].submenu = [
-    { role: 'close' },
-    { role: 'minimize' },
-    { role: 'zoom' },
-    { type: 'separator' },
-    { role: 'front' }
-  ]
-}
-
+import {Menus} from './menus';
+const template = new Menus().getMenus();
 
 
 
@@ -219,6 +83,7 @@ export default class App extends React.Component {
       currentObjectName: false,
       options: {showRoomsOnly:true, },
     };
+    this.state.currentObjectName = this.state.objects[0].name;
     for (let i = 0; i < this.state.objects.length; i++) {
       this.setDefaults(this.state.objects[i]);
     }
@@ -250,6 +115,7 @@ export default class App extends React.Component {
   
   
   saveXml() {
+    console.log(this.state.objects);
     this.fs.writeFile(this.state.objects);
     console.log("Saved");
     this.message("Saved");
@@ -260,8 +126,17 @@ export default class App extends React.Component {
       name = this.state.currentObjectName;
     }
     if (name === false) return;
+
+    // may want to do this different, if setting has another name, say for another language
+    console.log(name);
+    if (name === "Settings") {    
+      window.alert("Cannot delete the 'Settings' object.");
+      return;
+    }
+    console.log("name");
+    
     if (window.confirm('Delete the object "' + name + '"?')) {
-      let s = this.state.currentObjectName === name ? false : this.state.currentObjectName;
+      let s = this.state.currentObjectName === name ? this.state.objects[0].name : this.state.currentObjectName;
       this.setState({
         objects: this.state.objects.filter((o, i) => {
           return name !== o.name;

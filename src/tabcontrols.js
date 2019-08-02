@@ -114,9 +114,7 @@ export class TabControls {
     ];
     
     for (let i = 0; i < files.length; i++) {
-      console.log("File: " + files[i]);
       const json = require('./' + files[i] + '.json');
-      console.log(json);
       for (let j = 0; j < json.length; j++) {
         if (json[j].action === "tab") {
           this.controls.push(json[j]);
@@ -144,9 +142,9 @@ export class TabControls {
   }
   
   getControls() {
-    for (let i = 0; i < this.controls.length; i++) {
-      console.log(this.controls[i].tabName);
-    }    
+    //for (let i = 0; i < this.controls.length; i++) {
+    //  console.log(this.controls[i].tabName);
+    //}    
     return this.controls;
   }
 

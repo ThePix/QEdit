@@ -34,15 +34,14 @@ export class FileStore {
     
     const version = parseInt(xmlDoc.getElementsByTagName("asl")[0].getAttribute('version'));
     
-    console.log("Opening XML file, version " + version);
+    console.log("Opening XML file " + this.filename + ".aslx; found version " + version + " content.");
     
     const objects = [];
+    
     if (version < 600) {
-      const gameObject = xmlDoc.getElementsByTagName("game")[0];
-      settings.TITLE = gameObject.getAttribute('name');
-      settings.SUBTITLE = gameObject.getElementsByTagName("subtitle")[0].innerHTML;
-      settings.AUTHOR = gameObject.getElementsByTagName("author")[0].innerHTML;
-      objects.push(new QuestObject(settings));
+      const obj = new QuestObject(settings);
+      obj.importSettings(xmlDoc);
+      objects.push(obj);
     }
     
     const arr = xmlDoc.getElementsByTagName("object");
