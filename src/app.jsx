@@ -105,13 +105,11 @@ export default class App extends React.Component {
   
   createDefaultSettings(settings) {
     console.log(settings);
-    const obj = { name:"Settings", jsIsSettings:true };
-    //for (let i = 0; i < this.controls.length; i++) {
-      
-      
-    //}  
+    const obj = new QuestObject({ name:"Settings", jsIsSettings:true });
+    obj.addDefaults(this.controls);
     return obj;
   }
+  
   
   
   saveXml() {
@@ -358,7 +356,10 @@ export default class App extends React.Component {
     //console.log(obj);
     const objName = (obj === undefined ? this.state.currentObjectName : obj.name);
     //console.log(objName);
-    const newObjects = JSON.parse(JSON.stringify(this.state.objects)); // cloning the state
+    const newObjects = []  // cloning the state
+    for (let i = 0; i < this.state.objects.length; i++) {
+      newObjects.push(new QuestObject(this.state.objects[i]));
+    }
       
     // Need to look in new list for old name, as the name may be changing
     const newObject = newObjects.find(el => {

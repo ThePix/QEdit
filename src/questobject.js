@@ -21,6 +21,19 @@ export class QuestObject {
   }
  
   
+  addDefaults(controls) {
+    for (let i = 0; i < controls.length; i++) {
+      if (this.displayIf(controls[i])) {
+        for (let j = 0; j < controls[i].tabControls.length; j++) {
+          const tabControl = controls[i].tabControls[j]
+          if (this.displayIf(tabControl) && this[tabControl.name] === undefined) {
+            this[tabControl.name] = tabControl.default;
+          }
+        }
+      }
+    }  
+  }
+  
 
   getCurrentTab(controls) {
     let tab = (this.jsTabName ? this.jsTabName : controls[0].tabName);
@@ -119,15 +132,15 @@ export class QuestObject {
           //console.log("stringlist for " + object.name);
         }
         else if (attType === 'script') {
-          this[name] = { lang: 'script', code:this.removeCDATA(value) };
+          this[name] = { type: 'script', code:this.removeCDATA(value) };
           //console.log("Script");
         }
         else if (attType === 'js') {
-          this[name] = { lang: 'js', code:this.removeCDATA(value) };
+          this[name] = { type: 'js', code:this.removeCDATA(value) };
           //console.log("JavaScript");
         }
         else if (attType === 'blockly') {
-          this[name] = { lang: 'blockly', code:value };
+          this[name] = { type: 'blockly', code:value };
           //console.log("XML code");
         }
         else if (name === 'exit') {
@@ -421,8 +434,8 @@ export class QuestObject {
           }
           str += "    </" + property + ">\n";
         }
-        else if (value.lang) {
-          str += "    <" + property + " type=\"" + value.lang + "\"><![CDATA[" + value.code + "]]></" + property + ">\n";
+        else if (value.type) {
+          str += "    <" + property + " type=\"" + value.type + "\"><![CDATA[" + value.code + "]]></" + property + ">\n";
         }
         else  {
           console.log("Not saving type: " + property + "/" + value);

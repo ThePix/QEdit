@@ -43,6 +43,21 @@
 
 	{
 		"action": "tab",
+		"tabName": "Start-up",
+		"displayIf": "o.jsIsSettings",
+		"tabControls": [
+      {
+				"name": "INTRO",
+				"type": "textarea",
+				"default": "",
+				"display": "Introduction",
+				"tooltip": "This text will appear when you game starts. Use it to introduce the game to the player, setting up the premise, hinting at the objective, or whatever."
+			}
+    ]
+	},
+
+	{
+		"action": "tab",
 		"tabName": "Side Pane",
 		"displayIf": "o.jsIsSettings",
 		"tabControls": [
@@ -66,7 +81,7 @@
 				"name": "DIVIDER",
 				"type": "text",
 				"default": "",
-				"display": "Body slots",
+				"display": "Divider",
 				"displayIf": "o.PANES !== 'None'",
 				"tooltip": "File name for an image to be inserted in the column between each component."
 			},
@@ -271,13 +286,6 @@
 				"tooltip": "The time in-game that the game starts. You need to get the format right, as per this example: April 1, 2019 09:43:00"
 			},
 			{
-				"name": "SECONDS_PER_TURN",
-				"type": "int",
-				"default": 60,
-				"display": "Sec/turn",
-				"tooltip": "How many seconds are assumed to pass in-game each standard turn."
-			},
-			{
 				"name": "DATE_TIME_OPTIONS__year",
 				"type": "string",
 				"default": "numeric",
@@ -286,28 +294,28 @@
 			},
 			{
 				"name": "DATE_TIME_OPTIONS__month",
-				"type": "string",
+				"type": "text",
 				"default": "numeric",
 				"display": "Month format",
 				"tooltip": "How to display the month; 'numeric', '2-digit', 'long', 'short' or 'narrow'."
 			},
 			{
 				"name": "DATE_TIME_OPTIONS__day",
-				"type": "string",
+				"type": "text",
 				"default": "numeric",
 				"display": "Day format",
 				"tooltip": "How to display the year, 'numeric' or '2-digit'."
 			},
 			{
 				"name": "DATE_TIME_OPTIONS__hour",
-				"type": "string",
+				"type": "text",
 				"default": "numeric",
 				"display": "Hour format",
 				"tooltip": "How to display the hour, 'numeric' or '2-digit'."
 			},
 			{
 				"name": "DATE_TIME_OPTIONS__minute",
-				"type": "string",
+				"type": "text",
 				"default": "numeric",
 				"display": "Minute format",
 				"tooltip": "How to display the minute, 'numeric' or '2-digit'."

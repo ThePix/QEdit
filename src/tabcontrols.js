@@ -85,10 +85,14 @@ export class TabControls {
           { name:"desc",   type:"scriptstring", default:"", display:"Description",
             tooltip:"A description of the room.",
             displayIf:"o.jsIsRoom && !o.jsIsStub",
+            parameters:'',
+            return:'boolean'
           },
           { name:"examine",   type:"scriptstring", default:"", display:"Description",
             tooltip:"A description of the item.",
             displayIf:"!o.jsIsRoom && !o.jsIsStub",
+            parameters:'isMultiple',
+            return:'boolean'
           },
           { name:"jsComments",   type:"textarea", default:"", display:"Comments",
             tooltip:"Your notes; this will not be part of the game when you publish it.",
