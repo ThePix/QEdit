@@ -39,7 +39,7 @@ export class FileStore {
     
     const version = parseInt(xmlDoc.getElementsByTagName("asl")[0].getAttribute('version'));
     
-    console.log("Opening XML file, version " + version);
+    console.log("Opening XML file (" + this.filename + ".aslx), version " + version);
     
     const objects = [];
     const arr = xmlDoc.getElementsByTagName("object");
@@ -93,6 +93,9 @@ export class FileStore {
         
         if (name === "inherit") {
           object.inherit = xml.childNodes[j].getAttribute('name');
+        }
+        if (name === "ask" || name === "tell") {
+          object[name + "options"] = this.importAskTell(xml.childNodes[j].getElementsByTagName('item'));
         }
         else if (attType === 'boolean') {
           object[name] = value === 'true' || value === '';
@@ -362,7 +365,17 @@ export class FileStore {
     return str + "  </object>\n\n";
   }
 
-
+  importAskTell(xml) {
+    const res = {type: 'asktell', store:'simple', entries:[]}
+    for (let item of xml) {
+      res.entries.push({
+        regex:item.getAttribute('key').replace(/ /g, '|'),
+        aslScript:item.innerHTML
+      })
+    }
+    console.log(res)
+    return res
+  }
 
 
   

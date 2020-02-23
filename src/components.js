@@ -35,6 +35,36 @@ export class SelectComp extends React.Component {
 
 
 
+// Only part done!!!!
+export class ResponsesComp extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    let options;
+    if (this.props.objects !== undefined) {
+      options = ["---"].concat(this.props.objects.map((o, i) => o.name));
+    }
+    else {
+      options = this.props.options;
+    }
+    return (  
+      <select
+          className="form-control"
+          id={this.props.name}
+          name={this.props.name}
+          value={this.props.value}
+          title={this.props.tooltip}
+          onChange={this.props.handleChange}
+        >
+        {options.map((s, i) => <option value={s} key={i}>{s}</option>)}
+        </select>
+    )
+  }
+}
+
+
 
 
 
