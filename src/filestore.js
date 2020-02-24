@@ -34,11 +34,7 @@ export class FileStore {
     
     const version = parseInt(xmlDoc.getElementsByTagName("asl")[0].getAttribute('version'));
     
-<<<<<<< HEAD
     console.log("Opening XML file (" + this.filename + ".aslx), version " + version);
-=======
-    console.log("Opening XML file " + this.filename + ".aslx; found version " + version + " content.");
->>>>>>> 68779b68a7ffcfb35e08ddcc66fe4708ad005da6
     
     const objects = [];
     
@@ -70,7 +66,6 @@ export class FileStore {
   }
 
 
-<<<<<<< HEAD
   // Used by readFile to create one object from its XML
   translateObjectFromXml(xml, version) {
     const object = {};
@@ -324,18 +319,6 @@ export class FileStore {
     return object;    
   }
 
-=======
->>>>>>> 68779b68a7ffcfb35e08ddcc66fe4708ad005da6
-
-  writeFile(objects) {
-    let str = "<!--Saved by Quest 6.0.0-->\n<asl version=\"600\">\n"
-
-    for (let i = 0; i < objects.length; i++) {
-      str += objects[i].toXml();
-    }
-    fs.writeFileSync(this.filename + ".asl6", str, "utf8");
-  }
-<<<<<<< HEAD
 
 
   translateObjectToXml(object) {
@@ -389,10 +372,16 @@ export class FileStore {
     return res
   }
 
-
-=======
->>>>>>> 68779b68a7ffcfb35e08ddcc66fe4708ad005da6
   
+  writeFile(objects) {
+    let str = "<!--Saved by Quest 6.0.0-->\n<asl version=\"600\">\n"
+
+    for (let i = 0; i < objects.length; i++) {
+      str += objects[i].toXml();
+    }
+    fs.writeFileSync(this.filename + ".asl6", str, "utf8");
+  }
+
   writeFileJS(objects) {
     let str = "\"use strict\";";
     for (let i = 0; i < objects.length; i++) str += objects[i].toJs();
