@@ -1,6 +1,7 @@
 import React from 'react';
 import {ExitsComp} from './exitscomp';
-import {ScriptComp, SelectComp} from './components';
+import {ScriptOrStringComp} from './scriptorstringcomp';
+import {QuestObject} from './questobject';
 
 
 let settings = require("./lang-en.js");
@@ -9,18 +10,6 @@ const EXITS = settings.EXITS;
 const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
 
-const controlDisplayIf = function(o, control) {
-  try {
-    return !control.displayIf || eval(control.displayIf);
-  }
-  catch (err) {
-    console.log("------------------------------");
-    console.log("Error in displayIf");
-    console.log(err.message);
-    console.log(o.name);
-    console.log(control.displayIf);
-  }
-}
 
 
 
@@ -34,20 +23,13 @@ export class MainPane extends React.Component {
   render() {
 
     if (this.props.object) {
-      let tab = (this.props.object.jsTabName ? this.props.object.jsTabName : this.props.controls[0].tabName);
-      let control = this.props.controls.find(el => el.tabName === tab);
-      if (!control) console.log("Failed to find control: " + this.props.object.jsTabName);
-      if (!controlDisplayIf(this.props.object, control)) {
-        console.log("Here");
-        tab = this.props.controls[0].tabName
-        control = this.props.controls[0];
-      } 
-
+      //console.log(this.props.object);
+      const control = this.props.object.getCurrentTab(this.props.controls);
+      const tab = control.tabName;
       const style = {color:this.props.object.jsColour};
       const pStyle = {backgroundColor:this.props.warning ? 'yellow' : 'white', padding:3};
-      
-      
       const controls = control.tabControls;
+      
       // Will later need to check if this object has the current tab and set tab to zero if not
       return (<div id="mainpane">
         <p style={pStyle}><b><i>Editing {this.props.object.jsIsRoom ? "Room" : "Item"}:</i> <span style={style}>{this.props.object.name}</span></b> <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a></p>
@@ -86,7 +68,7 @@ export class MainPane extends React.Component {
 const Tabs = (props) => {
   const controls = [];
   for (let i = 0; i < props.controls.length; i++) {
-    if (controlDisplayIf(props.object, props.controls[i])) {
+    if (props.object.displayIf(props.controls[i])) {
       controls.push(props.controls[i]);
     }
   }
@@ -136,7 +118,7 @@ const TabComp = (props) => {
 
 
 const InputComp = (props) => {
-  if (!controlDisplayIf(props.object, props.input)) return null;
+  if (!props.object.displayIf(props.input)) return null;
 
   const value = props.object[props.input.name];
   if (props.input.type === "select") {
@@ -219,7 +201,12 @@ const InputComp = (props) => {
   }
   else if (props.input.type === "scriptstring") {
     return (
-      <ScriptOrStringComp input={props.input} value={value} handleChange={props.handleChange}/>
+      <ScriptOrStringComp input={props.input} value={value} handleChange={props.handleChange} allowString={true}/>
+    )
+  }
+  else if (props.input.type === "script") {
+    return (
+      <ScriptOrStringComp input={props.input} value={value} handleChange={props.handleChange} allowString={false}/>
     )
   }
   else if (props.input.type === "stringlist") {
@@ -239,7 +226,7 @@ const InputComp = (props) => {
       </tr>
     )
   }
-  else if (props.input.type === "text") {
+  else if (props.input.type === "text" || props.input.type === "string") {
     return (  
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
@@ -248,6 +235,23 @@ const InputComp = (props) => {
           id={props.input.name}
           name={props.input.name}
           type={props.input.type}
+          title={props.input.tooltip}
+          value={value}
+          onChange={props.handleChange}
+        /></td>
+      </tr>
+    )
+  }
+  else if (props.input.type === "longtext" || props.input.type === "longstring") {
+    return (  
+      <tr className="form-group">
+        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
+        <td><input
+          className="form-control"
+          id={props.input.name}
+          name={props.input.name}
+          type={props.input.type}
+          size="120"
           title={props.input.tooltip}
           value={value}
           onChange={props.handleChange}
@@ -264,6 +268,7 @@ const InputComp = (props) => {
           id={props.input.name}
           name={props.input.name}
           type="number"
+          size="2"
           title={props.input.tooltip}
           value={value}
           onChange={props.handleIntChange}
@@ -299,64 +304,38 @@ const ListComp = (props) => {
 
 
 
-export class ScriptOrStringComp extends React.Component {
+class SelectComp extends React.Component {
   constructor(props) {
     super(props);
-    this.value = props.value;
-    this.id = props.input.name
-    this.handleChange=this.props.handleChange;
-  }
-  
-  handleScriptChange(e) {
-    //console.log(e.target)
-    //console.log(this.props.value)
-    let value;
-    if (e.target.checked) {
-      value = "function() {\n" + this.props.value + "}";
-    }
-    else {
-      const md = /^function\((.*?)\) {\n?([\s\S]*)}\S*$/.exec(this.props.value)
-      value = md === null ? this.text : value = md[2];
-    }
-    //console.log(value)
-    
-    e = {target:{ id:this.id,  value:value, }};
-    this.handleChange(e);
   }
 
   render() {
-    const isScript = /^function\(/.test(this.props.value);
-    return (  
-      <tr className="form-group">
-        <td colSpan="2">
-        <span className="fieldName">{this.props.input.display}</span>
-        <input 
-            type="checkbox"
-            className="form-control"
-            id={this.props.input.name}
-            name={this.props.input.name}
-            checked={isScript}
-            title="Tick if this is a script, untick for a string"
-            onChange={this.handleScriptChange.bind(this)}
-          /> Script?
-        <br/>
-        {isScript ?
-          <ScriptComp input={this.props.input} value={this.props.value} handleChange={this.props.handleChange}/>  :
-          <textarea
-            className="form-control textarea"
-            cols="500" rows="16"
-            id={this.props.input.name}
-            name={this.props.input.name}
-            value={this.props.value}
-            title={this.props.input.tooltip}
-            onChange={this.props.handleChange}
-          />
-        }
-        </td>
-      </tr>
+    let options;
+    if (this.props.objects !== undefined) {
+      options = ["---"].concat(this.props.objects.map((o, i) => o.name));
+    }
+    else {
+      options = this.props.options;
+    }
+    if (options === undefined) {
+      console.log("WARNING: No options provided for select on this tab.");
+      console.log(this.props);
+      return null;
+    }
+    
+    return (
+      <select
+          className="form-control"
+          id={this.props.name}
+          name={this.props.name}
+          value={this.props.value}
+          title={this.props.tooltip}
+          onChange={this.props.handleChange}
+        >
+        {options.map((s, i) => <option value={s} key={i}>{s}</option>)}
+        </select>
     )
   }
 }
-
 
 

@@ -6,23 +6,18 @@ export class SidePane extends React.Component {
   // Add one item to the tree
   // Search this level, and recursively call this on lower levels
   addToTree(tree, obj) {
-    //console.log(obj.name + ": Looking for " + obj.loc);
     for (let i = 0; i < tree.length; i++) {
-      //console.log("... in " + tree[i].name);
       if (tree[i].name === obj.loc) {
         // Found on this level, add new node and quit
         const h = {name:obj.name, object:obj, branch:[]};
         tree[i].branch.push(h);
-        //console.log("... added");
         return true;
       }
       if (this.addToTree(tree[i].branch, obj)) {
         // Found on a lower level, so it was added there
-        //console.log("... done");
         return true;
       }
     }
-    //console.log("Failed to put in tree: " + obj.name);
     return false;
   }
   
@@ -54,7 +49,6 @@ export class SidePane extends React.Component {
       console.log("WARNING: " + remainder.length + " items were not put in the tree.")
       console.log(remainder);
     }
-    //console.log(JSON.stringify(tree));
     
     return <div id="sidepane"><TreeView tree={tree} selected={this.props.object} showObject={this.props.showObject} treeToggle={this.props.treeToggle}/></div>
   }
@@ -73,7 +67,6 @@ const TreeView = (props) => {
       </li>)
     }
     else {
-      //return null;
       return (<TreeToggler tree={node} key={index} showObject={showObject} treeToggle={treeToggle} selected={props.selected}/>)
     }
   })}
@@ -102,14 +95,8 @@ const TreeToggler = (props) => {
 
 const TreeLink = (props) => {
   const {object, showObject} = props;
-  const style = {color:object.jsColour, backgroundColor: object === props.selected ? "yellow" : "#fdf" };
-  let className
-  if (object.jsIsRoom) {
-    className = object.jsIsZone ? "treeZone" : "treeRoom";
-  }
-  else {
-    className = object.jsIsStub ? "treeStub" : "treeItem";
-  }
+  let className = "tree " + object.treeStyleClass();
+  if (object === props.selected) className += " treeSelected";
   
-  return  <a onClick={() => showObject(object.name)} style={style} className={className}>{object.name}</a>
+  return  <a onClick={() => showObject(object.name)} className={className}>{object.name}</a>
 }

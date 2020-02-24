@@ -2,70 +2,76 @@ import React from 'react';
 
 
 
+// The input should (or might) specify:
+//    if a string is allowed
+//    return type
+//    parameters
+// The value should be a dictionary, with type and code attributes
 
-
-
-export class SelectComp extends React.Component {
+export class ScriptOrStringComp extends React.Component {
   constructor(props) {
     super(props);
+    this.value = props.value;  
+    this.id = props.input.name
+    this.handleChange = this.props.handleChange;
+    this.allowString = this.props.allowString;
   }
-
-  render() {
-    let options;
-    if (this.props.objects !== undefined) {
-      options = ["---"].concat(this.props.objects.map((o, i) => o.name));
+  
+  // This handles changing the type
+  handleTypeChange(e) {
+    //console.log(e)
+    //console.log(this.props.value)
+    const value = {
+      type:e.target.checked ? "asl" : "string",
+      code:this.props.value.code,
     }
-    else {
-      options = this.props.options;
-    }
-    if (options === undefined) {
-      console.log("WARNING: No options provided for select on this tab.");
-      console.log(this.props);
-      return null;
-    }
+    console.log(value)
     
-    return (
-      <select
-          className="form-control"
-          id={this.props.name}
-          name={this.props.name}
-          value={this.props.value}
-          title={this.props.tooltip}
-          onChange={this.props.handleChange}
-        >
-        {options.map((s, i) => <option value={s} key={i}>{s}</option>)}
-        </select>
-    )
+    e = {target:{ id:this.id,  value:value, }};
+    this.handleChange(e);
   }
-}
 
-
-
-// Only part done!!!!
-export class ResponsesComp extends React.Component {
-  constructor(props) {
-    super(props);
+  // This handles changing the type
+  handleCodeChange(e) {
+    //console.log(e)
+    //console.log(this.props.value)
+    const value = {
+      type:this.props.value.type,
+      code:e.target.value,
+    }
+    console.log(value)
+    
+    e = {target:{ id:this.id,  value:value, }};
+    this.handleChange(e);
   }
 
   render() {
-    let options;
-    if (this.props.objects !== undefined) {
-      options = ["---"].concat(this.props.objects.map((o, i) => o.name));
-    }
-    else {
-      options = this.props.options;
-    }
+    const isScript = this.props.value.type === "asl";
     return (  
-      <select
-          className="form-control"
-          id={this.props.name}
-          name={this.props.name}
-          value={this.props.value}
-          title={this.props.tooltip}
-          onChange={this.props.handleChange}
-        >
-        {options.map((s, i) => <option value={s} key={i}>{s}</option>)}
-        </select>
+      <tr className="form-group">
+        <td colSpan="2">
+        <span className="fieldName">{this.props.input.display}</span>
+        <input 
+            type="checkbox"
+            className="form-control"
+            id={this.props.input.name}
+            name={this.props.input.name}
+            checked={isScript}
+            title="Tick if this is a script, untick for a string"
+            onChange={this.handleTypeChange.bind(this)}
+          /> Script?
+        <br/>
+        <textarea
+          className="form-control textarea"
+          cols="500" rows="16"
+          id={this.props.input.name}
+          name={this.props.input.name}
+          value={this.props.value.code}
+          title={this.props.input.tooltip}
+          onChange={this.handleCodeChange.bind(this)}
+        />
+        </td>
+      </tr>
     )
   }
 }
@@ -74,9 +80,7 @@ export class ResponsesComp extends React.Component {
 
 
 
-
-
-export class ScriptComp extends React.Component {
+class ScriptComp extends React.Component {
   constructor(props) {
     super(props);
     this.value = props.value;

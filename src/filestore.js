@@ -1,6 +1,7 @@
 'use strict'
 
 const fs = require('fs');
+import {QuestObject} from './questobject';
 
 
 let settings = require("./lang-en.js");
@@ -23,30 +24,37 @@ export class FileStore {
     this.filename = filename
   }
 
-  getDirectChildAttributes(element, tag, attr) {
-    const types = Array.from(element.getElementsByTagName(tag));
-    const types2 = types.filter(el => el.parentNode === element);
-    return types2.map(el => el.getAttribute(attr));
-  }
-
 
   // This should read both Quest 5 and Quest 6 XML files,
   // which hopefully are pretty much the same
-  readFile() {
+  readFile(settings) {
     const str = fs.readFileSync(this.filename + ".aslx", "utf8");
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(str, "text/xml");
     
     const version = parseInt(xmlDoc.getElementsByTagName("asl")[0].getAttribute('version'));
     
+<<<<<<< HEAD
     console.log("Opening XML file (" + this.filename + ".aslx), version " + version);
+=======
+    console.log("Opening XML file " + this.filename + ".aslx; found version " + version + " content.");
+>>>>>>> 68779b68a7ffcfb35e08ddcc66fe4708ad005da6
     
     const objects = [];
-    const arr = xmlDoc.getElementsByTagName("object");
-    for (let i = 0; i < arr.length; i++) {
-      objects.push(this.translateObjectFromXml(arr[i], version));
+    
+    if (version < 600) {
+      const obj = new QuestObject(settings);
+      obj.importSettings(xmlDoc);
+      objects.push(obj);
     }
     
+    const arr = xmlDoc.getElementsByTagName("object");
+    for (let i = 0; i < arr.length; i++) {
+      objects.push(new QuestObject(arr[i], version));
+    }
+    
+    // If we imported from Quest 5, object names will have been modified
+    // so there is a chance of a new name collision
     if (version < 600) {
       for (let i = 0; i < objects.length; i++) {
         if (objects[i].jsOldName) {
@@ -62,6 +70,7 @@ export class FileStore {
   }
 
 
+<<<<<<< HEAD
   // Used by readFile to create one object from its XML
   translateObjectFromXml(xml, version) {
     const object = {};
@@ -315,15 +324,18 @@ export class FileStore {
     return object;    
   }
 
+=======
+>>>>>>> 68779b68a7ffcfb35e08ddcc66fe4708ad005da6
 
   writeFile(objects) {
     let str = "<!--Saved by Quest 6.0.0-->\n<asl version=\"600\">\n"
 
     for (let i = 0; i < objects.length; i++) {
-      str += this.translateObjectToXml(objects[i]);
+      str += objects[i].toXml();
     }
     fs.writeFileSync(this.filename + ".asl6", str, "utf8");
   }
+<<<<<<< HEAD
 
 
   translateObjectToXml(object) {
@@ -378,165 +390,28 @@ export class FileStore {
   }
 
 
+=======
+>>>>>>> 68779b68a7ffcfb35e08ddcc66fe4708ad005da6
   
   writeFileJS(objects) {
     let str = "\"use strict\";";
-    for (let i = 0; i < objects.length; i++) str += FSHelpers.pack(objects[i]);
+    for (let i = 0; i < objects.length; i++) str += objects[i].toJs();
     fs.writeFileSync(this.filename + "2", str, "utf8");
   }
   
+  writeSettingsFile(objects) {
+    let str = "\"use strict\";";
+    for (let i = 0; i < objects.length; i++) str += objects[i].toJsSettings();
+    fs.writeFileSync("settings.js", str, "utf8");
+  }
+  
   
   
   
-  removeFromArray(arr, el) {
-    const index = arr.indexOf(el);
-    if (index > -1) {
-      arr.splice(index, 1);
-    }
-    return arr;
-  }  
+
   
-  removeCDATA(s) {
-    if (s.startsWith('<![CDATA[')) {
-      return s.substring(9, s.length - 3);
-    }
-    else {
-      return s;
-    }
-  }
-  
-  removeBR(s) {
-    return s.replace(/\<br\/\>/i, "\n");
-  }
 }
 
-
-
-
-export class Exit {
-  constructor (name, data) {
-    this.name = name;
-    this.data = data === undefined ? {} : data;
-
-    this.data.useType = "default";
-    if (typeof this.data.msg === "string") this.data.useType = "msg";
-    if (this.data.use === "useWithDoor") this.data.useType = "useWithDoor";
-    if (typeof this.data.use === "function") this.data.useType = "custom";
-  }
-}
-
-
-
-const FSHelpers = {}
-
-FSHelpers.ignoreKeys = [
-  "name", "jsIsRoom", "jsComments", "jsMobilityType", "jsContainerType", "jsIsLockable",
-  "jsIsWearable", "jsIsCountable", "jsIsFurniture", "jsIsSwitchable", "jsIsComponent",
-  "jsIsEdible", "jsExpanded", "jsIsZone", "jsColour", "jsIsStub",
-];
-
-// Converts one item to JavaScript code
-FSHelpers.pack = function(item) {
-  if (item.jsIsStub) return '';
-  
-  let str = "\n\n\n";
-
-  str += "create" + (item.jsIsRoom ? "Room" : "Item") + "(\"" + item.name + "\",\n";
-
-  const jsTemplates = [];
-  if (item.jsMobilityType === "Takeable") jsTemplates.push("TAKEABLE");
-  if (item.jsMobilityType === "Player") jsTemplates.push("PLAYER");
-  if (item.jsMobilityType === "NPC") jsTemplates.push("NPC");
-  if (item.jsContainerType === "Container") jsTemplates.push("CONTAINER");
-  if (item.jsContainerType === "Surface") jsTemplates.push("SURFACE");
-  if (item.jsContainerType === "Openable") jsTemplates.push("OPENABLE");
-  if (item.jsIsLockable) jsTemplates.push("LOCKED_WITH");
-  if (item.jsIsWearable) jsTemplates.push("WEARABLE");
-  if (item.jsIsEdible) jsTemplates.push("EDIBLE");
-  if (item.jsIsCountable) jsTemplates.push("COUNTABLE");
-  if (item.jsIsFurniture) jsTemplates.push("FURNITURE");
-  if (item.jsIsSwitchable) jsTemplates.push("SWITCHABLE");
-  if (item.jsIsComponent) jsTemplates.push("COMPONENT");
-  for (let i = 0; i < jsTemplates.length; i++) {
-    str += "  " + jsTemplates[i] + "\n";
-  }
-  
-  str += FSHelpers.beautifyObject(item, 1);
-  str += ");";
-  return str;
-}
-
-FSHelpers.beautifyObject = function(item, indent) {
-  let str = FSHelpers.tabs(indent) + "{\n";
-  indent++;
-  for (let key in item) {
-    if (FSHelpers.ignoreKeys.includes(key)) continue;
-    switch (typeof item[key]) {
-      case "boolean": str += FSHelpers.tabs(indent) + key + ":" + (item[key] ? "true" : "false"); break;
-      case "string": 
-        if (/^function\(/.text(item[key])) {
-          str += FSHelpers.tabs(indent) + key + ":" + item[key];
-        }
-        else {
-          str += FSHelpers.tabs(indent) + key + ":\"" + item[key] + "\"";
-        }
-        break;
-      //case "function": str += FSHelpers.tabs(indent) + key + ":" + FSHelpers.beautifyFunction(item[key].toString(), indent); break;
-      case "number": str += FSHelpers.tabs(indent) + key + ":" + item[key]; break;
-      case "object": 
-        if (item[key] instanceof Exit) {
-          str += FSHelpers.beautifyExit(key, item[key], indent); break;
-        }
-        else if (item[key] instanceof RegExp) {
-          str += FSHelpers.tabs(indent) + key + ":/" + item[key].source + "/"; break;
-        }
-    }
-    str += ",\n";
-  }
-  indent--;
-  str += FSHelpers.tabs(indent) + "}\n";
-  return str;
-}
-
-FSHelpers.beautifyExit = function(dir, exit, indent) {
-  let res = FSHelpers.tabs(indent) + dir + ":new Exit(\"" + exit.name + "\"";
-  if (exit.data) {
-    return FSHelpers.beautifyObject(exit, indent) + "\")";
-  }
-  else {
-    return res + ")";
-  }
-}
-
-FSHelpers.beautifyFunction = function(str, indent) {
-  if (indent === undefined) indent = 0;
-  let res = "";
-  for (let i = 0; i < str.length; i++) {
-    if (str[i] === "{") {
-      indent++;
-      res += "{\n" + FSHelpers.tabs(indent);
-    }
-    else if (str[i] === "}") {
-      res = res.trim();
-      indent--;
-      res += "\n" + FSHelpers.tabs(indent) + "}\n" + FSHelpers.tabs(indent);
-    }
-    else if (str[i] === ";") {
-      res += ";\n" + FSHelpers.tabs(indent);
-    }
-    else {
-      res += str[i];
-    }
-  }
-  return res.trim();
-}
-
-// Used by beautifyX to help formatting JavaScript
-FSHelpers.tabs = function(n) {
-  let res = "";
-  for (let i = 0; i < n; i++) res += "  ";
-  return res;
-}
 
 
 

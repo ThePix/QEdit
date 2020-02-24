@@ -1,0 +1,398 @@
+[{
+		"action": "tab",
+		"tabName": "Meta-Data",
+		"displayIf": "o.jsIsSettings",
+		"tabControls": [
+      {
+				"name": "TITLE",
+				"type": "text",
+				"default": "",
+				"display": "Game title",
+				"tooltip": "Title of the game."
+			},
+			{
+				"name": "SUBTITLE",
+				"type": "text",
+				"default": "",
+				"display": "Sub-title",
+				"tooltip": "Sub-title of the game (if you want it)."
+			},
+			{
+				"name": "AUTHOR",
+				"type": "text",
+				"default": "",
+				"display": "Author",
+				"tooltip": "Your name."
+			},
+			{
+				"name": "VERSION",
+				"type": "text",
+				"default": "",
+				"display": "Version",
+				"tooltip": "Conventionally, 1.0 will be your first release, so start from 0.1 (and do not worry about getting to 1.10, it is not a proper decimal number); some people like to further subdivide, so you might start at 0.1.0."
+			},
+			{
+				"name": "THANKS",
+				"type": "text",
+				"default": "",
+				"display": "Credits",
+				"tooltip": "List all your contributors, like beta-testers."
+			}
+		]
+	},
+
+	{
+		"action": "tab",
+		"tabName": "Start-up",
+		"displayIf": "o.jsIsSettings",
+		"tabControls": [
+      {
+				"name": "INTRO",
+				"type": "textarea",
+				"default": "",
+				"display": "Introduction",
+				"tooltip": "This text will appear when you game starts. Use it to introduce the game to the player, setting up the premise, hinting at the objective, or whatever."
+			}
+    ]
+	},
+
+	{
+		"action": "tab",
+		"tabName": "Side Pane",
+		"displayIf": "o.jsIsSettings",
+		"tabControls": [
+      {
+				"name": "PANES",
+				"type": "select",
+				"options": ["Left", "Right", "None"],
+				"default": "Left",
+				"display": "Side-pane",
+				"tooltip": "You can have the side pane on the left or right, or not at all."
+			},
+			{
+				"name": "COMPASS",
+				"type": "flag",
+				"default": "",
+				"display": "Show compass?",
+				"displayIf": "o.PANES !== 'None'",
+				"tooltip": "Show the compass rose?"
+			},
+			{
+				"name": "DIVIDER",
+				"type": "text",
+				"default": "",
+				"display": "Divider",
+				"displayIf": "o.PANES !== 'None'",
+				"tooltip": "File name for an image to be inserted in the column between each component."
+			},
+			{
+				"name": "STATUS_PANE_FLAG",
+				"type": "flag",
+				"default": true,
+				"display": "Status?",
+				"displayIf": "o.PANES !== 'None'",
+				"tooltip": "Do you want the status component?"
+			},
+			{
+				"name": "STATUS_PANE",
+				"type": "text",
+				"default": "",
+				"display": "Status title",
+				"displayIf": "o.STATUS_PANE_FLAG",
+				"tooltip": "A title for the status component."
+			},
+			{
+				"name": "STATUS_WIDTH_LEFT",
+				"type": "int",
+				"default": 120,
+				"display": "Status left",
+				"displayIf": "o.STATUS_PANE_FLAG",
+				"tooltip": "Width in pixels for the left column in the status component."
+			},
+			{
+				"name": "STATUS_WIDTH_RIGHT",
+				"type": "int",
+				"default": 40,
+				"display": "Status right",
+				"displayIf": "o.STATUS_PANE_FLAG",
+				"tooltip": "Width in pixels for the right column in the status component."
+			}
+		]
+	},
+
+	{
+		"action": "tab",
+		"tabName": "Main Pane",
+		"displayIf": "o.jsIsSettings",
+		"tabControls": [
+      {
+				"name": "USE_DROPDOWN_FOR_CONV",
+				"type": "flag",
+				"default": true,
+				"display": "Drop-downs for conv.",
+				"tooltip": "If you use dynamic conversations, tick this to have the options appear in a dropdown list, rather than a list of hyperlinks. A drop-down is easier to access with the keyboard."
+			},
+			{
+				"name": "TEXT_INPUT",
+				"type": "flag",
+				"default": true,
+				"display": "Text input",
+				"tooltip": "Tick to allow the player to type commands (as opposed to using the buttons in the side pane exclusively)."
+			},
+			{
+				"name": "CURSOR",
+				"type": "text",
+				"default": ">",
+				"display": "Cursor",
+				"tooltip": "The symbol(s) to display to prompt the player to type."
+			},
+			{
+				"name": "CMD_ECHO",
+				"type": "flag",
+				"default": true,
+				"display": "Echo input",
+				"tooltip": "Tick to have the player's commands added to the text window."
+			},
+			{
+				"name": "PANES",
+				"type": "select",
+        "options": ["Left", "Right", "None"],
+				"default": "Left",
+				"display": "Side-pane",
+				"tooltip": "You can have the side pane on the left or right, or not at all."
+			}
+		]
+	},
+
+	{
+		"action": "tab",
+		"tabName": "Gameplay",
+		"displayIf": "o.jsIsSettings",
+		"tabControls": [
+      {
+				"name": "FAILS_COUNT_AS_TURNS",
+				"type": "flag",
+				"default": false,
+				"display": "Fails count",
+				"tooltip": "If the player's input is not understood (or is a meta-command, such as HELP or SAVE), should that count as a real turn?."
+			},
+			{
+				"name": "LOOK_COUNTS_AS_TURN",
+				"type": "flag",
+				"default": false,
+				"display": "Look counts",
+				"displayIf": "!o.FAILS_COUNT_AS_TURNS",
+				"tooltip": "Should LOOK count as a real turn? Note, this does not affect LOOK AT, which is always counted as a turn."
+			},
+			{
+				"name": "CONVERT_NUMBERS_IN_PARSER",
+				"type": "flag",
+				"default": true,
+				"display": "Understand numbers",
+				"tooltip": "Tick if you want the parser to understand the words 'one', 'two', etc. as well as the digits. Useful if you have COUNTABLE items, but a slight slow-down in the response."
+			},
+			{
+				"name": "ROOM_HEADINGS",
+				"type": "flag",
+				"default": true,
+				"display": "Room headings?",
+				"tooltip": "Tick if you want the name of a room to appear as a heading when the player enters the room."
+			},
+			{
+				"name": "MAX_UNDO",
+				"type": "int",
+				"default": 10,
+				"display": "Max. undo",
+				"tooltip": "The number of game state saves to keep in memory, and hence the maximum times the player can UNDO in one go."
+			},
+			{
+				"name": "SAVE_DISABLED",
+				"type": "flag",
+				"default": false,
+				"display": "Disable save",
+				"tooltip": "Tick to prevent the player saving her game progress."
+			},
+			{
+				"name": "CUSTOM_EXITS",
+				"type": "flag",
+				"default": false,
+				"display": "Custom exits",
+				"tooltip": "Tick to have custom exits, such as port/starboard. These should be defined in exits.js."
+			},
+			{
+				"name": "jsAskTell",
+				"type": "flag",
+				"default": true,
+				"display": "Enable ASK/TELL",
+				"tooltip": "If this is ticked, players can ASK or TELL a character ABOUT a topic."
+			},
+			{
+				"name": "NO_ASK_TELL",
+				"type": "longtext",
+				"default": "You cannot use ASK/TELL ABOUT in this game.",
+				"display": "No ASK/TELL",
+				"displayIf": "o.jsAskTell",
+				"tooltip": "You can customise the message saying ASK/TELL is not available, perhaps hinting at an alternative."
+			},
+			{
+				"name": "jsDynamicConv",
+				"type": "flag",
+				"default": true,
+				"display": "Enable TALK TO",
+				"tooltip": "If this is ticked, players can TALK TO a character to see dynamic lists of topics."
+			},
+			{
+				"name": "NO_TALK_TO",
+				"type": "longtext",
+				"default": "You cannot use TALK TO in this game.",
+				"display": "No TALK TO",
+				"displayIf": "o.jsDynamicConv",
+				"tooltip": "You can customise the message saying TALK TO is not available, perhaps hinting at an alternative."
+			},
+			{
+				"name": "MONEY_FORMAT",
+				"type": "text",
+				"default": "$!",
+				"display": "Money format",
+				"tooltip": "How money should be displayed; use an exclamation mark as a stand-in for the actual value."
+			}
+		]
+	},
+
+	{
+		"action": "tab",
+		"tabName": "Date/Time",
+		"displayIf": "o.jsIsSettings",
+		"tabControls": [
+      {
+				"name": "SECONDS_PER_TURN",
+				"type": "int",
+				"default": 60,
+				"display": "Sec/turn",
+				"tooltip": "How many seconds are assumed to pass in-game each standard turn."
+			},
+			{
+				"name": "DATE_TIME_LOCALE",
+				"type": "text",
+				"default": "en - GB",
+				"display": "Locale",
+				"tooltip": "Determines how the date and time are displayed; a BCP 47 language tag, for example 'en - GB' or 'en - US', or 'default' for whatever the user's browser is set to."
+			},
+			{
+				"name": "DATE_TIME_START",
+				"type": "text",
+				"default": "April 1, 2019 09:43:00",
+				"display": "Start",
+				"tooltip": "The time in-game that the game starts. You need to get the format right, as per this example: April 1, 2019 09:43:00"
+			},
+			{
+				"name": "DATE_TIME_OPTIONS__year",
+				"type": "string",
+				"default": "numeric",
+				"display": "Year format",
+				"tooltip": "How to display the year; 'numeric' or '2-digit'."
+			},
+			{
+				"name": "DATE_TIME_OPTIONS__month",
+				"type": "text",
+				"default": "numeric",
+				"display": "Month format",
+				"tooltip": "How to display the month; 'numeric', '2-digit', 'long', 'short' or 'narrow'."
+			},
+			{
+				"name": "DATE_TIME_OPTIONS__day",
+				"type": "text",
+				"default": "numeric",
+				"display": "Day format",
+				"tooltip": "How to display the year, 'numeric' or '2-digit'."
+			},
+			{
+				"name": "DATE_TIME_OPTIONS__hour",
+				"type": "text",
+				"default": "numeric",
+				"display": "Hour format",
+				"tooltip": "How to display the hour, 'numeric' or '2-digit'."
+			},
+			{
+				"name": "DATE_TIME_OPTIONS__minute",
+				"type": "text",
+				"default": "numeric",
+				"display": "Minute format",
+				"tooltip": "How to display the minute, 'numeric' or '2-digit'."
+			}
+		]
+	},
+
+	{
+		"action": "tab",
+		"tabName": "Style: Main",
+		"displayIf": "o.jsIsSettings",
+		"tabControls": [
+      {
+				"name": "jsStyleMain_font_family",
+				"type": "text",
+				"default": "'Arial Black', Gadget, sans-serif",
+				"display": "Font",
+				"tooltip": "Font for the main text."
+			},
+		  {
+				"name": "jsStyleMain_font_size",
+				"type": "int",
+				"default": 12,
+				"display": "Font size",
+				"tooltip": "Font size for the main text."
+			},
+		  {
+				"name": "jsStyleMain_color",
+				"type": "text",
+				"default": "black",
+				"display": "Colour",
+				"tooltip": "The colour of the text for the main text."
+			},
+		  {
+				"name": "jsStyleMain_background_color",
+				"type": "text",
+				"default": "white",
+				"display": "Background",
+				"tooltip": "The background colour for the main text."
+			}
+		]
+	},
+
+	{
+		"action": "tab",
+		"tabName": "Style: Side",
+		"displayIf": "o.jsIsSettings",
+		"tabControls": [
+      {
+				"name": "jsStyleSide_font_family",
+				"type": "text",
+				"default": "'Arial Black', Gadget, sans-serif",
+				"display": "Font",
+				"tooltip": "Font for the side text."
+			},
+		  {
+				"name": "jsStyleSide_font_size",
+				"type": "int",
+				"default": 10,
+				"display": "Font size",
+				"tooltip": "Font size for the side text."
+			},
+		  {
+				"name": "jsStyleSide_color",
+				"type": "text",
+				"default": "white",
+				"display": "Colour",
+				"tooltip": "The colour of the text for the side text."
+			},
+		  {
+				"name": "jsStyleSide_background_color",
+				"type": "text",
+				"default": "blue",
+				"display": "Background",
+				"tooltip": "The background colour for the side text."
+			}
+		]
+	}
+
+]

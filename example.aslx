@@ -3,17 +3,31 @@
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
   <include ref="ConvLib.aslx" />
-  <game name="example">
+  <game name="The Example Game">
     <gameid>16dbe23f-3d52-4f87-834c-87f80fa279d1</gameid>
     <version>1.0</version>
     <firstpublished>2019</firstpublished>
+    <subtitle>My Sub-title</subtitle>
+    <author>The Pixie</author>
     <start type="script">
       msg ("The game is starting.")
     </start>
     <roomenter type="script">
       msg ("You walk into a room.")
     </roomenter>
+<<<<<<< HEAD
     <feature_asktell />
+=======
+    <defaultfontsize type="int">11</defaultfontsize>
+    <turnoffcompass />
+    <showcommandbar />
+    <defaultforeground>WhiteSmoke</defaultforeground>
+    <defaultfont>'Arial Black', Gadget, sans-serif</defaultfont>
+    <defaultwebfont>Aldrich</defaultwebfont>
+    <defaultbackground>Blue</defaultbackground>
+    <showpanes type="boolean">false</showpanes>
+    <echocommand type="boolean">false</echocommand>
+>>>>>>> 68779b68a7ffcfb35e08ddcc66fe4708ad005da6
   </game>
   <object name="lounge">
     <inherit name="editor_room" />

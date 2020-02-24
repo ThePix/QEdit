@@ -1,4 +1,6 @@
 import React from 'react';
+import Blockly from 'blockly/blockly_compressed';
+
 const prompt = require('electron-prompt');
 
 
@@ -6,6 +8,7 @@ import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 import {FileStore, Exit} from './filestore';
 import {TabControls} from './tabcontrols';
+import {QuestObject} from './questobject';
 
 // Next four lines disable warning from React-hot-loader
 import { hot, setConfig } from 'react-hot-loader'
@@ -16,7 +19,7 @@ setConfig({
 
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 // Just disabling warning is not great, but so far I cannot see how to implement CSP
-// The below does not work, but I do not know what
+// The below does not work, but I do not know what will
 /*
 const { session } = require('electron')
 session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
@@ -25,7 +28,6 @@ session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     }, details.responseHeaders)});
 });*/
 
-//const FILENAME = 'C:/Users/andyj/Documents/GitHub/QuestJS/game-eg/data.js';
 const XML_FILE = 'example';
 
 
@@ -43,145 +45,9 @@ const DSPY_SCENERY = 5;
 
 
 
-//import { app, Menu } from 'electron';
 const {Menu} = require('electron').remote;
-
-const template = [
-  {
-    label: 'File',
-    submenu: [
-      { label: 'Save XML', },
-      { label: 'Save JavaScript', },
-    ]
-  },
-  {
-    label: 'Edit',
-    submenu: [
-      { role: 'undo' },
-      { role: 'redo' },
-      { type: 'separator' },
-      { role: 'cut' },
-      { role: 'copy' },
-      { role: 'paste' },
-      { type: 'separator' },
-      { label: 'Add room', },
-      { label: 'Add item', },
-      { label: 'Add stub', },
-      { label: 'Delete object', },
-      { label: 'Duplicate object', },
-    ]
-  },
-  {
-    label: 'View',
-    submenu: [
-      { role: 'reload' },
-      { role: 'forcereload' },
-      { role: 'toggledevtools' },
-      { type: 'separator' },
-      { role: 'resetzoom' },
-      { role: 'zoomin' },
-      { role: 'zoomout' },
-      { type: 'separator' },
-      { role: 'togglefullscreen' },
-      { type: 'separator' },
-      { 
-        label: 'Preview in browser',
-        click () { require('electron').shell.openExternal("file://" + FILENAME) }
-      }
-    ]
-  },
-  {
-    label: 'Options',
-    submenu: [
-      { 
-        label: 'Show only rooms for exits', type: 'checkbox', checked : true,
-      }
-    ]
-  },
-  {
-    label: 'Search',
-    submenu: [
-      { 
-        label: 'Find',
-      }
-    ]
-  },
-  {
-    role: 'window',
-    submenu: [
-      { role: 'minimize' },
-      { role: 'close' }
-    ]
-  },
-  {
-    role: 'help',
-    submenu: [
-      {
-        label: 'Help',
-        click () {
-          require('electron').shell.openExternal('https://github.com/ThePix/QEdit/wiki');
-        }
-      },
-      {
-        label: 'About',
-        click () {
-          
-const { dialog } = require('electron')
-
-const response = dialog.showMessageBox(null);
-console.log(response);          
-          
-          /*
-          const dialog = require('electron');
-          dialog.showMessageBox({
-            type:"info",
-            title:"About",
-            message:"QEdit is under development.\nCopyright 2019",
-          });*/
-        }
-      }
-    ]
-  }
-]
-
-if (process.platform === 'darwin') {
-  template.unshift({
-    label: app.getName(),
-    submenu: [
-      { role: 'about' },
-      { type: 'separator' },
-      { role: 'services' },
-      { type: 'separator' },
-      { role: 'hide' },
-      { role: 'hideothers' },
-      { role: 'unhide' },
-      { type: 'separator' },
-      { role: 'quit' }
-    ]
-  })
-
-  // Edit menu
-  template[1].submenu.push(
-    { type: 'separator' },
-    {
-      label: 'Speech',
-      submenu: [
-        { role: 'startspeaking' },
-        { role: 'stopspeaking' }
-      ]
-    }
-  )
-
-  // Window menu
-  template[3].submenu = [
-    { role: 'close' },
-    { role: 'minimize' },
-    { role: 'zoom' },
-    { type: 'separator' },
-    { role: 'front' }
-  ]
-}
-
+import {Menus} from './menus';
+const template = new Menus().getMenus();
 
 
 
@@ -210,12 +76,14 @@ export default class App extends React.Component {
 
     this.fs = new FileStore(XML_FILE);
     
+    this.controls = new TabControls(["settings", "container", "wearable"]).getControls();
+    const settings = this.createDefaultSettings();
     this.state = {
-      objects:this.fs.readFile(),
+      objects:this.fs.readFile(settings),
       currentObjectName: false,
       options: {showRoomsOnly:true, },
     };
-    this.controls = new TabControls(["container", "wearable"]).getControls();
+    this.state.currentObjectName = this.state.objects[0].name;
     for (let i = 0; i < this.state.objects.length; i++) {
       this.setDefaults(this.state.objects[i]);
     }
@@ -234,7 +102,18 @@ export default class App extends React.Component {
     document.getElementById('statusbar').innerHTML = "Status: <i>" + s + "</i>";
   }
   
+  
+  createDefaultSettings(settings) {
+    console.log(settings);
+    const obj = new QuestObject({ name:"Settings", jsIsSettings:true });
+    obj.addDefaults(this.controls);
+    return obj;
+  }
+  
+  
+  
   saveXml() {
+    console.log(this.state.objects);
     this.fs.writeFile(this.state.objects);
     console.log("Saved");
     this.message("Saved");
@@ -245,8 +124,17 @@ export default class App extends React.Component {
       name = this.state.currentObjectName;
     }
     if (name === false) return;
+
+    // may want to do this different, if setting has another name, say for another language
+    console.log(name);
+    if (name === "Settings") {    
+      window.alert("Cannot delete the 'Settings' object.");
+      return;
+    }
+    console.log("name");
+    
     if (window.confirm('Delete the object "' + name + '"?')) {
-      let s = this.state.currentObjectName === name ? false : this.state.currentObjectName;
+      let s = this.state.currentObjectName === name ? this.state.objects[0].name : this.state.currentObjectName;
       this.setState({
         objects: this.state.objects.filter((o, i) => {
           return name !== o.name;
@@ -399,6 +287,7 @@ export default class App extends React.Component {
 
 
   setDefaults(o) {
+    //return;
     for (let i = 0; i < this.controls.length; i++) {
       const cons = this.controls[i].tabControls
       for (let j = 0; j < cons.length; j++) {
@@ -467,7 +356,10 @@ export default class App extends React.Component {
     //console.log(obj);
     const objName = (obj === undefined ? this.state.currentObjectName : obj.name);
     //console.log(objName);
-    const newObjects = JSON.parse(JSON.stringify(this.state.objects)); // cloning the state
+    const newObjects = []  // cloning the state
+    for (let i = 0; i < this.state.objects.length; i++) {
+      newObjects.push(new QuestObject(this.state.objects[i]));
+    }
       
     // Need to look in new list for old name, as the name may be changing
     const newObject = newObjects.find(el => {
