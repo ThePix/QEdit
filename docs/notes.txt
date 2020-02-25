@@ -49,7 +49,7 @@ React uses JSX, which is a mix of JavaScript and XHTML (that is, XML-compliant H
       </tr>
     )
 ```
-The `return` is JavaScript, but the rest in HTML. However, embedded in the HTML, surreounded by { and }, is more JavaScript, which in turn contains more HTML.
+The `return` is JavaScript, but the rest in HTML. However, embedded in the HTML, surrounded by { and }, is more JavaScript, which in turn contains more HTML.
 
 ### Structure
 
@@ -83,6 +83,7 @@ MainPane contains a number of TabComp cononents, one for each tab, each containi
       { name:"Description", },
     ];
 ```
+
 Note that the name field is hard-coded to only accept valid names (in `setValue` in App.js).
 
 ### React components

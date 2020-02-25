@@ -1,4 +1,4 @@
-<!--Saved by Quest 5.8.6836.13983-->
+<!--Saved by Quest 5.8.6809.15141-->
 <asl version="580">
   <include ref="English.aslx" />
   <include ref="Core.aslx" />
@@ -15,6 +15,9 @@
     <roomenter type="script">
       msg ("You walk into a room.")
     </roomenter>
+<<<<<<< HEAD
+    <feature_asktell />
+=======
     <defaultfontsize type="int">11</defaultfontsize>
     <turnoffcompass />
     <showcommandbar />
@@ -24,6 +27,7 @@
     <defaultbackground>Blue</defaultbackground>
     <showpanes type="boolean">false</showpanes>
     <echocommand type="boolean">false</echocommand>
+>>>>>>> 68779b68a7ffcfb35e08ddcc66fe4708ad005da6
   </game>
   <object name="lounge">
     <inherit name="editor_room" />
@@ -57,6 +61,24 @@
     <exit alias="east" to="kitchen">
       <inherit name="eastdirection" />
     </exit>
+    <object name="Mary">
+      <inherit name="editor_object" />
+      <inherit name="namedfemale" />
+      <ask type="scriptdictionary">
+        <item key="red hat">
+          msg ("About the red hat...")
+        </item>
+        <item key="red door">
+          msg ("About the red door")
+        </item>
+        <item key="security guard">
+          msg ("About security guard")
+        </item>
+        <item key="security office">
+          msg ("About security office")
+        </item>
+      </ask>
+    </object>
   </object>
   <object name="kitchen">
     <inherit name="editor_room" />
