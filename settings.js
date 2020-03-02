@@ -1,0 +1,45 @@
+"use strict";
+
+
+const LANG_FILENAME = "lang-en.js";
+const DEBUG = true;
+const PARSER_DEBUG = false;
+const FILES = ["code", "data", "npcs"];
+const SPLIT_LINES_ON = "<br>";
+const DATE_TIME_OPTIONS = {};
+const name = "Settings"
+const TITLE = "Blood Witch"
+const SUBTITLE = ""
+const AUTHOR = "The Pixie"
+const VERSION = "1.0"
+const THANKS = ""
+const FAILS_COUNT_AS_TURNS = false
+const LOOK_COUNTS_AS_TURN = false
+const CONVERT_NUMBERS_IN_PARSER = true
+const ROOM_HEADINGS = true
+const MAX_UNDO = 10
+const SAVE_DISABLED = false
+const CUSTOM_EXITS = false
+const NO_ASK_TELL = "You cannot use ASK/TELL ABOUT in this game."
+const NO_TALK_TO = "You cannot use TALK TO in this game."
+const MONEY_FORMAT = "$!"
+const INTRO = ""
+const USE_DROPDOWN_FOR_CONV = true
+const TEXT_INPUT = true
+const CURSOR = ">"
+const CMD_ECHO = true
+const PANES = "Left"
+const COMPASS = ""
+const DIVIDER = ""
+const STATUS_PANE_FLAG = true
+const STATUS_PANE = ""
+const STATUS_WIDTH_LEFT = 120
+const STATUS_WIDTH_RIGHT = 40
+const SECONDS_PER_TURN = 60
+const DATE_TIME_LOCALE = "en - GB"
+const DATE_TIME_START = "April 1, 2019 09:43:00"
+DATE_TIME_OPTIONS.year = "numeric"
+DATE_TIME_OPTIONS.month = "numeric"
+DATE_TIME_OPTIONS.day = "numeric"
+DATE_TIME_OPTIONS.hour = "numeric"
+DATE_TIME_OPTIONS.minute = "numeric"

@@ -5,8 +5,11 @@ export class Menus {
       {
         label: 'File',
         submenu: [
-          { label: 'Save XML', },
-          { label: 'Save JavaScript', },
+          { label: 'New', },
+          { label: 'Open...', },
+          { label: 'Save', },
+          //{ label: 'Save As...', },
+          { label: 'Export to JavaScript', },
         ]
       },
       {
@@ -18,12 +21,6 @@ export class Menus {
           { role: 'cut' },
           { role: 'copy' },
           { role: 'paste' },
-          { type: 'separator' },
-          { label: 'Add room', },
-          { label: 'Add item', },
-          { label: 'Add stub', },
-          { label: 'Delete object', },
-          { label: 'Duplicate object', },
         ]
       },
       {
@@ -38,11 +35,22 @@ export class Menus {
           { role: 'zoomout' },
           { type: 'separator' },
           { role: 'togglefullscreen' },
+          //{ type: 'separator' },
+          //{ 
+          //  label: 'Preview in browser',
+          //  click () { require('electron').shell.openExternal("file://" + FILENAME) }
+          //}
+        ]
+      },
+      {
+        label: 'Objects',
+        submenu: [
+          { label: 'Add room', },
+          { label: 'Add item', },
+          { label: 'Add stub', },
           { type: 'separator' },
-          { 
-            label: 'Preview in browser',
-            click () { require('electron').shell.openExternal("file://" + FILENAME) }
-          }
+          { label: 'Delete object', },
+          { label: 'Duplicate object', },
         ]
       },
       {

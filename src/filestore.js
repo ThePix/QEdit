@@ -20,21 +20,18 @@ and it is reasonable to expect the user to wait whilst it happens.
 */
 
 export class FileStore {
-  constructor (filename) {
-    this.filename = filename
-  }
 
 
   // This should read both Quest 5 and Quest 6 XML files,
   // which hopefully are pretty much the same
-  readFile(settings) {
-    const str = fs.readFileSync(this.filename + ".aslx", "utf8");
+  readFile(filename, settings) {
+    const str = fs.readFileSync(filename, "utf8");
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(str, "text/xml");
     
     const version = parseInt(xmlDoc.getElementsByTagName("asl")[0].getAttribute('version'));
     
-    console.log("Opening XML file (" + this.filename + ".aslx), version " + version);
+    console.log("Opening XML file (" + filename + "), version " + version);
     
     const objects = [];
     
@@ -373,30 +370,49 @@ export class FileStore {
   }
 
   
-  writeFile(objects) {
+  writeFile(app, objects, filename) {
+    const settingsIndex = objects.findIndex(el => el.jsIsSettings)
+    const settings = objects[settingsIndex]
+    if (!filename) {
+      //const settings = objects.find(el => el.jsIsSettings)
+      filename = settings.jsFilename
+      if (!filename) return "Failed to get filename"
+    }
+    if (filename.endsWith('.aslx')) {
+      filename = filename.replace('.aslx', '.asl6')
+      if (fs.existsSync(filename)) {
+        return "A file already exists with the .asl6 extension. You should rename, move or delete that so this file can safely be saved with the new extension."
+      }
+      console.log(filename)
+      objects[settingsIndex].jsFilename = filename
+      console.log(objects)
+      app.setState({
+        objects:objects,
+      });
+    }
+    
     let str = "<!--Saved by Quest 6.0.0-->\n<asl version=\"600\">\n"
 
     for (let i = 0; i < objects.length; i++) {
       str += objects[i].toXml();
     }
-    fs.writeFileSync(this.filename + ".asl6", str, "utf8");
+    fs.writeFileSync(filename, str, "utf8");
+    return "Saved"
   }
 
   writeFileJS(objects) {
-    let str = "\"use strict\";";
-    for (let i = 0; i < objects.length; i++) str += objects[i].toJs();
-    fs.writeFileSync(this.filename + "2", str, "utf8");
+    let str1 = "\"use strict\";";
+    let str2 = "\"use strict\";";
+    let str3 = "";
+    for (let i = 0; i < objects.length; i++) {
+      str1 += objects[i].toJs();
+      str2 += objects[i].toJsSettings();
+      str3 += objects[i].toCss();
+    }
+    fs.writeFileSync("data.js", str1, "utf8");
+    fs.writeFileSync("settings.js", str2, "utf8");
+    fs.writeFileSync("style.Css", str2, "utf8");
   }
-  
-  writeSettingsFile(objects) {
-    let str = "\"use strict\";";
-    for (let i = 0; i < objects.length; i++) str += objects[i].toJsSettings();
-    fs.writeFileSync("settings.js", str, "utf8");
-  }
-  
-  
-  
-  
 
   
 }

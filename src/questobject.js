@@ -382,7 +382,6 @@ export class QuestObject {
       this.jsStyleMain_font_family = gameObject.getElementsByTagName("defaultwebfont")[0].innerHTML;
       this.jsStyleUseWebFont = true;
     }
-    console.log(this);
   }
   
   importSetting(gameObject, tagName, attName, type) {
@@ -473,7 +472,7 @@ export class QuestObject {
       str += "  " + jsTemplates[i] + "\n";
     }
     
-    str += this.beautifyObject(item, 1);
+    str += this.beautifyObject(1);
     str += ");";
     return str;
   }
@@ -511,18 +510,29 @@ export class QuestObject {
     return str;
   }
   
+  // Converts one item to CSS settings
+  toCss() {
+    if (!this.jsIsSettings) return '';
+    
+    let str = "\n\n\n";
+
+    //TODO
+    
+    return str;
+  }
+
   beautifyObject(indent) {
     return this.beautifyObjectHelper(this, indent);
   }  
 
   beautifyExit(dir, exit, indent) {
-    let res = this.tabs(indent) + dir + ":new Exit(\"" + exit.name + "\"";
-    if (exit.data) {
-      return this.beautifyObjectHelper(exit, indent) + "\")";
-    }
-    else {
-      return res + ")";
-    }
+    console.log(exit)
+    //if (exit.data) {
+    //  return this.beautifyObjectHelper(exit, indent) + "\")";
+    //}
+    //else {
+      return this.tabs(indent) + dir + ":new Exit(\"" + exit.name + "\")";
+    //}
   }
 
   beautifyFunction(str, indent) {
@@ -563,7 +573,7 @@ export class QuestObject {
       switch (typeof item[key]) {
         case "boolean": str += this.tabs(indent) + key + ":" + (item[key] ? "true" : "false"); break;
         case "string": 
-          if (/^function\(/.text(item[key])) {
+          if (/^function\(/.test(item[key])) {
             str += this.tabs(indent) + key + ":" + item[key];
           }
           else {
@@ -578,6 +588,12 @@ export class QuestObject {
           }
           else if (item[key] instanceof RegExp) {
             str += this.tabs(indent) + key + ":/" + item[key].source + "/"; break;
+          }
+          else if (item[key].type === 'script') {
+            str += this.tabs(indent) + key + ":[" + item[key].code + "]"; break;
+          }
+          else if (item[key].type === 'js') {
+            str += this.tabs(indent) + key + ":function () {" + item[key].code + "}"; break;
           }
       }
       str += ",\n";

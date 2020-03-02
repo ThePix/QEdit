@@ -23,7 +23,7 @@ export class MainPane extends React.Component {
   render() {
 
     if (this.props.object) {
-      //console.log(this.props.object);
+      console.log(this.props.object);
       const control = this.props.object.getCurrentTab(this.props.controls);
       const tab = control.tabName;
       const style = {color:this.props.object.jsColour};
@@ -43,6 +43,7 @@ export class MainPane extends React.Component {
             addToList={this.props.addToList} 
             handleChange={this.props.handleChange} 
             handleIntChange={this.props.handleIntChange}
+            handleListChange={this.props.handleListChange}
             handleCBChange={this.props.handleCBChange}
             removeConversionNotes={this.props.removeConversionNotes}
             controls={controls} 
@@ -100,6 +101,7 @@ const TabComp = (props) => {
           addToList={props.addToList} 
           handleChange={props.handleChange}
           handleIntChange={props.handleIntChange}
+          handleListChange={props.handleListChange}
           handleCBChange={props.handleCBChange}
           removeConversionNotes={props.removeConversionNotes}
           input={item} 
@@ -214,15 +216,23 @@ const InputComp = (props) => {
     return (  
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
-        <td><ListComp 
+        <td><textarea 
           name={props.input.name}
           title={props.input.tooltip}
-          value={value}
-          onChange={props.handleChange}
+          value={value.join('\n')}
+          onChange={props.handleListChange}
           removeFromList={props.removeFromList} 
           addToList={props.addToList}
           options={props.input.options}
         /></td>
+      </tr>
+    )
+  }
+  else if (props.input.type === "readonly") {
+    return (  
+      <tr className="form-group">
+        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
+        <td><span className="fieldName" title={props.input.tooltip}>{value}</span></td>
       </tr>
     )
   }
@@ -283,24 +293,7 @@ const InputComp = (props) => {
 }
 
 
-const ListComp = (props) => {
-  if (!props.options) {
-    console.log("No options set for the control: " + props.name);
-    return null;
-  }
-  const notSelected = props.options.filter(el => !props.value.includes(el));
-  return (
-    <div>
-      <span className="selectedList">
-        {props.value.map((s, i) => <span key={i}>{s}[<a onClick={() => props.removeFromList(s, props.name)} className="deleteLink">del</a>] </span>)}
-      </span>
-      <br/>
-      <span className="unselectedList">
-        {notSelected.map((s, i) => <span key={i}>{s}[<a onClick={() => props.addToList(s, props.name)} className="deleteLink">add</a>] </span>)}
-      </span>
-    </div>
-  )
-}
+
 
 
 

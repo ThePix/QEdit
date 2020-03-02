@@ -1,5 +1,5 @@
 import React from 'react';
-import Blockly from 'blockly/blockly_compressed';
+//import Blockly from 'blockly/blockly_compressed';
 
 const prompt = require('electron-prompt');
 
@@ -27,8 +27,6 @@ session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
         "Content-Security-Policy": [ "default-src 'self'" ]
     }, details.responseHeaders)});
 });*/
-
-const XML_FILE = 'example';
 
 
 
@@ -63,7 +61,11 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
 
-    this.findMenuItem(template, 'Save XML').click = () => this.saveXml();
+    //this.findMenuItem(template, 'New').click = () => this.newGame();
+    this.findMenuItem(template, 'Open...').click = () => this.openXml();
+    this.findMenuItem(template, 'Save').click = () => this.saveXml();
+    //this.findMenuItem(template, 'Save As...').click = () => this.saveXmlAs();
+    this.findMenuItem(template, 'Export to JavaScript').click = () => this.saveJs();
     this.findMenuItem(template, 'Add room').click = () => this.addObject("room");
     this.findMenuItem(template, 'Add item').click = () => this.addObject("item");
     this.findMenuItem(template, 'Add stub').click = () => this.addObject("stub");
@@ -74,12 +76,12 @@ export default class App extends React.Component {
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
 
-    this.fs = new FileStore(XML_FILE);
+    this.fs = new FileStore();
     
     this.controls = new TabControls(["settings", "container", "wearable"]).getControls();
     const settings = this.createDefaultSettings();
     this.state = {
-      objects:this.fs.readFile(settings),
+      objects:this.fs.readFile("example.asl6", settings),
       currentObjectName: false,
       options: {showRoomsOnly:true, },
     };
@@ -112,9 +114,51 @@ export default class App extends React.Component {
   
   
   
+  openXml() {
+    console.log("About to open");
+    const dialogOptions = {
+      //defaultPath: "c:/",
+      filters: [
+        { name: "All Files", extensions: ["*"] },
+        { name: "Quest files", extensions: ["aslx", "asl6"] },
+      ],
+      properties: ["openFile"],
+      title: 'Open file',
+    };
+    const { dialog } = require('electron').remote
+    const result = dialog.showOpenDialog(dialogOptions)
+    if (result) {
+      const settings = this.createDefaultSettings();
+      settings.jsFilename = result[0];
+      this.setState({
+        objects:this.fs.readFile(result[0], settings),
+        currentObjectName: false,
+        options: {showRoomsOnly:true, },
+      });
+      this.message("Opened: " + result[0]);
+    }
+    else {
+      this.message("Open file cancelled");
+    }
+  }
+  
   saveXml() {
+    const result = this.fs.writeFile(this, this.state.objects);
+    console.log(result);
+    this.message(result);
+  }
+  
+  //TODO!!!
+  saveXmlAs() {
     console.log(this.state.objects);
     this.fs.writeFile(this.state.objects);
+    console.log("Saved");
+    this.message("Saved");
+  }
+  
+  saveJs() {
+    console.log(this.state.objects);
+    this.fs.writeFileJS(this.state.objects);
     console.log("Saved");
     this.message("Saved");
   }
@@ -160,11 +204,11 @@ export default class App extends React.Component {
   };
 
   addObject(objectType) {
-    const newObject = {
+    const newObject = new QuestObject({
       name:"new_" + objectType,
       jsIsStub:(objectType === "stub"),
       jsIsRoom:(objectType === "room"),
-    };
+    });
     console.log("objectType=" + objectType);
     if (objectType !== "room" && this.state.currentObjectName) {
       newObject.loc = this.state.currentObjectName;
@@ -190,7 +234,7 @@ export default class App extends React.Component {
       return (el.name == name);
     });
     
-    const newObject = JSON.parse(JSON.stringify(currentObject)); // cloning the state
+    const newObject = new QuestObject(JSON.parse(JSON.stringify(currentObject))); // cloning the state
     newObject.name = this.nextName(name);
       
     this.setState({
@@ -340,6 +384,13 @@ export default class App extends React.Component {
     this.setValue(e.target.id, parseInt(e.target.value));
   }
 
+  // numbers need their own handler so they get converted to numbers
+  handleListChange(e) {
+    console.log(e.target.value);
+    console.log(typeof e.target.value);
+    this.setValue(e.target.id, e.target.value.split(/\r?\n/));
+  }
+
   // Checkboxes need their own handler as they use the "checked" property...
   handleCBChange(e) {
     this.setValue(e.target.id, e.target.checked);
@@ -444,8 +495,9 @@ export default class App extends React.Component {
         removeFromList={this.removeFromList.bind(this)} 
         removeConversionNotes={this.removeConversionNotes.bind(this)} 
         addToList={this.addToList.bind(this)}
-        handleCBChange={this.handleCBChange.bind(this)} 
+        handleCBChange={this.handleCBChange.bind(this)}
         handleIntChange={this.handleIntChange.bind(this)} 
+        handleListChange={this.handleListChange.bind(this)} 
         updateExit={this.updateExit.bind(this)}
         showObject={this.showObject.bind(this)}
         selectTab={this.selectTab.bind(this)}
