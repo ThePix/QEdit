@@ -6,9 +6,10 @@ const prompt = require('electron-prompt');
 
 import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
-import {FileStore, Exit} from './filestore';
+//import {FileStore, Exit} from './filestore';
+import {FileStore} from './filestore';
 import {TabControls} from './tabcontrols';
-import {QuestObject} from './questobject';
+const [QuestObject] = require('./questobject')
 
 // Next four lines disable warning from React-hot-loader
 import { hot, setConfig } from 'react-hot-loader'
@@ -106,7 +107,6 @@ export default class App extends React.Component {
   
   
   createDefaultSettings(settings) {
-    console.log(settings);
     const obj = new QuestObject({ name:"Settings", jsIsSettings:true });
     obj.addDefaults(this.controls);
     return obj;
@@ -115,7 +115,6 @@ export default class App extends React.Component {
   
   
   openXml() {
-    console.log("About to open");
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
@@ -244,7 +243,6 @@ export default class App extends React.Component {
   };
   
   selectTab(s) {
-    console.log("app.jsx: " + s);
     const state = {
       objects: this.state.objects,
       currentObjectName: this.state.currentObjectName,
@@ -293,7 +291,7 @@ export default class App extends React.Component {
   
   
   // remove on item from an attribute that is an array of strings
-  removeFromList(item, att, name) {
+  removefromlist(item, att, name) {
     console.log("About to remove " + item + " from " + att);
 
     if (name === undefined) name = this.state.currentObjectName;
@@ -312,7 +310,7 @@ export default class App extends React.Component {
   }
   
   // remove on item from an attribute that is an array of strings
-  addToList(item, att, name) {
+  addtolist(item, att, name) {
     console.log("About to add " + item + " to " + att);
     if (name === undefined) name = this.state.currentObjectName;
     if (name === false) return;
@@ -492,9 +490,9 @@ export default class App extends React.Component {
         object={currentObject} 
         handleChange={this.handleChange.bind(this)}
         removeObject={this.removeObject.bind(this)} 
-        removeFromList={this.removeFromList.bind(this)} 
+        removefromlist={this.removefromlist.bind(this)} 
         removeConversionNotes={this.removeConversionNotes.bind(this)} 
-        addToList={this.addToList.bind(this)}
+        addtolist={this.addtolist.bind(this)}
         handleCBChange={this.handleCBChange.bind(this)}
         handleIntChange={this.handleIntChange.bind(this)} 
         handleListChange={this.handleListChange.bind(this)} 

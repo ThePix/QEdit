@@ -29,24 +29,39 @@ body {
   bottom:0px;
   z-index: 2; /* Stay on top */
   border: 1px solid black;
-  font-size: 10pt;
+  font-size: 11pt;
   padding: 2px;
 }
 
 .textarea {
-  height: 70px;
-    -moz-box-sizing:border-box;
-    -webkit-box-sizing:border-box;
-    box-sizing:border-box;
-    display:block;/*reset from inline*/
-    width:100%;
-    height:200px;
-    margin:0;/*remove defaults*/
-    padding:4px;
-    background:#EEF;
-    border:1px solid #333;
-    overflow-y:auto;/*resets IE*/
-    overflow-x:hidden;/*resets IE*/
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  box-sizing:border-box;
+  display:block;/*reset from inline*/
+  width:100%;
+  height:200px;
+  margin:0;/*remove defaults*/
+  padding:4px;
+  background:#EEF;
+  border:1px solid #333;
+  overflow-y:auto;/*resets IE*/
+  overflow-x:hidden;/*resets IE*/
+}
+
+.stringlist {
+  height: 50px;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  box-sizing:border-box;
+  display:block;/*reset from inline*/
+  width:100%;
+  height:150px;
+  margin:0;/*remove defaults*/
+  padding:4px;
+  background:#FFF;
+  border:1px solid #333;
+  overflow-y:auto;/*resets IE*/
+  overflow-x:hidden;/*resets IE*/
 }
 
 .fieldName {

@@ -1,8 +1,7 @@
 'use strict'
 
 const fs = require('fs');
-import {QuestObject} from './questobject';
-
+const [QuestObject] = require('./questobject')
 
 let settings = require("./lang-en.js");
 const PRONOUNS = settings.PRONOUNS;
@@ -62,7 +61,7 @@ export class FileStore {
     return objects;
   }
 
-
+/*
   // Used by readFile to create one object from its XML
   translateObjectFromXml(xml, version) {
     const object = {};
@@ -315,9 +314,9 @@ export class FileStore {
     //console.log(object);
     return object;    
   }
+*/
 
-
-
+/*
   translateObjectToXml(object) {
     let str = "  <object name=\"" + object.name + "\">\n";
     for (let property in object) {
@@ -355,7 +354,7 @@ export class FileStore {
 
     //console.log(object);
     return str + "  </object>\n\n";
-  }
+  }*/
 
   importAskTell(xml) {
     const res = {type: 'asktell', store:'simple', entries:[]}

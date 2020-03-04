@@ -51,6 +51,13 @@
 				"default": "lang-en.js",
 				"display": "Language file",
 				"tooltip": "So far, only English is supported, but potentially other languages can be added."
+			},
+      {
+				"name": "jsGoogleFont",
+				"type": "stringlist",
+				"default": [],
+				"display": "Google fonts",
+				"tooltip": "List all the Google fonts you wnt to be able to use in your game to ensure they are downloaded."
 			}
 		]
 	},
@@ -351,7 +358,7 @@
       
 			{
 				"type": "title",
-				"display": "Text style"
+				"display": "Stylings"
 			},
       {
 				"name": "jsStyleMain_font_family",
@@ -363,7 +370,7 @@
 		  {
 				"name": "jsStyleMain_font_size",
 				"type": "int",
-				"default": 11,
+				"default": 12,
 				"display": "Font size",
 				"tooltip": "Font size for the main text."
 			},
@@ -380,13 +387,6 @@
 				"default": "white",
 				"display": "Background",
 				"tooltip": "The background colour for the main text."
-			},
-      {
-				"name": "jsGoogleFont",
-				"type": "stringlist",
-				"default": [],
-				"display": "Google fonts",
-				"tooltip": "List all the Google fonts you want to be able to use in your game to ensure they are downloaded (including in the side pane)."
 			}
 		]
 	},
@@ -453,8 +453,12 @@
 				"tooltip": "Width in pixels for the right column in the status component."
 			},
 			{
-				"type": "title",
-				"display": "Text style"
+        "name": "dkfghj",
+				"type": "text",
+				"display": "Text style",
+				"default": "40",
+				"display": "A title",
+				"tooltip": "A title"
 			},
       {
 				"name": "jsStyleSide_font_family",
@@ -466,7 +470,7 @@
 		  {
 				"name": "jsStyleSide_font_size",
 				"type": "int",
-				"default": 9,
+				"default": 10,
 				"display": "Font size",
 				"tooltip": "Font size for the side text."
 			},

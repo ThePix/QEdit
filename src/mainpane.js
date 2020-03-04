@@ -1,8 +1,8 @@
 import React from 'react';
 import {ExitsComp} from './exitscomp';
 import {ScriptOrStringComp} from './scriptorstringcomp';
-import {QuestObject} from './questobject';
 
+const [QuestObject] = require('./questobject')
 
 let settings = require("./lang-en.js");
 const PRONOUNS = settings.PRONOUNS;
@@ -23,7 +23,6 @@ export class MainPane extends React.Component {
   render() {
 
     if (this.props.object) {
-      console.log(this.props.object);
       const control = this.props.object.getCurrentTab(this.props.controls);
       const tab = control.tabName;
       const style = {color:this.props.object.jsColour};
@@ -39,8 +38,8 @@ export class MainPane extends React.Component {
           <TabComp 
             tab={tab}
             object={this.props.object} 
-            removeFromList={this.props.removeFromList} 
-            addToList={this.props.addToList} 
+            removefromlist={this.props.removefromlist} 
+            addtolist={this.props.addtolist} 
             handleChange={this.props.handleChange} 
             handleIntChange={this.props.handleIntChange}
             handleListChange={this.props.handleListChange}
@@ -97,8 +96,8 @@ const TabComp = (props) => {
       <div className="tabContent">
       <table><tbody>
         {controls.map((item, i) => <InputComp 
-          removeFromList={props.removeFromList} 
-          addToList={props.addToList} 
+          removefromlist={props.removefromlist} 
+          addtolist={props.addtolist} 
           handleChange={props.handleChange}
           handleIntChange={props.handleIntChange}
           handleListChange={props.handleListChange}
@@ -122,7 +121,7 @@ const TabComp = (props) => {
 const InputComp = (props) => {
   if (!props.object.displayIf(props.input)) return null;
 
-  const value = props.object[props.input.name];
+  let value = props.object[props.input.name];
   if (props.input.type === "select") {
     return (
       <tr className="form-group">
@@ -197,7 +196,9 @@ const InputComp = (props) => {
   else if (props.input.type === "title") {
     return (  
       <tr className="form-group">
-        <td colSpan="2"><span className="fieldTitle">{props.input.display}</span></td>
+        <td colSpan="2">
+          <span className="fieldTitle">{props.input.display}</span>
+        </td>
       </tr>
     )
   }
@@ -216,15 +217,17 @@ const InputComp = (props) => {
     return (  
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
-        <td><textarea 
-          name={props.input.name}
-          title={props.input.tooltip}
-          value={value.join('\n')}
-          onChange={props.handleListChange}
-          removeFromList={props.removeFromList} 
-          addToList={props.addToList}
-          options={props.input.options}
-        /></td>
+        <td>
+          <textarea
+            className="form-control stringlist"
+            cols="400" rows="6"
+            id={props.input.name}
+            name={props.input.name}
+            value={value}
+            title={props.input.tooltip + " Each entry in the list should be on a line on its own; press Enter to go to the next entry."}
+            onChange={props.handleChange}
+          />
+        </td>
       </tr>
     )
   }
@@ -270,6 +273,11 @@ const InputComp = (props) => {
     )
   }
   else if (props.input.type === "int") {
+    if (typeof value === 'string') value = parseInt(value)
+    if (typeof value !== 'number') {
+      console.log("Warning: Not an integer - " + props.input.name)
+      console.log(value)
+    }
     return (  
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
@@ -280,7 +288,7 @@ const InputComp = (props) => {
           type="number"
           size="2"
           title={props.input.tooltip}
-          value={value}
+          value={value ? value : props.input.default}
           onChange={props.handleIntChange}
         /></td>
       </tr>
