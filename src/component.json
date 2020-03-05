@@ -1,0 +1,26 @@
+[
+  {
+    "action":"tab",
+    "tabName":"Component",
+    "displayIf":"o.jsIsComponent", 
+    "tabControls":[
+      {
+        "name":"loc",
+        "type":"objects",
+        "default":"---", 
+        "display":"Location",
+        "tooltip":"The item that this is a component of."
+      }
+    ]
+  },
+  { 
+    "action":"extend",
+    "tabName":"Home",
+    "name":"jsIsComponent",
+    "type":"flag",
+    "default":false,
+    "display":"Component?",  
+    "tooltip":"What it says.",
+    "displayIf":"!o.jsIsRoom && !o.jsIsStub"
+  }
+]

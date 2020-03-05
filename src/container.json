@@ -27,6 +27,14 @@
         "display":"Transparent?",
         "tooltip":"Can the contents of the container be seen even when it is closed?",
         "displayIf":"o.jsContainerType === 'Container'"
+      },
+      {
+        "name":"jsIsLockable",
+        "type":"flag",
+        "default":false, 
+        "display":"Can this be locked?",
+        "tooltip":"What it says.",
+        "displayIf":"!o.jsIsRoom && !o.jsIsStub && (o.jsContainerType === 'Container' || o.jsContainerType === 'Openable')"
       }
     ]
   },

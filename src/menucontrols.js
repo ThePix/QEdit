@@ -19,7 +19,7 @@ return = [
       { role: 'copy' },
       { role: 'paste' },
       { type: 'separator' },
-      { label: 'Add room', },
+      { label: 'Add location', },
       { label: 'Add item', },
       { label: 'Add stub', },
       { label: 'Delete object', },

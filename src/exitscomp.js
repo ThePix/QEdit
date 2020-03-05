@@ -132,7 +132,7 @@ const ExitDetails = (props) => {
         {options.map((s, i) => <option value={s} key={i}>{s}</option>)}
         </select>
         <a onClick={() => props.updateExit(props.selected, "delete")} className="deleteLink">(delete)</a>
-        <a onClick={() => props.showObject(ex.name)} className="deleteLink">(go to room)</a>
+        <a onClick={() => props.showObject(ex.name)} className="deleteLink">(go to location)</a>
         <br/>
         <br/>
         <input type="radio"

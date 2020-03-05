@@ -75,19 +75,19 @@ export default class App extends React.Component {
     this.findMenuItem(template, 'Export to JavaScript').click = () => this.saveJs();
     this.findMenuItem(template, 'Exit').click =       () => this.exitApp();
 
-    this.findMenuItem(template, 'Add room').click =   () => this.addObject("room");
+    this.findMenuItem(template, 'Add location').click =   () => this.addObject("room");
     this.findMenuItem(template, 'Add item').click =   () => this.addObject("item");
     this.findMenuItem(template, 'Add stub').click =   () => this.addObject("stub");
     this.findMenuItem(template, 'Delete object').click = () => this.removeObject();
     this.findMenuItem(template, 'Duplicate object').click = () => this.duplicateObject();
-    this.findMenuItem(template, 'Show only rooms for exits').click = () => this.toggleOption("showRoomsOnly");
+    this.findMenuItem(template, 'Show only locations for exits').click = () => this.toggleOption("showRoomsOnly");
     this.findMenuItem(template, 'Find').click = () => this.find();
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
 
     this.fs = new FileStore();
     
-    this.controls = new TabControls(["settings", "container", "wearable"]).getControls();
+    this.controls = new TabControls(["settings", "merch", "container", "wearable", "furniture", "switchable", "component"]).getControls();
     const settings = this.createDefaultSettings();
     this.state = {
       objects:this.fs.readFile("example.asl6", settings),
@@ -156,7 +156,7 @@ export default class App extends React.Component {
     console.log('here1')
     this.setState({
       objects:objects,
-      currentObjectName: false,
+      currentObjectName: objects[0].name,
       options: {showRoomsOnly:true, },
     })
     console.log('here2')

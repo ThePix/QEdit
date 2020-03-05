@@ -47,7 +47,7 @@ export class Menus {
       {
         label: 'Objects',
         submenu: [
-          { label: 'Add room', },
+          { label: 'Add location', },
           { label: 'Add item', },
           { label: 'Add stub', },
           { type: 'separator' },
@@ -59,7 +59,7 @@ export class Menus {
         label: 'Options',
         submenu: [
           { 
-            label: 'Show only rooms for exits', type: 'checkbox', checked : true,
+            label: 'Show only locations for exits', type: 'checkbox', checked : true,
           }
         ]
       },

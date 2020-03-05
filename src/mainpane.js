@@ -30,8 +30,14 @@ export class MainPane extends React.Component {
       const controls = control.tabControls;
       
       // Will later need to check if this object has the current tab and set tab to zero if not
+      const deleteLink = (this.props.object.jsIsSettings ? '' : <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a>)
+      
       return (<div id="mainpane">
-        <p style={pStyle}><b><i>Editing {this.props.object.jsIsRoom ? "Room" : "Item"}:</i> <span style={style}>{this.props.object.name}</span></b> <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a></p>
+        <p style={pStyle}>
+          <b><i>Editing {this.props.object.jsIsRoom ? "Room" : "Item"}:</i></b>
+          <b><span style={style}>{this.props.object.name}</span></b>
+          {deleteLink}
+        </p>
         
           <Tabs object={this.props.object} controls={this.props.controls} tab={tab} selectTab={this.props.selectTab}/>
           

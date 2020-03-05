@@ -16,7 +16,7 @@ export class TabControls {
           
           { name:"loc",    type:"objects",  default:"---", display:"Location",
             validator:function(value, obj) { return value === obj.name; },
-            tooltip:"Where the object is at the start of the game, the room or container. Should usually be blank for rooms (as they are not inside anything).",
+            tooltip:"Where the object is at the start of the game, the location or container. Should usually be blank for locations (as they are not inside anything).",
           },
           
           { name:"jsPronoun", type:"select",   default:"thirdperson", display:"Pronouns",
@@ -46,34 +46,14 @@ export class TabControls {
             displayIf:"!o.jsIsRoom && !o.jsIsStub",
           },
           
-          { name:"jsIsLockable", type:"flag",   default:false, display:"Can this be locked?",
-            tooltip:"What it says.",
-            displayIf:"!o.jsIsRoom && !o.jsIsStub && (o.jsContainerType === 'Container' || o.jsContainerType === 'Openable')",
-          },
-          
           { name:"jsIsEdible", type:"flag",   default:false, display:"Edible?",  
             tooltip:"Can this item be eaten or drunk?",
             displayIf:"!o.jsIsRoom && !o.jsIsStub && o.jsMobilityType === 'Takeable'",
           },
           
-          { name:"jsIsSwitchable", type:"flag",   default:false, display:"Switchable?",  
-            tooltip:"Can the player turn it on and off?",
-            displayIf:"!o.jsIsRoom && !o.jsIsStub && (o.jsMobilityType === 'Immobile' || o.jsMobilityType === 'Takeable')",
-          },
-          
-          { name:"jsIsFurniture", type:"flag",   default:false, display:"Furniture?",  
-            tooltip:"The player can stand, sit or lie on furniture.",
-            displayIf:"!o.jsIsRoom && !o.jsIsStub && (o.jsMobilityType === 'Immobile' || o.jsMobilityType === 'Takeable')",
-          },
-          
           { name:"jsIsCountable", type:"flag",   default:false, display:"Countable?",  
             tooltip:"An item is countable if there are several of them at a few locations, and they are to be grouped together.",
             displayIf:"!o.jsIsRoom && !o.jsIsStub && o.jsMobilityType === 'Takeable'",
-          },
-          
-          { name:"jsIsComponent", type:"flag",   default:false, display:"Component?",  
-            tooltip:"An item that is permanently a part of another item.",
-            displayIf:"!o.jsIsRoom && !o.jsIsStub && o.jsMobilityType === 'Immobile'",
           },
         ]
       },
@@ -83,7 +63,7 @@ export class TabControls {
         displayIf:"!o.jsIsSettings", 
         tabControls:[
           { name:"desc",   type:"scriptstring", default:"", display:"Description",
-            tooltip:"A description of the room.",
+            tooltip:"A description of the location.",
             displayIf:"o.jsIsRoom && !o.jsIsStub",
             parameters:'',
             return:'boolean'
