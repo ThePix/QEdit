@@ -44,12 +44,18 @@ const DSPY_SCENERY = 5;
 
 
 
-const {Menu} = require('electron').remote;
+const {Menu, dialog, app} = require('electron').remote;
 import {Menus} from './menus';
 const template = new Menus().getMenus();
 
 
-
+let quitConfirmed = false
+const quitOptions  = {
+  buttons: ["Yes", "No"],
+  message: "Do you really want to quit?",
+  detail:'Any unsaved work will be lost.',
+  type:'warning',
+}
 
 
 
@@ -62,14 +68,16 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
 
-    //this.findMenuItem(template, 'New').click = () => this.newGame();
-    this.findMenuItem(template, 'Open...').click = () => this.openXml();
-    this.findMenuItem(template, 'Save').click = () => this.saveXml();
-    //this.findMenuItem(template, 'Save As...').click = () => this.saveXmlAs();
+    this.findMenuItem(template, 'New').click =        () => this.newGame();
+    this.findMenuItem(template, 'Open...').click =    () => this.openXml();
+    this.findMenuItem(template, 'Save').click =       () => this.saveXml();
+    this.findMenuItem(template, 'Save As...').click = () => this.saveXmlAs();
     this.findMenuItem(template, 'Export to JavaScript').click = () => this.saveJs();
-    this.findMenuItem(template, 'Add room').click = () => this.addObject("room");
-    this.findMenuItem(template, 'Add item').click = () => this.addObject("item");
-    this.findMenuItem(template, 'Add stub').click = () => this.addObject("stub");
+    this.findMenuItem(template, 'Exit').click =       () => this.exitApp();
+
+    this.findMenuItem(template, 'Add room').click =   () => this.addObject("room");
+    this.findMenuItem(template, 'Add item').click =   () => this.addObject("item");
+    this.findMenuItem(template, 'Add stub').click =   () => this.addObject("stub");
     this.findMenuItem(template, 'Delete object').click = () => this.removeObject();
     this.findMenuItem(template, 'Duplicate object').click = () => this.duplicateObject();
     this.findMenuItem(template, 'Show only rooms for exits').click = () => this.toggleOption("showRoomsOnly");
@@ -90,6 +98,27 @@ export default class App extends React.Component {
     for (let i = 0; i < this.state.objects.length; i++) {
       this.setDefaults(this.state.objects[i]);
     }
+    
+    
+    window.addEventListener("beforeunload", function(e) {
+      console.log("beforeunload")
+      console.log(quitConfirmed)
+      //e.defaultPrevented = true;
+      if (!quitConfirmed) {
+        const response = dialog.showMessageBox(quitOptions)
+        console.log(response)
+        if (response === 1) {
+          console.log('here')
+          e.returnValue = "\o/";
+        }
+      }
+      console.log(e)
+      console.log(quitConfirmed)
+    });
+    console.log("Listeners added")
+
+
+
   }
   
   findMenuItem(template, label) {
@@ -112,14 +141,34 @@ export default class App extends React.Component {
     return obj;
   }
   
+  exitApp() {
+    const response = dialog.showMessageBox(quitOptions)
+    if (response === 0) {
+      quitConfirmed = true
+      app.quit(0)
+    }
+    return false
+  }    
   
+  newGame() {
+    console.log(this)
+    const objects = this.fs.readFile("blank.asl6", {})
+    console.log('here1')
+    this.setState({
+      objects:objects,
+      currentObjectName: false,
+      options: {showRoomsOnly:true, },
+    })
+    console.log('here2')
+    this.message("New game");
+  }
   
   openXml() {
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
         { name: "All Files", extensions: ["*"] },
-        { name: "Quest files", extensions: ["aslx", "asl6"] },
+        { name: "Quest files", extensions: ["asl6", "aslx"] },
       ],
       properties: ["openFile"],
       title: 'Open file',
@@ -141,18 +190,50 @@ export default class App extends React.Component {
     }
   }
   
-  saveXml() {
-    const result = this.fs.writeFile(this, this.state.objects);
-    console.log(result);
-    this.message(result);
+  saveXml(filename) {
+    if (!filename) {
+      const settings = this.state.objects.find(el => el.jsIsSettings)
+      filename = settings.jsFilename
+    }
+
+    if (filename) {
+      const result = this.fs.writeFile(this, this.state.objects, filename);
+      console.log(result);
+      this.message(result);
+    }
+    else {
+      this.saveXmlAs()
+    }
   }
   
-  //TODO!!!
+  
+  
+  
+  
   saveXmlAs() {
-    console.log(this.state.objects);
-    this.fs.writeFile(this.state.objects);
-    console.log("Saved");
-    this.message("Saved");
+    const dialogOptions = {
+      //defaultPath: "c:/",
+      filters: [
+        { name: "All Files", extensions: ["*"] },
+        { name: "Quest files", extensions: ["asl6", "aslx"] },
+      ],
+      properties: ["openFile"],
+      title: 'Open file',
+    };
+    const { dialog } = require('electron').remote
+    const filename = dialog.showSaveDialog(dialogOptions)
+    console.log(filename)
+    if (filename) {
+      const settingsIndex = this.state.objects.findIndex(el => el.jsIsSettings)
+      this.state.objects[settingsIndex].jsFilename = filename
+      this.setState({
+        objects:this.state.objects,
+      });
+      this.saveXml(filename)
+    }
+    else {
+      this.message("Save as file cancelled");
+    }
   }
   
   saveJs() {

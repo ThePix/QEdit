@@ -21,6 +21,9 @@ class QuestObject {
     }
   }
  
+ 
+  //---------------------------------------------------------------------
+  //----------           For React                  ---------------------
   
   addDefaults(controls) {
     for (let i = 0; i < controls.length; i++) {
@@ -34,7 +37,6 @@ class QuestObject {
       }
     }  
   }
-  
 
   getCurrentTab(controls) {
     let tab = (this.jsTabName ? this.jsTabName : controls[0].tabName);
@@ -67,7 +69,6 @@ class QuestObject {
     }
   }
 
-
   treeStyleClass() {
     if (this.jsIsSettings) {
       return "treeSettings";
@@ -82,10 +83,15 @@ class QuestObject {
 
 
 
+  //---------------------------------------------------------------------
   //------------------  IMPORT FUNCTIONS  -------------------------
 
-  // Used by readFile to create one object from its XML
+  // Used by readFile via the constructor to create one object from its XML
+  // which could be Quest 5 or 6
+  // This has been unit tested with Quest 5 XML for an NPM, a wearable and a room
+  // For Quest 6 the different types of attributes have been tested
   translateObjectFromXml(xml, version) {
+    
     const object = {};
     this.jsConversionNotes = [];
 
@@ -326,7 +332,6 @@ class QuestObject {
     return this;    
   }
 
-  
   getDirectChildAttributes(element, tag, attr) {
     const types = Array.from(element.getElementsByTagName(tag));
     const types2 = types.filter(el => el.parentNode === element);
@@ -340,7 +345,6 @@ class QuestObject {
     }
     return arr;
   }  
-  
   
   importSettings(xmlDoc) {
     const gameObject = xmlDoc.getElementsByTagName("game")[0];
@@ -390,14 +394,19 @@ class QuestObject {
   
   
   
+  //---------------------------------------------------------------------
   //------------------  EXPORT FUNCTIONS  -------------------------
   
+  // Unit tested
   toXml() {
     let str = "  <object name=\"" + this.name + "\">\n";
     for (let property in this) {
       if (property !== "name" && this.hasOwnProperty(property)) {
         const value = this[property];
-        if (typeof value === "string") {
+        if (!value) {
+          console.log("No value found for property " + property + " of " + this.name)
+        }
+        else if (typeof value === "string") {
           str += "    <" + property + " type=\"string\"><![CDATA[" + value + "]]></" + property + ">\n";
         }
         else if (typeof value === "boolean") {
@@ -443,6 +452,7 @@ class QuestObject {
   } 
   
   // Converts one item to JavaScript code
+  // Unit tested
   toJs() {
     if (this.jsIsStub || this.jsIsSettings) return '';
     

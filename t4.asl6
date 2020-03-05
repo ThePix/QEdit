@@ -1,0 +1,51 @@
+<!--Saved by Quest 6.0.0-->
+<asl version="600">
+  <object name="Settings">
+    <jsIsSettings type="boolean">true</jsIsSettings>
+    <PANES type="string"><![CDATA[Left]]></PANES>
+    <STATUS_PANE_FLAG type="boolean">true</STATUS_PANE_FLAG>
+    <STATUS_WIDTH_LEFT type="int">120</STATUS_WIDTH_LEFT>
+    <STATUS_WIDTH_RIGHT type="int">40</STATUS_WIDTH_RIGHT>
+    <USE_DROPDOWN_FOR_CONV type="boolean">true</USE_DROPDOWN_FOR_CONV>
+    <TEXT_INPUT type="boolean">true</TEXT_INPUT>
+    <CURSOR type="string"><![CDATA[>]]></CURSOR>
+    <CMD_ECHO type="boolean">true</CMD_ECHO>
+    <CONVERT_NUMBERS_IN_PARSER type="boolean">true</CONVERT_NUMBERS_IN_PARSER>
+    <ROOM_HEADINGS type="boolean">true</ROOM_HEADINGS>
+    <MAX_UNDO type="int">10</MAX_UNDO>
+    <jsAskTell type="boolean">true</jsAskTell>
+    <NO_ASK_TELL type="string"><![CDATA[You cannot use ASK/TELL ABOUT in this game.]]></NO_ASK_TELL>
+    <jsDynamicConv type="boolean">true</jsDynamicConv>
+    <NO_TALK_TO type="string"><![CDATA[You cannot use TALK TO in this game.]]></NO_TALK_TO>
+    <SECONDS_PER_TURN type="int">60</SECONDS_PER_TURN>
+    <DATE_TIME_LOCALE type="string"><![CDATA[en - GB]]></DATE_TIME_LOCALE>
+    <DATE_TIME_START type="string"><![CDATA[April 1, 2019 09:43:00]]></DATE_TIME_START>
+    <DATE_TIME_OPTIONS__year type="string"><![CDATA[numeric]]></DATE_TIME_OPTIONS__year>
+    <DATE_TIME_OPTIONS__month type="string"><![CDATA[numeric]]></DATE_TIME_OPTIONS__month>
+    <DATE_TIME_OPTIONS__day type="string"><![CDATA[numeric]]></DATE_TIME_OPTIONS__day>
+    <DATE_TIME_OPTIONS__hour type="string"><![CDATA[numeric]]></DATE_TIME_OPTIONS__hour>
+    <DATE_TIME_OPTIONS__minute type="string"><![CDATA[numeric]]></DATE_TIME_OPTIONS__minute>
+    <jsStyleMain_font_family type="string"><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleMain_font_family>
+    <jsStyleMain_font_size type="string"><![CDATA[12 pt]]></jsStyleMain_font_size>
+    <jsStyleMain_color type="string"><![CDATA[black]]></jsStyleMain_color>
+    <jsStyleMain_background_color type="string"><![CDATA[white]]></jsStyleMain_background_color>
+    <jsStyleSide_font_family type="string"><![CDATA['Arial Black', Gadget, sans-serif]]></jsStyleSide_font_family>
+    <jsStyleSide_font_size type="string"><![CDATA[10 pt]]></jsStyleSide_font_size>
+    <jsStyleSide_color type="string"><![CDATA[white]]></jsStyleSide_color>
+    <jsStyleSide_background_color type="string"><![CDATA[blue]]></jsStyleSide_background_color>
+    <jsFilename type="string"><![CDATA[C:\Users\andyj\Documents\GitHub\QEdit\t4.asl6]]></jsFilename>
+  </object>
+
+  <object name="lounge">
+    <jsIsRoom type="boolean">true</jsIsRoom>
+    <jsExpanded type="boolean">true</jsExpanded>
+    <desc type="string"><![CDATA[The lounge is big.]]></desc>
+  </object>
+
+  <object name="player">
+    <loc type="string"><![CDATA[lounge]]></loc>
+    <jsPronoun type="string"><![CDATA[secondperson]]></jsPronoun>
+    <jsMobilityType type="string"><![CDATA[Player]]></jsMobilityType>
+    <examine type="string"><![CDATA[Looking good!]]></examine>
+  </object>
+

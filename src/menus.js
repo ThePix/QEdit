@@ -8,8 +8,10 @@ export class Menus {
           { label: 'New', },
           { label: 'Open...', },
           { label: 'Save', },
-          //{ label: 'Save As...', },
+          { label: 'Save As...', },
           { label: 'Export to JavaScript', },
+          { type: 'separator' },
+          { label: 'Exit', },
         ]
       },
       {

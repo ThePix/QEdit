@@ -358,38 +358,76 @@ createItem("test_object", {
 
 
 
-test('new QuestObject item', () => {
+test('new QuestObject npc', () => {
   const xml = `
       <object name="apprentice">
         <inherit name="editor_object" />
+        <inherit name="namedmale" />
         <alias>Kendall</alias>
         <usedefaultprefix type="boolean">false</usedefaultprefix>
         <look>Kendall is nineteen, a short, slim man, with long, rather unkempt hair.</look>
-        <object name="janthherb">
-          <inherit name="editor_object" />
-          <alias>Janthherb</alias>
-          <look>Janthherb is a blue flower that grows in damp, but sheltered locations, usually prefering lower altitudes. The important part of te plant is the short, thin leaf.</look>
-        </object>
-        <object name="appentice_genymedes">
-          <inherit name="editor_object" />
-          <inherit name="startingtopic" />
-          <alias>Genymedes</alias>
-        </object>
-      </object>
-    </object>`
+      </object>`
 
   const parser = new DOMParser()
   const xmlDoc = parser.parseFromString(xml, "text/xml")
   const obj = new QuestObject(xmlDoc.documentElement, 550)
-  console.log(obj)
   expect(obj.name).toBe("apprentice")
-  expect(obj.desc).toBe("Kendall is nineteen, a short, slim man, with long, rather unkempt hair.")
+  expect(obj.examine).toBe("Kendall is nineteen, a short, slim man, with long, rather unkempt hair.")
   expect(obj.alias).toBe("Kendall")
+  expect(obj.jsMobilityType).toBe("NPC")
+  expect(obj.jsPronoun).toBe("male")
+  expect(obj.properName).toBe(true)
 });
 
 
 
 
+
+test('new QuestObject wearable', () => {
+  const xml = `
+    <object name="robe">
+      <inherit name="editor_object" />
+      <inherit name="wearable" />
+      <alias>Kendall's robe</alias>
+      <feature_wearable />
+      <wear_slots type="stringlist">
+        <value>torso</value>
+      </wear_slots>
+      <wearmsg>You put on Kendall's robe</wearmsg>
+      <removemsg>You take off Kendall's robe.</removemsg>
+    </object>`
+
+  const parser = new DOMParser()
+  const xmlDoc = parser.parseFromString(xml, "text/xml")
+  const obj = new QuestObject(xmlDoc.documentElement, 550)
+  expect(obj.name).toBe("robe")
+  expect(obj.alias).toBe("Kendall's robe")
+  expect(obj.jsMobilityType).toBe("Takeable")
+  expect(obj.jsIsWearable).toBe(true)
+});
+
+
+
+test('new QuestObject room', () => {
+  const xml = `
+    <object name="scullery">
+      <inherit name="editor_room" />
+      <roomtype>Lower level room</roomtype>
+      <alias>The Scullery</alias>
+      <usedefaultprefix type="boolean">false</usedefaultprefix>
+      <exit alias="north" to="kitchens">
+        <inherit name="northdirection" />
+      </exit>
+    </object>`
+
+  const parser = new DOMParser()
+  const xmlDoc = parser.parseFromString(xml, "text/xml")
+  const obj = new QuestObject(xmlDoc.documentElement, 550)
+  expect(obj.name).toBe("scullery")
+  expect(obj.alias).toBe("The Scullery")
+  expect(obj.jsIsRoom).toBe(true)
+  expect(obj.north).toBeInstanceOf(Exit)
+});
 
 
 

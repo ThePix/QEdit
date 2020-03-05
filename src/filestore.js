@@ -25,6 +25,11 @@ export class FileStore {
   // which hopefully are pretty much the same
   readFile(filename, settings) {
     const str = fs.readFileSync(filename, "utf8");
+    return this.readXmlString(str, filename, settings)
+  }  
+  
+  // Separated out so it can be unit tested more easily
+  readXmlString(str, filename, settings) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(str, "text/xml");
     
@@ -40,9 +45,14 @@ export class FileStore {
       objects.push(obj);
     }
     
+    const errs = xmlDoc.getElementsByTagName("parsererror");
+    for (let err of errs) {
+      console.log("XML Error: " + err.innerHTML)
+    }    
+    
     const arr = xmlDoc.getElementsByTagName("object");
-    for (let i = 0; i < arr.length; i++) {
-      objects.push(new QuestObject(arr[i], version));
+    for (let xml of arr) {
+      objects.push(new QuestObject(xml, version));
     }
     
     // If we imported from Quest 5, object names will have been modified
@@ -58,6 +68,7 @@ export class FileStore {
       }
     }
     
+    console.log("Done " + objects.length);
     return objects;
   }
 
@@ -370,25 +381,13 @@ export class FileStore {
 
   
   writeFile(app, objects, filename) {
-    const settingsIndex = objects.findIndex(el => el.jsIsSettings)
-    const settings = objects[settingsIndex]
-    if (!filename) {
-      //const settings = objects.find(el => el.jsIsSettings)
-      filename = settings.jsFilename
-      if (!filename) return "Failed to get filename"
-    }
     if (filename.endsWith('.aslx')) {
       filename = filename.replace('.aslx', '.asl6')
       if (fs.existsSync(filename)) {
         return "A file already exists with the .asl6 extension. You should rename, move or delete that so this file can safely be saved with the new extension."
       }
-      console.log(filename)
-      objects[settingsIndex].jsFilename = filename
-      console.log(objects)
-      app.setState({
-        objects:objects,
-      });
     }
+    console.log(filename)
     
     let str = "<!--Saved by Quest 6.0.0-->\n<asl version=\"600\">\n"
 
