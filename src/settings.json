@@ -43,7 +43,7 @@
 				"type": "readonly",
 				"default": "",
 				"display": "Filename",
-				"tooltip": "Sorry, this cannot be changed."
+				"tooltip": "Sorry, this cannot be changed; do 'Save as..'"
 			},
       {
 				"name": "LANG_FILENAME",
@@ -74,6 +74,13 @@
 				"display": "Look counts",
 				"displayIf": "!o.FAILS_COUNT_AS_TURNS",
 				"tooltip": "Should LOOK count as a real turn? Note, this does not affect LOOK AT, which is always counted as a turn."
+			},
+			{
+				"name": "jsShowRoomsOnly",
+				"type": "flag",
+				"default": false,
+				"display": "Locations only for exits",
+				"tooltip": "By default, you can only select a location as the destination of an exit; untick to also allow items."
 			},
 			{
 				"name": "CONVERT_NUMBERS_IN_PARSER",
@@ -188,7 +195,7 @@
 				"default": false,
 				"display": "Use a drop-down for dynamic conversion choices",
 				"displayIf": "o.jsDynamicConv",
-				"tooltip": "The default is hyperlinks."
+				"tooltip": "If you use dynamic conversations, tick this to have the options appear in a dropdown list, rather than a list of hyperlinks. A drop-down is easier to access with the keyboard."
 			},
 			{
 				"name": "NPC_REACTIONS_AWAYS",
@@ -297,18 +304,11 @@
 		"tabName": "Main Pane",
 		"displayIf": "o.jsIsSettings",
 		"tabControls": [
-      {
-				"name": "USE_DROPDOWN_FOR_CONV",
-				"type": "flag",
-				"default": true,
-				"display": "Drop-downs for conv.",
-				"tooltip": "If you use dynamic conversations, tick this to have the options appear in a dropdown list, rather than a list of hyperlinks. A drop-down is easier to access with the keyboard."
-			},
 			{
 				"name": "TEXT_INPUT",
 				"type": "flag",
 				"default": true,
-				"display": "Text input",
+				"display": "Text input?",
 				"tooltip": "Tick to allow the player to type commands (as opposed to using the buttons in the side pane exclusively)."
 			},
 			{
@@ -322,14 +322,14 @@
 				"name": "CMD_ECHO",
 				"type": "flag",
 				"default": true,
-				"display": "Echo input",
+				"display": "Echo input?",
 				"tooltip": "Tick to have the player's commands added to the text window."
 			},
 			{
 				"name": "TYPEWRITER",
 				"type": "flag",
 				"default": false,
-				"display": "Typewriter effect",
+				"display": "Typewriter effect?",
 				"tooltip": "Gives a slight pause before printing each character."
 			},
 			{
@@ -408,17 +408,9 @@
 				"name": "COMPASS",
 				"type": "flag",
 				"default": "",
-				"display": "Show compass?",
+				"display": "Compass?",
 				"displayIf": "o.PANES !== 'None'",
 				"tooltip": "Show the compass rose?"
-			},
-			{
-				"name": "DIVIDER",
-				"type": "text",
-				"default": "",
-				"display": "Divider",
-				"displayIf": "o.PANES !== 'None'",
-				"tooltip": "File name for an image to be inserted in the column between each component."
 			},
 			{
 				"name": "STATUS_PANE_FLAG",
@@ -451,6 +443,14 @@
 				"display": "Status right",
 				"displayIf": "o.STATUS_PANE_FLAG",
 				"tooltip": "Width in pixels for the right column in the status component."
+			},
+			{
+				"name": "DIVIDER",
+				"type": "text",
+				"default": "",
+				"display": "Divider",
+				"displayIf": "o.PANES !== 'None'",
+				"tooltip": "File name for an image to be inserted in the column between each component."
 			},
 			{
 				"type": "title",

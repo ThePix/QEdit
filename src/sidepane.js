@@ -98,5 +98,5 @@ const TreeLink = (props) => {
   let className = "tree " + object.treeStyleClass();
   if (object === props.selected) className += " treeSelected";
   
-  return  <a onClick={() => showObject(object.name)} className={className}>{object.name}</a>
+  return  <a onClick={() => showObject(object.name)} className={className}><span style={{color:object.jsColour}}>{object.name}</span></a>
 }

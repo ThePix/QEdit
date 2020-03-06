@@ -5,13 +5,13 @@ export class Menus {
       {
         label: 'File',
         submenu: [
-          { label: 'New', },
-          { label: 'Open...', },
-          { label: 'Save', },
-          { label: 'Save As...', },
-          { label: 'Export to JavaScript', },
+          { label: 'New', accelerator: 'CmdOrCtrl+N',},
+          { label: 'Open...', accelerator: 'CmdOrCtrl+O',},
+          { label: 'Save', accelerator: 'CmdOrCtrl+S',},
+          { label: 'Save As...', accelerator: 'CmdOrCtrl+Alt+S',},
+          { label: 'Export to JavaScript', accelerator: 'CmdOrCtrl+J',},
           { type: 'separator' },
-          { label: 'Exit', },
+          { label: 'Exit', accelerator: 'Alt+F4',},
         ]
       },
       {
@@ -45,37 +45,23 @@ export class Menus {
         ]
       },
       {
-        label: 'Objects',
+        label: 'Object',
         submenu: [
-          { label: 'Add location', },
-          { label: 'Add item', },
+          { label: 'Add location', accelerator: 'CmdOrCtrl+L',},
+          { label: 'Add item', accelerator: 'CmdOrCtrl+I',},
           { label: 'Add stub', },
           { type: 'separator' },
           { label: 'Delete object', },
-          { label: 'Duplicate object', },
-        ]
-      },
-      {
-        label: 'Options',
-        submenu: [
-          { 
-            label: 'Show only locations for exits', type: 'checkbox', checked : true,
-          }
+          { label: 'Duplicate object', accelerator: 'CmdOrCtrl+D',},
         ]
       },
       {
         label: 'Search',
         submenu: [
-          { 
-            label: 'Find',
-          }
-        ]
-      },
-      {
-        role: 'window',
-        submenu: [
-          { role: 'minimize' },
-          { role: 'close' }
+          { label: 'Find', accelerator: 'CmdOrCtrl+F',},
+          { label: 'Find next', accelerator: 'F3',},
+          { label: 'Search backwards', type: 'checkbox', checked : false, },
+          { label: 'Search case sensitive', type: 'checkbox', checked : true, },
         ]
       },
       {

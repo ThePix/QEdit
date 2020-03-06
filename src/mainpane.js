@@ -25,17 +25,21 @@ export class MainPane extends React.Component {
     if (this.props.object) {
       const control = this.props.object.getCurrentTab(this.props.controls);
       const tab = control.tabName;
-      const style = {color:this.props.object.jsColour};
+      //const style = {color:this.props.object.jsColour};
       const pStyle = {backgroundColor:this.props.warning ? 'yellow' : 'white', padding:3};
       const controls = control.tabControls;
       
       // Will later need to check if this object has the current tab and set tab to zero if not
       const deleteLink = (this.props.object.jsIsSettings ? '' : <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a>)
       
+      const title = (this.props.object.jsIsSettings ? 
+        <b><i>Editing Settings</i></b> : 
+        <b><i>Editing {this.props.object.jsIsRoom ? "Location" : "Item"}:</i> <span style={{color:this.props.object.jsColour}}>{this.props.object.name}</span></b>
+      )
+      
       return (<div id="mainpane">
         <p style={pStyle}>
-          <b><i>Editing {this.props.object.jsIsRoom ? "Room" : "Item"}:</i></b>
-          <b><span style={style}>{this.props.object.name}</span></b>
+          <b>{title}</b>
           {deleteLink}
         </p>
         
@@ -57,7 +61,7 @@ export class MainPane extends React.Component {
             showObject={this.props.showObject} 
             options={this.props.options}/>
 
-          </div>);
+      </div>);
     }
     else {
       //this.state = {};
@@ -127,7 +131,8 @@ const TabComp = (props) => {
 const InputComp = (props) => {
   if (!props.object.displayIf(props.input)) return null;
 
-  let value = props.object[props.input.name];
+  let value = props.object[props.input.name]
+  if (value === undefined) value = props.input.default
   if (props.input.type === "select") {
     return (
       <tr className="form-group">

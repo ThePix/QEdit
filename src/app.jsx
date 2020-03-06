@@ -56,6 +56,12 @@ const quitOptions  = {
   detail:'Any unsaved work will be lost.',
   type:'warning',
 }
+const newOptions  = {
+  buttons: ["Yes", "No"],
+  message: "Do you really want to start a new game?",
+  detail:'Any unsaved work will be lost.',
+  type:'warning',
+}
 
 
 
@@ -67,32 +73,44 @@ const quitOptions  = {
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    
+    const menuMapping = {
+      'New':        () => this.newGame(),
+      'Open...':    () => this.openXml(),
+      'Save':       () => this.saveXml(),
+      'Save As...': () => this.saveXmlAs(),
+      'Export to JavaScript': () => this.saveJs(),
+      'Exit':       () => this.exitApp(),
 
-    this.findMenuItem(template, 'New').click =        () => this.newGame();
-    this.findMenuItem(template, 'Open...').click =    () => this.openXml();
-    this.findMenuItem(template, 'Save').click =       () => this.saveXml();
-    this.findMenuItem(template, 'Save As...').click = () => this.saveXmlAs();
-    this.findMenuItem(template, 'Export to JavaScript').click = () => this.saveJs();
-    this.findMenuItem(template, 'Exit').click =       () => this.exitApp();
+      'Add location':   () => this.addObject("room"),
+      'Add item':   () => this.addObject("item"),
+      'Add stub':   () => this.addObject("stub"),
+      'Delete object': () => this.removeObject(),
+      'Duplicate object': () => this.duplicateObject(),
+      
+      'Find': () => this.find(),
+      'Find next': () => this.findNext(),
+      'Search backwards': () => this.searchBackwards = !this.searchBackwards,
+      'Search case sensitive': () => this.searchCaseSensitive = !this.searchCaseSensitive,
 
-    this.findMenuItem(template, 'Add location').click =   () => this.addObject("room");
-    this.findMenuItem(template, 'Add item').click =   () => this.addObject("item");
-    this.findMenuItem(template, 'Add stub').click =   () => this.addObject("stub");
-    this.findMenuItem(template, 'Delete object').click = () => this.removeObject();
-    this.findMenuItem(template, 'Duplicate object').click = () => this.duplicateObject();
-    this.findMenuItem(template, 'Show only locations for exits').click = () => this.toggleOption("showRoomsOnly");
-    this.findMenuItem(template, 'Find').click = () => this.find();
+    }
+
+    for (let key in menuMapping) {
+      this.findMenuItem(template, key).click = menuMapping[key]
+    }
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
 
+    this.searchTerm = ''
+    this.searchBackwards = false
+    this.searchCaseSensitive = true
     this.fs = new FileStore();
     
     this.controls = new TabControls(["settings", "merch", "container", "wearable", "furniture", "switchable", "component"]).getControls();
     const settings = this.createDefaultSettings();
     this.state = {
-      objects:this.fs.readFile("example.asl6", settings),
+      objects:this.fs.readFile("blank.asl6", settings),
       currentObjectName: false,
-      options: {showRoomsOnly:true, },
     };
     this.state.currentObjectName = this.state.objects[0].name;
     for (let i = 0; i < this.state.objects.length; i++) {
@@ -151,16 +169,18 @@ export default class App extends React.Component {
   }    
   
   newGame() {
-    console.log(this)
-    const objects = this.fs.readFile("blank.asl6", {})
-    console.log('here1')
-    this.setState({
-      objects:objects,
-      currentObjectName: objects[0].name,
-      options: {showRoomsOnly:true, },
-    })
-    console.log('here2')
-    this.message("New game");
+    const response = dialog.showMessageBox(newOptions)
+    if (response === 0) {
+      const objects = this.fs.readFile("blank.asl6", {})
+      this.setState({
+        objects:objects,
+        currentObjectName: objects[0].name,
+      })
+      this.message("New game");
+    }
+    else {
+      this.message("New game cancelled");
+    }
   }
   
   openXml() {
@@ -181,7 +201,6 @@ export default class App extends React.Component {
       this.setState({
         objects:this.fs.readFile(result[0], settings),
         currentObjectName: false,
-        options: {showRoomsOnly:true, },
       });
       this.message("Opened: " + result[0]);
     }
@@ -352,8 +371,8 @@ export default class App extends React.Component {
     // https://www.npmjs.com/package/electron-prompt
     prompt({
         title: 'Quest',
-        label: 'Search fr',
-        value: '',
+        label: 'Search for',
+        value: this.searchTerm,
         height:150,
         inputAttrs: {
             //type: 'url'
@@ -362,14 +381,58 @@ export default class App extends React.Component {
     .then((r) => {
         if(r === null) {
             console.log('user cancelled');
+            this.message("Search cancelled")
         } else {
             console.log('result', r);
+            this.searchTerm = r
+            console.log(r);
+            this.searchForObject()
         }
     })
     .catch(console.error);
     //console.log("Searchng for: " + term);
   };
   
+  findNext() {
+    if (this.searchTerm.length > 0) {
+      this.searchForObject()
+    }
+    else {
+      this.find()
+    }
+  }
+    
+  
+  searchForObject() {
+    const currentIndex = this.state.objects.findIndex(el => el.name === this.state.currentObjectName)
+    console.log(currentIndex)
+    console.log("L=" + this.state.objects.length)
+    const regex = new RegExp(this.searchTerm, this.searchCaseSensitive ? undefined : 'i')
+    
+    let index = currentIndex
+    
+    while (true) {
+      if (this.searchBackwards) {
+        index--
+        if (index < 0) index = this.state.objects.length - 1
+      }
+      else {
+        index++
+        if (index >= this.state.objects.length) index = 0
+      }
+      console.log(index)
+      if (index === currentIndex) {
+        this.message(regex.test(this.state.objects[currentIndex].name) ? "Search: No object found (other than this one)" : "Search: No object found")
+        return
+      }
+      const name = this.state.objects[index].name
+      if (regex.test(name)) {
+        this.showObject(name)
+        this.message("Search: Found " + name)
+        return
+      }
+    }
+  };  
   
   // remove on item from an attribute that is an array of strings
   removefromlist(item, att, name) {

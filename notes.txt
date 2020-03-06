@@ -1,0 +1,53 @@
+Need to write styles.css
+
+THANKS is a string, needs to be stringlist
+No STATUS (function)
+No INVENTORIES
+ROOM_TEMPLATE
+FILES
+
+
+SPLIT_LINES_ON
+DEBUG
+
+
+File
+need to track if it has changed (show on meta-data tab)
+
+
+
+
+
+Function/JavaScript fields
+Convert to JS
+  Templates need parameters
+Output JS fields
+Output exits
+Other field types
+
+
+Functions and commands
+
+
+Do we just output the reduced set of files, and assume the other are already there?
+
+Do we out a whole folder of files, copying from elsewhere as required?
+
+Create folder if it does not exist, named as per the game
+Create 
+styles.css
+data.js
+settings.js
+
+game.html
+code.js (copied from home)
+
+images/
+lib/
+
+
+
+fs.copyFile('source.txt', 'destination.txt', (err) => {
+  if (err) throw err;
+  console.log('source.txt was copied to destination.txt');
+});

@@ -27,7 +27,11 @@ export class TabControls {
 
           { name:"title2", type:"title", display:"Editor settings" },
 
-          { name:"jsColour", type:"text",   default:"blue", display:"Editor colour",  
+          { name:"jsColour", type:"select",   default:"blue", display:"Editor colour",
+            options:[
+              'blue', 'red', 'limegreen', 'orange', 'plum',
+              'hotpink', 'seagreen', 'navy', 'tan', 'sienna', 'dimgray', 'silver', 
+            ],
             tooltip:"Colour of the text in the left pane.",
           },
           
