@@ -1,14 +1,10 @@
 Need to write styles.css
 
-THANKS is a string, needs to be stringlist
 No STATUS (function)
 No INVENTORIES
 ROOM_TEMPLATE
 FILES
 
-
-SPLIT_LINES_ON
-DEBUG
 
 
 File
@@ -26,8 +22,20 @@ Output exits
 Other field types
 
 
-Functions and commands
 
+____________
+
+Functions and commands
+----------------------
+
+Including exporting
+
+
+____________
+
+
+Export
+------
 
 Do we just output the reduced set of files, and assume the other are already there?
 

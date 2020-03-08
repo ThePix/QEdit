@@ -33,7 +33,7 @@
 			},
 			{
 				"name": "THANKS",
-				"type": "text",
+				"type": "stringlist",
 				"default": "",
 				"display": "Credits",
 				"tooltip": "List all your contributors, like beta-testers."
@@ -43,6 +43,7 @@
 				"type": "readonly",
 				"default": "",
 				"display": "Filename",
+        "displayIf": "o.jsAdvanced",
 				"tooltip": "Sorry, this cannot be changed; do 'Save as..'"
 			},
       {
@@ -60,11 +61,34 @@
 		"tabName": "Gameplay",
 		"displayIf": "o.jsIsSettings",
 		"tabControls": [
+			{
+				"name": "jsAdvanced",
+				"type": "stringlist",
+				"default": false,
+				"display": "Advanced options",
+				"tooltip": "Tick this to see more advanced options across various tabs."
+			},
+			{
+				"name": "SPLIT_LINES_ON",
+				"type": "string",
+				"default": "<BR>",
+				"display": "Split lines on",
+        "displayIf": "o.jsAdvanced",
+				"tooltip": "In a text area, what string denatoes a line break? The default is what Quest 5 used."
+			},
+			{
+				"name": "DEBUG",
+				"type": "flag",
+				"default": true,
+				"display": "Debugging mode?",
+				"tooltip": "In debugging mode some extra commands are available in game. Untick this before exporting to JavaScript for release."
+			},
       {
 				"name": "FAILS_COUNT_AS_TURNS",
 				"type": "flag",
 				"default": false,
 				"display": "Fails count",
+        "displayIf": "o.jsAdvanced",
 				"tooltip": "If the player's input is not understood (or is a meta-command, such as HELP or SAVE), should that count as a real turn?"
 			},
 			{
@@ -72,7 +96,7 @@
 				"type": "flag",
 				"default": false,
 				"display": "Look counts",
-				"displayIf": "!o.FAILS_COUNT_AS_TURNS",
+				"displayIf": "!o.FAILS_COUNT_AS_TURNS && o.jsAdvanced",
 				"tooltip": "Should LOOK count as a real turn? Note, this does not affect LOOK AT, which is always counted as a turn."
 			},
 			{
@@ -87,6 +111,7 @@
 				"type": "flag",
 				"default": true,
 				"display": "Understand numbers",
+        "displayIf": "o.jsAdvanced",
 				"tooltip": "Tick if you want the parser to understand the words 'one', 'two', etc. as well as the digits. Useful if you have COUNTABLE items, but a slight slow-down in the response."
 			},
 			{
@@ -101,6 +126,7 @@
 				"type": "int",
 				"default": 10,
 				"display": "Max. undo",
+        "displayIf": "o.jsAdvanced",
 				"tooltip": "The number of game state saves to keep in memory, and hence the maximum times the player can UNDO in one go."
 			},
 			{
@@ -108,6 +134,7 @@
 				"type": "flag",
 				"default": false,
 				"display": "Disable save",
+        "displayIf": "o.jsAdvanced",
 				"tooltip": "Tick to prevent the player saving her game progress."
 			},
 			{
@@ -115,6 +142,7 @@
 				"type": "flag",
 				"default": false,
 				"display": "Custom exits",
+        "displayIf": "o.jsAdvanced",
 				"tooltip": "Tick to have custom exits, such as port/starboard. These should be defined in exits.js."
 			},
 			{
@@ -142,6 +170,7 @@
 				"default": 5,
 				"display": "Turns a question lasts",
 				"displayIf": "o.jsSay",
+        "displayIf": "o.jsAdvanced",
 				"tooltip": "When an NPC asks a question, if the player SAYs something within this many turns it will be taken as a reply."
 			},
 			{
@@ -214,6 +243,7 @@
 				"type": "flag",
 				"default": false,
 				"display": "Track time",
+        "displayIf": "o.jsAdvanced",
 				"tooltip": "Do you want to correlate turns with how time is passing?"
 			},
       {
