@@ -3,9 +3,7 @@ import {ScriptComp, SelectComp} from './components';
 
 
 
-let settings = require("./lang-en.js");
-const PRONOUNS = settings.PRONOUNS;
-const EXITS = settings.EXITS;
+const {lang} = require("./lang-en.js")
 //const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
 
@@ -49,11 +47,11 @@ export class ExitsComp extends React.Component {
 const ExitsRow = (props) => {
   const data = []
   for (let col = 0; col < 5; col++) {
-    if (EXITS[col + 5 * props.row].nocmd) {
+    if (lang.exit_list[col + 5 * props.row].nocmd) {
       data.push(<td key={col + 5 * props.row}>&nbsp;</td>)
     }
     else {
-      data.push(<Exit name={EXITS[col + 5 * props.row].name} key={col + 5 * props.row} object={props.object} selected={props.selected} handleSelectExit={props.handleSelectExit}/>);
+      data.push(<Exit name={lang.exit_list[col + 5 * props.row].name} key={col + 5 * props.row} object={props.object} selected={props.selected} handleSelectExit={props.handleSelectExit}/>);
     }
   }
 

@@ -353,6 +353,25 @@ createItem("test_object", {
 
 
 
+test('toJsSettings with boolean/string', () => {
+  const obj = new QuestObject({name:'Settings', jsIsSettings:true, stringAtt:'Some string', jsstringAtt:true})
+  const result = obj.toJs()
+  expect(result).toBe('');
+
+  const result2 = obj.toJsSettings()
+  const expected2 = '\n\n\nsettings.stringAtt = "Some string"\n'
+  expect(result2).toBe(expected2);
+  
+  obj.jsstringAtt = false
+
+  const result3 = obj.toJsSettings()
+  const expected3 = '\n\n\nsettings.stringAtt = false\n'
+  expect(result3).toBe(expected3);
+});
+
+
+
+
 
 
 

@@ -1,8 +1,5 @@
 'use strict'
 
-let settings = require("./lang-en.js");
-const PRONOUNS = settings.PRONOUNS;
-const EXITS = settings.EXITS;
 const useWithDoor = "useWithDoor";
 const DSPY_SCENERY = 5;
 
@@ -403,7 +400,7 @@ class QuestObject {
     for (let property in this) {
       if (property !== "name" && this.hasOwnProperty(property)) {
         const value = this[property];
-        if (!value) {
+        if (value === undefined) {
           console.log("No value found for property " + property + " of " + this.name)
         }
         else if (typeof value === "string") {
@@ -484,31 +481,36 @@ class QuestObject {
   // Converts one item to JavaScript code
   toJsSettings() {
     if (!this.jsIsSettings) return '';
+
+    const {settings} = require("./settings.js")
+    console.log(this)
     
     let str = "\n\n\n";
     
-    // These are (currently) not editable
-    str += 'const LANG_FILENAME = "lang-en.js";\n'
-    str += 'const DEBUG = true;\n'
-    str += 'const PARSER_DEBUG = false;\n'
-    str += 'const FILES = ["code", "data", "npcs"];\n'
-    str += 'const SPLIT_LINES_ON = "<br>";\n'
-    str += 'const DATE_TIME_OPTIONS = {};\n'
-
     for (let key in this) {
-      if (/^js[A-Z]/.test(key)) continue;
-      const inDict = key.includes("__");
-      if (inDict) {
-        str += key.replace("__", ".") + " = ";
+      console.log("Doing: " + key)
+      
+      if (/^js[A-Z]/.test(key) || key === 'name') continue;
+      console.log("Not internal")
+
+      // Some settings are either false or a string, and in the editor set in two places
+      if (/^js[a-z]/.test(key)) {
+        if (this[key] === false) str += 'settings.' + key.replace(/^js/, "") + " = false\n"
+        continue
       }
-      else {    
-        str += "const " + key + " = ";
+      if (this['js' + key] === false) {
+        continue
       }
+
+      str += 'settings.' + key.replace("__", ".") + " = "
+      console.log(str)
       switch (typeof this[key]) {
         case "boolean": str += (this[key] ? "true" : "false"); break;
         case "string":  str += "\"" + this[key] + "\""; break;
         case "number": str += this[key]; break;
+        default: str += '[' + this.key.map(el => '"' + el + '"').join(', ') + ']'
       }
+      console.log(str)
       str += "\n";
     }
     return str;
@@ -518,11 +520,31 @@ class QuestObject {
   toCss() {
     if (!this.jsIsSettings) return '';
     
-    let str = "\n\n\n";
-
-    //TODO
+    let str = "";
+    
+    if (this.jsGoogleFonts && this.jsGoogleFonts.length > 1) {
+      str += "@import url('https://fonts.googleapis.com/css?family=" + this.jsGoogleFonts.map(el => el.replace(/ /g, '+')).join('|') + "');\n\n"
+    }
+    str += "#main {\n"
+    if (this.jsStyleMain_color) str += "  color:" + this.jsStyleMain_color + ";\n"
+    if (this.jsStyleMain_background_color) str += "  background-color:" + this.jsStyleMain_background_color + ";\n"
+    if (this.jsStyleMain_font_family) str += "  font-family:" + this.jsStyleMain_font_family + ";\n"
+    if (this.jsStyleMain_font_size) str += "  font-size:" + this.jsStyleMain_font_size + "pt;\n"
+    str += "}\n\n\n"
+    str += "sidepanes {\n"
+    if (this.jsStyleSide_color) str += "  color:" + this.jsStyleSide_color + ";\n"
+    if (this.jsStyleSide_background_color) str += "  background-color:" + this.jsStyleSide_background_color + ";\n"
+    if (this.jsStyleSide_font_family) str += "  font-family:" + this.jsStyleSide_font_family + ";\n"
+    if (this.jsStyleSide_font_size) str += "  font-size:" + this.jsStyleSide_font_size + "pt;\n"
+    str += "}\n\n\n"
     
     return str;
+  }
+
+  // Converts one item to CSS settings
+  toCode() {
+    //TODO!!!
+    return '';
   }
 
   beautifyObject(indent) {

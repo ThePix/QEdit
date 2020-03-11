@@ -4,9 +4,6 @@ import {ScriptOrStringComp} from './scriptorstringcomp';
 
 const [QuestObject] = require('./questobject')
 
-let settings = require("./lang-en.js");
-const PRONOUNS = settings.PRONOUNS;
-const EXITS = settings.EXITS;
 const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
 

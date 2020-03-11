@@ -31,9 +31,6 @@ session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
 
 
 
-let settings = require("./lang-en.js");
-const PRONOUNS = settings.PRONOUNS;
-const EXITS = settings.EXITS;
 const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
 
@@ -113,9 +110,9 @@ export default class App extends React.Component {
       currentObjectName: false,
     };
     this.state.currentObjectName = this.state.objects[0].name;
-    for (let i = 0; i < this.state.objects.length; i++) {
-      this.setDefaults(this.state.objects[i]);
-    }
+    //for (let i = 0; i < this.state.objects.length; i++) {
+    //  this.setDefaults(this.state.objects[i]);
+    //}
     
     
     window.addEventListener("beforeunload", function(e) {
@@ -133,10 +130,6 @@ export default class App extends React.Component {
       console.log(e)
       console.log(quitConfirmed)
     });
-    console.log("Listeners added")
-
-
-
   }
   
   findMenuItem(template, label) {
@@ -255,11 +248,17 @@ export default class App extends React.Component {
     }
   }
   
-  saveJs() {
-    console.log(this.state.objects);
-    this.fs.writeFileJS(this.state.objects);
-    console.log("Saved");
-    this.message("Saved");
+  saveJs(filename) {
+    const settings = this.state.objects.find(el => el.jsIsSettings)
+    if (!settings.jsFilename) {
+      console.log('Save your game before exporting');
+      this.message('Save your game before exporting');
+      return
+    }      
+    
+    const result = this.fs.writeFileJS(this.state.objects, settings.jsFilename);
+    console.log(result);
+    this.message(result);
   }
   
   removeObject(name) {
@@ -313,7 +312,7 @@ export default class App extends React.Component {
       newObject.loc = this.state.currentObjectName;
       console.log("Set location");
     }
-    this.setDefaults(newObject);
+    //this.setDefaults(newObject);
     
     console.log(newObject);
       

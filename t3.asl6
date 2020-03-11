@@ -1,0 +1,23 @@
+<!--Saved by Quest 6.0.0-->
+<asl version="600">
+  <object name="Settings">
+    <jsIsSettings type="boolean">true</jsIsSettings>
+    <jsColour type="string"><![CDATA[black]]></jsColour>
+    <jsTabName type="string"><![CDATA[Meta-Data]]></jsTabName>
+    <jsFilename type="string"><![CDATA[C:\Users\andyj\Documents\GitHub\QEdit\t3.asl6]]></jsFilename>
+  </object>
+
+  <object name="lounge">
+    <jsIsRoom type="boolean">true</jsIsRoom>
+    <jsExpanded type="boolean">true</jsExpanded>
+    <desc type="string"><![CDATA[The lounge is big.]]></desc>
+  </object>
+
+  <object name="player">
+    <loc type="string"><![CDATA[lounge]]></loc>
+    <jsPronoun type="string"><![CDATA[secondperson]]></jsPronoun>
+    <jsMobilityType type="string"><![CDATA[Player]]></jsMobilityType>
+    <examine type="string"><![CDATA[Looking good!]]></examine>
+  </object>
+
+</asl>

@@ -37,6 +37,10 @@ ____________
 Export
 ------
 
+Check if "out" folder exists. If not, create it, and copy game.html
+
+Language
+
 Do we just output the reduced set of files, and assume the other are already there?
 
 Do we out a whole folder of files, copying from elsewhere as required?

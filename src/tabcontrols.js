@@ -1,5 +1,4 @@
-let settings = require("./lang-en.js");
-const PRONOUNS = settings.PRONOUNS;
+const {lang} = require("./lang-en.js");
 
 
 export class TabControls {
@@ -20,7 +19,7 @@ export class TabControls {
           },
           
           { name:"jsPronoun", type:"select",   default:"thirdperson", display:"Pronouns",
-            options:Object.keys(PRONOUNS),
+            options:Object.keys(lang.pronouns),
             tooltip:"How should the game refer to this?",
             displayIf:"!o.jsIsRoom && !o.jsIsStub",
           },
@@ -101,8 +100,8 @@ export class TabControls {
       },
     ];
     
-    for (let i = 0; i < files.length; i++) {
-      const json = require('./' + files[i] + '.json');
+    for (let filename of files) {
+      const json = require('./' + filename + '.json');
       for (let j = 0; j < json.length; j++) {
         if (json[j].action === "tab") {
           this.controls.push(json[j]);
@@ -116,8 +115,8 @@ export class TabControls {
             console.log("------------------------------");
             console.log("Error with extending tab");
             console.log("Failed to find a tab called: " + json[j].tabName);
-            console.log("File: " + files[i] + ".json");
-            console.log("Note that this is case senstive!");
+            console.log("File: " + filename + ".json");
+            console.log("Note that this is case sensitive!");
           }
           else {
             tab.tabControls.push(json[j]);

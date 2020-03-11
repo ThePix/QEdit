@@ -4,38 +4,38 @@
 		"displayIf": "o.jsIsSettings",
 		"tabControls": [
       {
-				"name": "TITLE",
+				"name": "title",
 				"type": "text",
 				"default": "",
 				"display": "Game title",
 				"tooltip": "Title of the game."
 			},
 			{
-				"name": "SUBTITLE",
+				"name": "subtitle",
 				"type": "text",
 				"default": "",
 				"display": "Sub-title",
 				"tooltip": "Sub-title of the game (if you want it)."
 			},
 			{
-				"name": "AUTHOR",
+				"name": "author",
 				"type": "text",
 				"default": "",
 				"display": "Author",
 				"tooltip": "Your name."
 			},
 			{
-				"name": "VERSION",
+				"name": "version",
 				"type": "text",
-				"default": "",
+				"default": "1.0",
 				"display": "Version",
 				"tooltip": "Conventionally, 1.0 will be your first release, so start from 0.1 (and do not worry about getting to 1.10, it is not a proper decimal number); some people like to further subdivide, so you might start at 0.1.0."
 			},
 			{
-				"name": "THANKS",
+				"name": "thank",
 				"type": "stringlist",
-				"default": "",
-				"display": "Credits",
+				"default": [],
+				"display": "Thanks to",
 				"tooltip": "List all your contributors, like beta-testers."
 			},
 			{
@@ -44,14 +44,21 @@
 				"default": "",
 				"display": "Filename",
         "displayIf": "o.jsAdvanced",
-				"tooltip": "Sorry, this cannot be changed; do 'Save as..'"
+				"tooltip": "Sorry, this cannot be changed; do 'Save as...'"
 			},
       {
-				"name": "LANG_FILENAME",
+				"name": "lang",
 				"type": "text",
-				"default": "lang-en.js",
-				"display": "Language file",
+				"default": "lang-en",
+				"display": "Language filename (without path or extension)",
 				"tooltip": "So far, only English is supported, but potentially other languages can be added."
+			},
+			{
+				"name": "jsAdvanced",
+				"type": "flag",
+				"default": false,
+				"display": "Advanced options",
+				"tooltip": "Tick this to see more advanced options across various tabs."
 			}
 		]
 	},
@@ -62,29 +69,22 @@
 		"displayIf": "o.jsIsSettings",
 		"tabControls": [
 			{
-				"name": "jsAdvanced",
-				"type": "stringlist",
-				"default": false,
-				"display": "Advanced options",
-				"tooltip": "Tick this to see more advanced options across various tabs."
-			},
-			{
-				"name": "SPLIT_LINES_ON",
+				"name": "splitLinesOn",
 				"type": "string",
 				"default": "<BR>",
 				"display": "Split lines on",
         "displayIf": "o.jsAdvanced",
-				"tooltip": "In a text area, what string denatoes a line break? The default is what Quest 5 used."
+				"tooltip": "In a text area, what string denotes a line break? The default is what Quest 5 used."
 			},
 			{
-				"name": "DEBUG",
+				"name": "debug",
 				"type": "flag",
 				"default": true,
 				"display": "Debugging mode?",
 				"tooltip": "In debugging mode some extra commands are available in game. Untick this before exporting to JavaScript for release."
 			},
       {
-				"name": "FAILS_COUNT_AS_TURNS",
+				"name": "failCountsAsTurn",
 				"type": "flag",
 				"default": false,
 				"display": "Fails count",
@@ -92,7 +92,7 @@
 				"tooltip": "If the player's input is not understood (or is a meta-command, such as HELP or SAVE), should that count as a real turn?"
 			},
 			{
-				"name": "LOOK_COUNTS_AS_TURN",
+				"name": "lookCountsAsTurn",
 				"type": "flag",
 				"default": false,
 				"display": "Look counts",
@@ -107,22 +107,22 @@
 				"tooltip": "By default, you can only select a location as the destination of an exit; untick to also allow items."
 			},
 			{
-				"name": "CONVERT_NUMBERS_IN_PARSER",
+				"name": "convertNumbersInParser",
 				"type": "flag",
 				"default": true,
-				"display": "Understand numbers",
+				"display": "Understand number words",
         "displayIf": "o.jsAdvanced",
 				"tooltip": "Tick if you want the parser to understand the words 'one', 'two', etc. as well as the digits. Useful if you have COUNTABLE items, but a slight slow-down in the response."
 			},
 			{
-				"name": "ROOM_HEADINGS",
+				"name": "roomHeadings",
 				"type": "flag",
 				"default": true,
 				"display": "Room headings?",
 				"tooltip": "Tick if you want the name of a room to appear as a heading when the player enters the room."
 			},
 			{
-				"name": "MAX_UNDO",
+				"name": "maxUndo",
 				"type": "int",
 				"default": 10,
 				"display": "Max. undo",
@@ -130,7 +130,7 @@
 				"tooltip": "The number of game state saves to keep in memory, and hence the maximum times the player can UNDO in one go."
 			},
 			{
-				"name": "SAVE_DISABLED",
+				"name": "saveDisabled",
 				"type": "flag",
 				"default": false,
 				"display": "Disable save",
@@ -138,15 +138,23 @@
 				"tooltip": "Tick to prevent the player saving her game progress."
 			},
 			{
-				"name": "CUSTOM_EXITS",
+				"name": "jscustomExits",
 				"type": "flag",
 				"default": false,
-				"display": "Custom exits",
+				"display": "Custom exits?",
         "displayIf": "o.jsAdvanced",
-				"tooltip": "Tick to have custom exits, such as port/starboard. These should be defined in exits.js."
+				"tooltip": "Tick to have custom exits, such as port/starboard."
 			},
 			{
-				"name": "MONEY_FORMAT",
+				"name": "customExits",
+				"type": "string",
+				"default": "",
+				"display": "Custom exits filename",
+        "displayIf": "o.jsAdvanced && o.jsCustomExits",
+				"tooltip": "The file should be in the game folder (not currently supported in the editor)."
+			},
+			{
+				"name": "moneyFormat",
 				"type": "text",
 				"default": "$!",
 				"display": "Money format",
@@ -165,7 +173,7 @@
 				"tooltip": "If this is ticked, characters might react when the player SAYs something."
 			},
 			{
-				"name": "TURNS_QUESTIONS_LAST",
+				"name": "turnsQuestionsLast",
 				"type": "int",
 				"default": 5,
 				"display": "Turns a question lasts",
@@ -174,60 +182,60 @@
 				"tooltip": "When an NPC asks a question, if the player SAYs something within this many turns it will be taken as a reply."
 			},
 			{
-				"name": "GIVE_PLAYER_SAY_MSG",
+				"name": "givePlayerSayMsg",
 				"type": "flag",
 				"default": true,
 				"display": "Pre-amble before say response",
 				"tooltip": "By default, Quest will add a paragraph about the player saying before the response is given."
 			},
 			{
-				"name": "jsAskTell",
+				"name": "jsnoAskTell",
 				"type": "flag",
 				"default": true,
-				"display": "Enable ASK/TELL",
-				"tooltip": "If this is ticked, players can ASK or TELL a character ABOUT a topic."
+				"display": "Disable ASK/TELL",
+				"tooltip": "Untick to allow players to ASK or TELL a character ABOUT a topic."
 			},
 			{
-				"name": "NO_ASK_TELL",
+				"name": "noAskTell",
 				"type": "longtext",
 				"default": "You cannot use ASK/TELL ABOUT in this game.",
 				"display": "No ASK/TELL",
-				"displayIf": "!o.jsAskTell",
+				"displayIf": "o.jsnoAskTell",
 				"tooltip": "You can customise the message saying ASK/TELL is not available, perhaps hinting at an alternative."
 			},
 			{
-				"name": "GIVE_PLAYER_ASK_TELL_MSG",
+				"name": "givePlayerAskMsg",
 				"type": "flag",
 				"default": true,
 				"display": "Pre-amble before ask/tell response",
-				"displayIf": "o.jsAskTell",
+				"displayIf": "!o.jsnoAskTell",
 				"tooltip": "By default, Quest will add a paragraph about the player asking before the response is given."
 			},
 			{
-				"name": "jsDynamicConv",
+				"name": "jsnoTalkTo",
 				"type": "flag",
 				"default": true,
-				"display": "Enable TALK TO",
-				"tooltip": "If this is ticked, players can TALK TO a character to see dynamic lists of topics."
+				"display": "Disable TALK TO",
+				"tooltip": "Untick to alloqw players to TALK TO a character to see dynamic lists of topics."
 			},
 			{
-				"name": "NO_TALK_TO",
+				"name": "noTalkTo",
 				"type": "longtext",
 				"default": "You cannot use TALK TO in this game.",
 				"display": "No TALK TO",
-				"displayIf": "!o.jsDynamicConv",
+				"displayIf": "o.noTalkTo",
 				"tooltip": "You can customise the message saying TALK TO is not available, perhaps hinting at an alternative."
 			},
 			{
-				"name": "DROPDOWN_FOR_CONV",
+				"name": "dropdownForConv",
 				"type": "flag",
 				"default": false,
 				"display": "Use a drop-down for dynamic conversion choices",
-				"displayIf": "o.jsDynamicConv",
+				"displayIf": "!o.noTalkTo",
 				"tooltip": "If you use dynamic conversations, tick this to have the options appear in a dropdown list, rather than a list of hyperlinks. A drop-down is easier to access with the keyboard."
 			},
 			{
-				"name": "NPC_REACTIONS_AWAYS",
+				"name": "npcReactionsAlways",
 				"type": "flag",
 				"default": false,
 				"display": "NPC reactions, even if not present",
@@ -236,7 +244,8 @@
 
 			{
 				"type": "title",
-				"display": "Date/Time"
+				"display": "Date/Time",
+        "displayIf": "o.jsAdvanced"
 			},
       {
 				"name": "jsTrackTime",
@@ -247,7 +256,7 @@
 				"tooltip": "Do you want to correlate turns with how time is passing?"
 			},
       {
-				"name": "SECONDS_PER_TURN",
+				"name": "dateTime__secondsPerTurn",
 				"type": "int",
 				"default": 60,
 				"display": "Sec/turn",
@@ -255,7 +264,7 @@
 				"tooltip": "How many seconds are assumed to pass in-game each standard turn."
 			},
 			{
-				"name": "DATE_TIME_LOCALE",
+				"name": "dateTime__locale",
 				"type": "text",
 				"default": "en - GB",
 				"display": "Locale",
@@ -263,7 +272,7 @@
 				"tooltip": "Determines how the date and time are displayed; a BCP 47 language tag, for example 'en - GB' or 'en - US', or 'default' for whatever the user's browser is set to."
 			},
 			{
-				"name": "DATE_TIME_START",
+				"name": "dateTime__start",
 				"type": "text",
 				"default": "April 1, 2019 09:43:00",
 				"display": "Start",
@@ -271,7 +280,7 @@
 				"tooltip": "The time in-game that the game starts. You need to get the format right, as per this example: April 1, 2019 09:43:00"
 			},
 			{
-				"name": "DATE_TIME_OPTIONS__year",
+				"name": "dateTime__year",
 				"type": "string",
 				"default": "numeric",
 				"display": "Year format",
@@ -279,7 +288,7 @@
 				"tooltip": "How to display the year; 'numeric' or '2-digit'."
 			},
 			{
-				"name": "DATE_TIME_OPTIONS__month",
+				"name": "dateTime__month",
 				"type": "text",
 				"default": "numeric",
 				"display": "Month format",
@@ -287,7 +296,7 @@
 				"tooltip": "How to display the month; 'numeric', '2-digit', 'long', 'short' or 'narrow'."
 			},
 			{
-				"name": "DATE_TIME_OPTIONS__day",
+				"name": "dateTime__day",
 				"type": "text",
 				"default": "numeric",
 				"display": "Day format",
@@ -295,7 +304,7 @@
 				"tooltip": "How to display the year, 'numeric' or '2-digit'."
 			},
 			{
-				"name": "DATE_TIME_OPTIONS__hour",
+				"name": "dateTime__hour",
 				"type": "text",
 				"default": "numeric",
 				"display": "Hour format",
@@ -303,7 +312,7 @@
 				"tooltip": "How to display the hour, 'numeric' or '2-digit'."
 			},
 			{
-				"name": "DATE_TIME_OPTIONS__minute",
+				"name": "dateTime__minute",
 				"type": "text",
 				"default": "numeric",
 				"display": "Minute format",
@@ -320,7 +329,7 @@
 		"displayIf": "o.jsIsSettings",
 		"tabControls": [
       {
-				"name": "INTRO",
+				"name": "intro",
 				"type": "textarea",
 				"default": "",
 				"display": "Introduction",
@@ -335,46 +344,46 @@
 		"displayIf": "o.jsIsSettings",
 		"tabControls": [
 			{
-				"name": "TEXT_INPUT",
+				"name": "textInput",
 				"type": "flag",
 				"default": true,
 				"display": "Text input?",
 				"tooltip": "Tick to allow the player to type commands (as opposed to using the buttons in the side pane exclusively)."
 			},
 			{
-				"name": "CURSOR",
+				"name": "cursor",
 				"type": "text",
 				"default": ">",
 				"display": "Cursor",
 				"tooltip": "The symbol(s) to display to prompt the player to type."
 			},
 			{
-				"name": "CMD_ECHO",
+				"name": "cmdEcho",
 				"type": "flag",
 				"default": true,
 				"display": "Echo input?",
 				"tooltip": "Tick to have the player's commands added to the text window."
 			},
 			{
-				"name": "TYPEWRITER",
+				"name": "typewriter",
 				"type": "flag",
 				"default": false,
 				"display": "Typewriter effect?",
 				"tooltip": "Gives a slight pause before printing each character."
 			},
 			{
-				"name": "TYPEWRITER_DELAY",
+				"name": "typewriterDelay",
 				"type": "int",
 				"default": 25,
-        "displayIf": "o.TYPEWRITER",
+        "displayIf": "o.typewriter",
 				"display": "Typewriter pause (ms)",
 				"tooltip": "How long to waiting between printing each character, in milliseconds."
 			},
 			{
-				"name": "TYPEWRITER_DELAY_LINE",
+				"name": "typewriterDelayLine",
 				"type": "int",
 				"default": 25,
-        "displayIf": "o.TYPEWRITER",
+        "displayIf": "o.typewriter",
 				"display": "Line pause (ms)",
 				"tooltip": "How long to waiting between printing characters on separate lines, in milliseconds."
 			},
@@ -412,7 +421,7 @@
 				"tooltip": "The background colour for the main text."
 			},
       {
-				"name": "jsGoogleFont",
+				"name": "jsGoogleFonts",
 				"type": "stringlist",
 				"default": [],
 				"display": "Google fonts",
@@ -427,7 +436,7 @@
 		"displayIf": "o.jsIsSettings",
 		"tabControls": [
       {
-				"name": "PANES",
+				"name": "panes",
 				"type": "select",
 				"options": ["Left", "Right", "None"],
 				"default": "Left",
@@ -435,52 +444,60 @@
 				"tooltip": "You can have the side pane on the left or right, or not at all."
 			},
 			{
-				"name": "COMPASS",
+				"name": "compass",
 				"type": "flag",
-				"default": "",
+				"default": true,
 				"display": "Compass?",
-				"displayIf": "o.PANES !== 'None'",
+				"displayIf": "o.panes !== 'None'",
 				"tooltip": "Show the compass rose?"
 			},
 			{
-				"name": "STATUS_PANE_FLAG",
+				"name": "jsStatusPaneFlag",
 				"type": "flag",
 				"default": true,
 				"display": "Status?",
-				"displayIf": "o.PANES !== 'None'",
+				"displayIf": "o.panes !== 'None'",
 				"tooltip": "Do you want the status component?"
 			},
 			{
-				"name": "STATUS_PANE",
+				"name": "statusPane",
 				"type": "text",
 				"default": "",
 				"display": "Status title",
-				"displayIf": "o.STATUS_PANE_FLAG",
+				"displayIf": "o.jsStatusPaneFlag",
 				"tooltip": "A title for the status component."
 			},
 			{
-				"name": "STATUS_WIDTH_LEFT",
+				"name": "statusWidthLeft",
 				"type": "int",
 				"default": 120,
 				"display": "Status left",
-				"displayIf": "o.STATUS_PANE_FLAG",
+				"displayIf": "o.jsStatusPaneFlag",
 				"tooltip": "Width in pixels for the left column in the status component."
 			},
 			{
-				"name": "STATUS_WIDTH_RIGHT",
+				"name": "statusWidthRight",
 				"type": "int",
 				"default": 40,
 				"display": "Status right",
-				"displayIf": "o.STATUS_PANE_FLAG",
+				"displayIf": "o.jsStatusPaneFlag",
 				"tooltip": "Width in pixels for the right column in the status component."
 			},
 			{
-				"name": "DIVIDER",
+				"name": "jsdivider",
+				"type": "flag",
+				"default": flag,
+				"display": "Divider?",
+				"displayIf": "o.panes !== 'None'",
+				"tooltip": "Insert an image in the side pane between each component?"
+			},
+			{
+				"name": "divider",
 				"type": "text",
 				"default": "",
-				"display": "Divider",
-				"displayIf": "o.PANES !== 'None'",
-				"tooltip": "File name for an image to be inserted in the column between each component."
+				"display": "Divider file",
+				"displayIf": "o.panes !== 'None' && o.jsdivider",
+				"tooltip": "File name for an image to be inserted between each component."
 			},
 			{
 				"type": "title",
@@ -491,12 +508,14 @@
 				"type": "text",
 				"default": "'Arial Black', Gadget, sans-serif",
 				"display": "Font",
+				"displayIf": "o.panes !== 'None'",
 				"tooltip": "Font for the side text."
 			},
 		  {
 				"name": "jsStyleSide_font_size",
 				"type": "int",
 				"default": 9,
+				"displayIf": "o.panes !== 'None'",
 				"display": "Font size",
 				"tooltip": "Font size for the side text."
 			},
@@ -504,6 +523,7 @@
 				"name": "jsStyleSide_color",
 				"type": "text",
 				"default": "white",
+				"displayIf": "o.panes !== 'None'",
 				"display": "Colour",
 				"tooltip": "The colour of the text for the side text."
 			},
@@ -512,10 +532,9 @@
 				"type": "text",
 				"default": "blue",
 				"display": "Background",
-				"tooltip": "The background colour for the side text."
+				"tooltip": "The background colour for the side text.",
+				"displayIf": "o.panes !== 'None'"
 			}
 		]
 	}
-
-
 ]
