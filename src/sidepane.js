@@ -76,7 +76,7 @@ const TreeView = (props) => {
 const TreeToggler = (props) => {
   const {tree, showObject, treeToggle} = props;
   
-  if (tree.object.jsExpanded) {
+  if (!tree.object.jsCollapsed) {
     return (<li>
       <a onClick={() => treeToggle(tree.object)} className="caret">{String.fromCharCode(9660)}</a>
       <TreeLink object={tree.object} showObject={showObject} selected={props.selected}/>

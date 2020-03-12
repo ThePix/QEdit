@@ -171,10 +171,7 @@ class QuestObject {
       inherits = this.removeFromArray(inherits, "talkingchar");
       this.jsPronoun = "thirdperson";
 
-      if (this.jsIsRoom) {
-        this.jsExpanded = true;
-      }
-      else {
+      if (!this.jsIsRoom) {
         if (this.take) {
           this.jsMobilityType = "Takeable";
         }

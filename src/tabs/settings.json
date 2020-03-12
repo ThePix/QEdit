@@ -43,10 +43,10 @@
 				"type": "readonly",
 				"default": "",
 				"display": "Filename",
-        "displayIf": "o.jsAdvanced",
+				"displayIf": "o.jsAdvanced",
 				"tooltip": "Sorry, this cannot be changed; do 'Save as...'"
 			},
-      {
+			{
 				"name": "lang",
 				"type": "text",
 				"default": "lang-en",
@@ -65,15 +65,38 @@
 
 	{
 		"action": "tab",
+		"tabName": "Editor",
+		"displayIf": "o.jsIsSettings && o.jsAdvanced",
+		"tabControls": [
+			{
+				"name": "jsShowRoomsOnly",
+				"type": "flag",
+				"default": false,
+				"display": "Locations only for exits",
+				"tooltip": "By default, you can only select a location as the destination of an exit; untick to also allow items."
+			},
+			{
+				"name": "jsNewRoomWhere",
+				"type": "select",
+        "options":["Top", "Zone", "Location", "Anywhere"],
+				"default": "Top",
+				"display": "Create locations",
+				"tooltip": "By default, new locations are created at the top level of the hierarchy."
+			}
+		]
+	},
+
+	{
+		"action": "tab",
 		"tabName": "Gameplay",
 		"displayIf": "o.jsIsSettings",
 		"tabControls": [
-			{
+      {
 				"name": "splitLinesOn",
 				"type": "string",
 				"default": "<BR>",
 				"display": "Split lines on",
-        "displayIf": "o.jsAdvanced",
+				"displayIf": "o.jsAdvanced",
 				"tooltip": "In a text area, what string denotes a line break? The default is what Quest 5 used."
 			},
 			{
@@ -83,12 +106,12 @@
 				"display": "Debugging mode?",
 				"tooltip": "In debugging mode some extra commands are available in game. Untick this before exporting to JavaScript for release."
 			},
-      {
+			{
 				"name": "failCountsAsTurn",
 				"type": "flag",
 				"default": false,
 				"display": "Fails count",
-        "displayIf": "o.jsAdvanced",
+				"displayIf": "o.jsAdvanced",
 				"tooltip": "If the player's input is not understood (or is a meta-command, such as HELP or SAVE), should that count as a real turn?"
 			},
 			{
@@ -100,18 +123,11 @@
 				"tooltip": "Should LOOK count as a real turn? Note, this does not affect LOOK AT, which is always counted as a turn."
 			},
 			{
-				"name": "jsShowRoomsOnly",
-				"type": "flag",
-				"default": false,
-				"display": "Locations only for exits",
-				"tooltip": "By default, you can only select a location as the destination of an exit; untick to also allow items."
-			},
-			{
 				"name": "convertNumbersInParser",
 				"type": "flag",
 				"default": true,
 				"display": "Understand number words",
-        "displayIf": "o.jsAdvanced",
+				"displayIf": "o.jsAdvanced",
 				"tooltip": "Tick if you want the parser to understand the words 'one', 'two', etc. as well as the digits. Useful if you have COUNTABLE items, but a slight slow-down in the response."
 			},
 			{
@@ -126,7 +142,7 @@
 				"type": "int",
 				"default": 10,
 				"display": "Max. undo",
-        "displayIf": "o.jsAdvanced",
+				"displayIf": "o.jsAdvanced",
 				"tooltip": "The number of game state saves to keep in memory, and hence the maximum times the player can UNDO in one go."
 			},
 			{
@@ -134,7 +150,7 @@
 				"type": "flag",
 				"default": false,
 				"display": "Disable save",
-        "displayIf": "o.jsAdvanced",
+				"displayIf": "o.jsAdvanced",
 				"tooltip": "Tick to prevent the player saving her game progress."
 			},
 			{
@@ -142,7 +158,7 @@
 				"type": "flag",
 				"default": false,
 				"display": "Custom exits?",
-        "displayIf": "o.jsAdvanced",
+				"displayIf": "o.jsAdvanced",
 				"tooltip": "Tick to have custom exits, such as port/starboard."
 			},
 			{
@@ -150,7 +166,7 @@
 				"type": "string",
 				"default": "",
 				"display": "Custom exits filename",
-        "displayIf": "o.jsAdvanced && o.jsCustomExits",
+				"displayIf": "o.jsAdvanced && o.jsCustomExits",
 				"tooltip": "The file should be in the game folder (not currently supported in the editor)."
 			},
 			{
@@ -177,8 +193,7 @@
 				"type": "int",
 				"default": 5,
 				"display": "Turns a question lasts",
-				"displayIf": "o.jsSay",
-        "displayIf": "o.jsAdvanced",
+				"displayIf": "o.jsSay && o.jsAdvanced",
 				"tooltip": "When an NPC asks a question, if the player SAYs something within this many turns it will be taken as a reply."
 			},
 			{
@@ -245,22 +260,22 @@
 			{
 				"type": "title",
 				"display": "Date/Time",
-        "displayIf": "o.jsAdvanced"
+				"displayIf": "o.jsAdvanced"
 			},
-      {
+			{
 				"name": "jsTrackTime",
 				"type": "flag",
 				"default": false,
 				"display": "Track time",
-        "displayIf": "o.jsAdvanced",
+				"displayIf": "o.jsAdvanced",
 				"tooltip": "Do you want to correlate turns with how time is passing?"
 			},
-      {
+			{
 				"name": "dateTime__secondsPerTurn",
 				"type": "int",
 				"default": 60,
 				"display": "Sec/turn",
-        "displayIf":"o.jsTrackTime",
+				"displayIf": "o.jsTrackTime",
 				"tooltip": "How many seconds are assumed to pass in-game each standard turn."
 			},
 			{
@@ -268,7 +283,7 @@
 				"type": "text",
 				"default": "en - GB",
 				"display": "Locale",
-        "displayIf":"o.jsTrackTime",
+				"displayIf": "o.jsTrackTime",
 				"tooltip": "Determines how the date and time are displayed; a BCP 47 language tag, for example 'en - GB' or 'en - US', or 'default' for whatever the user's browser is set to."
 			},
 			{
@@ -276,7 +291,7 @@
 				"type": "text",
 				"default": "April 1, 2019 09:43:00",
 				"display": "Start",
-        "displayIf":"o.jsTrackTime",
+				"displayIf": "o.jsTrackTime",
 				"tooltip": "The time in-game that the game starts. You need to get the format right, as per this example: April 1, 2019 09:43:00"
 			},
 			{
@@ -284,7 +299,7 @@
 				"type": "string",
 				"default": "numeric",
 				"display": "Year format",
-        "displayIf":"o.jsTrackTime",
+				"displayIf": "o.jsTrackTime",
 				"tooltip": "How to display the year; 'numeric' or '2-digit'."
 			},
 			{
@@ -292,7 +307,7 @@
 				"type": "text",
 				"default": "numeric",
 				"display": "Month format",
-        "displayIf":"o.jsTrackTime",
+				"displayIf": "o.jsTrackTime",
 				"tooltip": "How to display the month; 'numeric', '2-digit', 'long', 'short' or 'narrow'."
 			},
 			{
@@ -300,7 +315,7 @@
 				"type": "text",
 				"default": "numeric",
 				"display": "Day format",
-        "displayIf":"o.jsTrackTime",
+				"displayIf": "o.jsTrackTime",
 				"tooltip": "How to display the year, 'numeric' or '2-digit'."
 			},
 			{
@@ -308,7 +323,7 @@
 				"type": "text",
 				"default": "numeric",
 				"display": "Hour format",
-        "displayIf":"o.jsTrackTime",
+				"displayIf": "o.jsTrackTime",
 				"tooltip": "How to display the hour, 'numeric' or '2-digit'."
 			},
 			{
@@ -317,33 +332,30 @@
 				"default": "numeric",
 				"display": "Minute format",
 				"tooltip": "How to display the minute, 'numeric' or '2-digit'.",
-        "displayIf":"o.jsTrackTime"
+				"displayIf": "o.jsTrackTime"
 			}
 
- 		]
+		]
 	},
 
 	{
 		"action": "tab",
 		"tabName": "Start-up",
 		"displayIf": "o.jsIsSettings",
-		"tabControls": [
-      {
-				"name": "intro",
-				"type": "textarea",
-				"default": "",
-				"display": "Introduction",
-				"tooltip": "This text will appear when you game starts. Use it to introduce the game to the player, setting up the premise, hinting at the objective, or whatever."
-			}
-    ]
+		"tabControls": [{
+			"name": "intro",
+			"type": "textarea",
+			"default": "",
+			"display": "Introduction",
+			"tooltip": "This text will appear when you game starts. Use it to introduce the game to the player, setting up the premise, hinting at the objective, or whatever."
+		}]
 	},
 
 	{
 		"action": "tab",
 		"tabName": "Main Pane",
 		"displayIf": "o.jsIsSettings",
-		"tabControls": [
-			{
+		"tabControls": [{
 				"name": "textInput",
 				"type": "flag",
 				"default": true,
@@ -375,7 +387,7 @@
 				"name": "typewriterDelay",
 				"type": "int",
 				"default": 25,
-        "displayIf": "o.typewriter",
+				"displayIf": "o.typewriter",
 				"display": "Typewriter pause (ms)",
 				"tooltip": "How long to waiting between printing each character, in milliseconds."
 			},
@@ -383,44 +395,44 @@
 				"name": "typewriterDelayLine",
 				"type": "int",
 				"default": 25,
-        "displayIf": "o.typewriter",
+				"displayIf": "o.typewriter",
 				"display": "Line pause (ms)",
 				"tooltip": "How long to waiting between printing characters on separate lines, in milliseconds."
 			},
-      
+
 			{
 				"type": "title",
 				"display": "Text style"
 			},
-      {
+			{
 				"name": "jsStyleMain_font_family",
 				"type": "text",
 				"default": "'Arial Black', Gadget, sans-serif",
 				"display": "Font",
 				"tooltip": "Font for the main text."
 			},
-		  {
+			{
 				"name": "jsStyleMain_font_size",
 				"type": "int",
 				"default": 11,
 				"display": "Font size",
 				"tooltip": "Font size for the main text."
 			},
-		  {
+			{
 				"name": "jsStyleMain_color",
 				"type": "text",
 				"default": "black",
 				"display": "Colour",
 				"tooltip": "The colour of the text for the main text."
 			},
-		  {
+			{
 				"name": "jsStyleMain_background_color",
 				"type": "text",
 				"default": "white",
 				"display": "Background",
 				"tooltip": "The background colour for the main text."
 			},
-      {
+			{
 				"name": "jsGoogleFonts",
 				"type": "stringlist",
 				"default": [],
@@ -434,8 +446,7 @@
 		"action": "tab",
 		"tabName": "Side Pane",
 		"displayIf": "o.jsIsSettings",
-		"tabControls": [
-      {
+		"tabControls": [{
 				"name": "panes",
 				"type": "select",
 				"options": ["Left", "Right", "None"],
@@ -486,7 +497,7 @@
 			{
 				"name": "jsdivider",
 				"type": "flag",
-				"default": flag,
+				"default": false,
 				"display": "Divider?",
 				"displayIf": "o.panes !== 'None'",
 				"tooltip": "Insert an image in the side pane between each component?"
@@ -503,7 +514,7 @@
 				"type": "title",
 				"display": "Text style"
 			},
-      {
+			{
 				"name": "jsStyleSide_font_family",
 				"type": "text",
 				"default": "'Arial Black', Gadget, sans-serif",
@@ -511,7 +522,7 @@
 				"displayIf": "o.panes !== 'None'",
 				"tooltip": "Font for the side text."
 			},
-		  {
+			{
 				"name": "jsStyleSide_font_size",
 				"type": "int",
 				"default": 9,
@@ -519,7 +530,7 @@
 				"display": "Font size",
 				"tooltip": "Font size for the side text."
 			},
-		  {
+			{
 				"name": "jsStyleSide_color",
 				"type": "text",
 				"default": "white",
@@ -527,7 +538,7 @@
 				"display": "Colour",
 				"tooltip": "The colour of the text for the side text."
 			},
-		  {
+			{
 				"name": "jsStyleSide_background_color",
 				"type": "text",
 				"default": "blue",

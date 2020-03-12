@@ -3,11 +3,12 @@
   <object name="Settings">
     <jsIsSettings type="boolean">true</jsIsSettings>
     <jsColour><![CDATA[black]]></jsColour>
+    <jsShowRoomsOnly type="boolean">true</jsShowRoomsOnly>
+    <jsNewRoomWhere type="string">Location</jsNewRoomWhere>
   </object>
 
   <object name="lounge">
     <jsIsRoom type="boolean">true</jsIsRoom>
-    <jsExpanded type="boolean">true</jsExpanded>
     <desc><![CDATA[The lounge is big.]]></desc>
   </object>
 

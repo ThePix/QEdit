@@ -13,7 +13,7 @@ export class TabControls {
             tooltip:"The object's name; this is how it is identified in code. It can only contain letters, digits and underscores; it cannot start with a number.",
           },
           
-          { name:"loc",    type:"objects",  default:"---", display:"Location",
+          { name:"loc",    type:"otherobjects",  default:"---", display:"Location",
             validator:function(value, obj) { return value === obj.name; },
             tooltip:"Where the object is at the start of the game, the location or container. Should usually be blank for locations (as they are not inside anything).",
           },
@@ -101,7 +101,7 @@ export class TabControls {
     ];
     
     for (let filename of files) {
-      const json = require('./' + filename + '.json');
+      const json = require('./tabs/' + filename + '.json');
       for (let j = 0; j < json.length; j++) {
         if (json[j].action === "tab") {
           this.controls.push(json[j]);

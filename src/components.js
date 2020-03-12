@@ -5,20 +5,16 @@ import React from 'react';
 
 
 
+
+
+
 export class SelectComp extends React.Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    let options;
-    if (this.props.objects !== undefined) {
-      options = ["---"].concat(this.props.objects.map((o, i) => o.name));
-    }
-    else {
-      options = this.props.options;
-    }
-    if (options === undefined) {
+    if (this.props.options === undefined) {
       console.log("WARNING: No options provided for select on this tab.");
       console.log(this.props);
       return null;
@@ -33,7 +29,7 @@ export class SelectComp extends React.Component {
           title={this.props.tooltip}
           onChange={this.props.handleChange}
         >
-        {options.map((s, i) => <option value={s} key={i}>{s}</option>)}
+        {this.props.options.map((s, i) => <option value={s} key={i}>{s}</option>)}
         </select>
     )
   }

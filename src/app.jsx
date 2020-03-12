@@ -301,19 +301,42 @@ export default class App extends React.Component {
     })
   };
 
+
   addObject(objectType) {
     const newObject = new QuestObject({
       name:"new_" + objectType,
       jsIsStub:(objectType === "stub"),
       jsIsRoom:(objectType === "room"),
+      jsMobilityType:'Immobile',
     });
     console.log("objectType=" + objectType);
-    if (objectType !== "room" && this.state.currentObjectName) {
-      newObject.loc = this.state.currentObjectName;
-      console.log("Set location");
-    }
-    //this.setDefaults(newObject);
     
+    const settings =  this.state.objects.find(el => el.jsIsSettings)
+    let currentObject = this.state.objects.find(el => el.name === this.state.currentObjectName)
+    console.log("jsNewRoomWhere=" + settings.jsNewRoomWhere);
+    console.log(!currentObject.jsIsSettings && !(currentObject.jsIsRoom && settings.jsNewRoomWhere === "Top"));
+    console.log(currentObject.jsIsSettings);
+    console.log((currentObject.jsIsRoom && settings.jsNewRoomWhere === "Top"));
+    console.log(currentObject.jsIsRoom);
+    
+    // If the current object is the settings, OR if the current object is a room and new rooms go top,
+    // then loc is undefined, otherwise, do this:
+    if (!currentObject.jsIsSettings && !(newObject.jsIsRoom && settings.jsNewRoomWhere === "Top")) {
+      if (newObject.jsIsRoom && settings.jsNewRoomWhere === "Location") {
+        console.log("Looking for room");
+        while (currentObject && !currentObject.jsIsRoom) {
+          currentObject = this.state.objects.find(el => el.name === currentObject.loc)
+        }
+      }  
+      if (newObject.jsIsRoom && settings.jsNewRoomWhere === "Zone") {
+        console.log("Looking for zone");
+        while (currentObject && !currentObject.jsIsZone) {
+          currentObject = this.state.objects.find(el => el.name === currentObject.loc)
+        }
+      }  
+      if (currentObject) newObject.loc = currentObject.name
+      console.log("Set location to: " + currentObject.name);
+    }
     console.log(newObject);
       
     this.setState({
@@ -538,7 +561,7 @@ export default class App extends React.Component {
   }
   
   treeToggle(obj) {
-    this.setValue("jsExpanded", !obj.jsExpanded, obj);
+    this.setValue("jsCollapsed", !obj.jsCollapsed, obj);
   }
   
   setValue(name, value, obj) {

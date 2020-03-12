@@ -2,6 +2,8 @@ import React from 'react';
 import {ExitsComp} from './exitscomp';
 import {ScriptOrStringComp} from './scriptorstringcomp';
 
+import {ScriptComp, SelectComp} from './components';
+
 const [QuestObject] = require('./questobject')
 
 const useWithDoor = function() {};
@@ -141,11 +143,23 @@ const InputComp = (props) => {
     );
   }
   else if (props.input.type === "objects") {
+    const options = ["---"].concat(props.objects.filter(el => !el.jsIsSettings).map((o, i) => o.name));
     return (
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td>
-          <SelectComp name={props.input.name} objects={props.objects} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>
+          <SelectComp name={props.input.name} options={options} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>
+        </td>
+      </tr>
+    );
+  }
+  else if (props.input.type === "otherobjects") {
+    const options = ["---"].concat(props.objects.filter(el => (!el.jsIsSettings && el !== props.object)).map((o, i) => o.name));
+    return (
+      <tr className="form-group">
+        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
+        <td>
+          <SelectComp name={props.input.name} options={options} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>
         </td>
       </tr>
     );
@@ -311,8 +325,7 @@ const InputComp = (props) => {
 
 
 
-
-
+/*
 class SelectComp extends React.Component {
   constructor(props) {
     super(props);
@@ -321,7 +334,7 @@ class SelectComp extends React.Component {
   render() {
     let options;
     if (this.props.objects !== undefined) {
-      options = ["---"].concat(this.props.objects.map((o, i) => o.name));
+      options = ["---"].concat(this.props.objects.filter(el => !el.jsIsSettings).map((o, i) => o.name));
     }
     else {
       options = this.props.options;
@@ -345,6 +358,6 @@ class SelectComp extends React.Component {
         </select>
     )
   }
-}
+}*/
 
 

@@ -112,7 +112,14 @@ const ExitDetails = (props) => {
     const name = props.object.name + "_exit_" + props.selected;
     let list = props.objects;
     const settings = props.objects.find(el => el.jsIsSettings)
-    if (settings.jsShowRoomsOnly) list = props.objects.filter(o => o.jsIsRoom);
+    if (settings.jsShowRoomsOnly) {
+      list = props.objects.filter(o => o.jsIsRoom);
+      console.log(list)
+    }
+    else {
+      list = props.objects.filter(o => !o.jsIsSettings);
+      console.log(list)
+    }
     const options = ["---"].concat(list.map((o, i) => o.name));
     return (
       <div>
