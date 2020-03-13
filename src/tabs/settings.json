@@ -84,6 +84,14 @@
 				"tooltip": "By default, new locations are created at the top level of the hierarchy."
 			},
 			{
+				"name": "jsNewItemWhere",
+				"type": "select",
+        "options":["Top", "Zone", "Location", "Anywhere"],
+				"default": "Location",
+				"display": "Create items",
+				"tooltip": "By default, new items are created in the selected location."
+			},
+			{
 				"name": "jsAutosaveInterval",
 				"type": "int",
 				"default": 1,

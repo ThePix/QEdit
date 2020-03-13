@@ -111,7 +111,7 @@ const ExitDetails = (props) => {
   else {
     const name = props.object.name + "_exit_" + props.selected;
     let list = props.objects;
-    const settings = props.objects.find(el => el.jsIsSettings)
+    const settings = QuestObject.getSettings(props)
     if (settings.jsShowRoomsOnly) {
       list = props.objects.filter(o => o.jsIsRoom);
       console.log(list)

@@ -53,6 +53,7 @@ export class MainPane extends React.Component {
             handleIntChange={this.props.handleIntChange}
             handleListChange={this.props.handleListChange}
             handleCBChange={this.props.handleCBChange}
+            handleIdChange={this.props.handleIdChange}
             removeConversionNotes={this.props.removeConversionNotes}
             controls={controls} 
             objects={this.props.objects} 
@@ -111,6 +112,7 @@ const TabComp = (props) => {
           handleIntChange={props.handleIntChange}
           handleListChange={props.handleListChange}
           handleCBChange={props.handleCBChange}
+          handleIdChange={props.handleIdChange}
           removeConversionNotes={props.removeConversionNotes}
           input={item} 
           key={i} 
@@ -277,6 +279,22 @@ const InputComp = (props) => {
       </tr>
     )
   }
+  else if (props.input.type === "id") {
+    return (  
+      <tr className="form-group">
+        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
+        <td><input
+          className="form-control"
+          id={props.input.name}
+          name={props.input.name}
+          type={props.input.type}
+          title={props.input.tooltip}
+          value={value}
+          onChange={props.handleIdChange}
+        /></td>
+      </tr>
+    )
+  }
   else if (props.input.type === "longtext" || props.input.type === "longstring") {
     return (  
       <tr className="form-group">
@@ -321,43 +339,5 @@ const InputComp = (props) => {
     return null;
   }
 }
-
-
-
-
-/*
-class SelectComp extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    let options;
-    if (this.props.objects !== undefined) {
-      options = ["---"].concat(this.props.objects.filter(el => !el.jsIsSettings).map((o, i) => o.name));
-    }
-    else {
-      options = this.props.options;
-    }
-    if (options === undefined) {
-      console.log("WARNING: No options provided for select on this tab.");
-      console.log(this.props);
-      return null;
-    }
-    
-    return (
-      <select
-          className="form-control"
-          id={this.props.name}
-          name={this.props.name}
-          value={this.props.value}
-          title={this.props.tooltip}
-          onChange={this.props.handleChange}
-        >
-        {options.map((s, i) => <option value={s} key={i}>{s}</option>)}
-        </select>
-    )
-  }
-}*/
 
 

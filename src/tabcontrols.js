@@ -8,7 +8,7 @@ export class TabControls {
         tabName:"Home",
         displayIf:"!o.jsIsSettings", 
         tabControls:[
-          { name:"name",   type:"text",     default:"unnamed", display:"Name",
+          { name:"name",   type:"id",     default:"unnamed", display:"Name",
             validator:function(value, obj) { return !/^[a-zA-Z_][\w]*$/.test(value); },
             tooltip:"The object's name; this is how it is identified in code. It can only contain letters, digits and underscores; it cannot start with a number.",
           },

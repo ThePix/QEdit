@@ -2,12 +2,13 @@ import React from 'react';
 //import Blockly from 'blockly/blockly_compressed';
 
 const prompt = require('electron-prompt');
+const {Menu, dialog, app} = require('electron').remote;
 
 import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
-//import {FileStore, Exit} from './filestore';
 import {FileStore} from './filestore';
 import {TabControls} from './tabcontrols';
+import {Menus} from './menus';
 const [QuestObject] = require('./questobject')
 
 // Next four lines disable warning from React-hot-loader
@@ -16,34 +17,13 @@ setConfig({
     showReactDomPatchNotification: false
 })
 
-
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
-// Just disabling warning is not great, but so far I cannot see how to implement CSP
-// The below does not work, but I do not know what will
-/*
-const { session } = require('electron')
-session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    callback({ responseHeaders: Object.assign({
-        "Content-Security-Policy": [ "default-src 'self'" ]
-    }, details.responseHeaders)});
-});*/
 
 
 
 const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
-
-
-
-// Not sure how default values will get saved; they may not be set if the user does nothing ith it.
-
-
-
-
-const {Menu, dialog, app} = require('electron').remote;
-import {Menus} from './menus';
 const template = new Menus().getMenus();
-
 
 let quitConfirmed = false
 const quitOptions  = {
@@ -109,10 +89,6 @@ export default class App extends React.Component {
       currentObjectName: false,
     };
     this.state.currentObjectName = this.state.objects[0].name;
-    //for (let i = 0; i < this.state.objects.length; i++) {
-    //  this.setDefaults(this.state.objects[i]);
-    //}
-    
     
     window.addEventListener("beforeunload", function(e) {
       console.log("beforeunload")
@@ -138,6 +114,7 @@ export default class App extends React.Component {
     
   }
   
+  // Used to set upo the menus during set up
   findMenuItem(template, label) {
     for (let i = 0; i < template.length; i++) {
       for (let j = 0; j < template[i].submenu.length; j++) {
@@ -157,6 +134,10 @@ export default class App extends React.Component {
     obj.addDefaults(this.controls);
     return obj;
   }
+
+  
+  //---------------------------
+  //--      FILE  SYSTEM    ---
   
   exitApp() {
     const response = dialog.showMessageBox(quitOptions)
@@ -214,7 +195,7 @@ export default class App extends React.Component {
     this.autosaveCount++
     if (this.autosaveCount > 9) this.autosaveCount = 0
     this.saveXml("autosaves/autosave" + this.autosaveCount + ".asl6")
-    const settings = this.state.objects.find(el => el.jsIsSettings)
+    const settings = QuestObject.getSettings(this.state)
     if (settings.jsAutosaveInterval !== 0) {
       setTimeout(this.autosaveXml.bind(this), settings.jsAutosaveInterval * 60000)
     }
@@ -223,7 +204,7 @@ export default class App extends React.Component {
   
   saveXml(filename) {
     if (!filename) {
-      const settings = this.state.objects.find(el => el.jsIsSettings)
+      const settings = QuestObject.getSettings(this.state)
       filename = settings.jsFilename
     }
 
@@ -268,7 +249,7 @@ export default class App extends React.Component {
   }
   
   saveJs(filename) {
-    const settings = this.state.objects.find(el => el.jsIsSettings)
+    const settings = QuestObject.getSettings(this.state)
     if (!settings.jsFilename) {
       console.log('Save your game before exporting');
       this.message('Save your game before exporting');
@@ -279,6 +260,12 @@ export default class App extends React.Component {
     console.log(result);
     this.message(result);
   }
+  
+  
+  
+  //---------------------------
+  //--      OBJECT  SYSTEM    ---
+  
   
   removeObject(name) {
     if (name === undefined) {
@@ -322,40 +309,7 @@ export default class App extends React.Component {
 
 
   addObject(objectType) {
-    const newObject = new QuestObject({
-      name:"new_" + objectType,
-      jsIsStub:(objectType === "stub"),
-      jsIsRoom:(objectType === "room"),
-      jsMobilityType:'Immobile',
-    });
-    console.log("objectType=" + objectType);
-    
-    const settings =  this.state.objects.find(el => el.jsIsSettings)
-    let currentObject = this.state.objects.find(el => el.name === this.state.currentObjectName)
-    console.log("jsNewRoomWhere=" + settings.jsNewRoomWhere);
-    console.log(!currentObject.jsIsSettings && !(currentObject.jsIsRoom && settings.jsNewRoomWhere === "Top"));
-    console.log(currentObject.jsIsSettings);
-    console.log((currentObject.jsIsRoom && settings.jsNewRoomWhere === "Top"));
-    console.log(currentObject.jsIsRoom);
-    
-    // If the current object is the settings, OR if the current object is a room and new rooms go top,
-    // then loc is undefined, otherwise, do this:
-    if (!currentObject.jsIsSettings && !(newObject.jsIsRoom && settings.jsNewRoomWhere === "Top")) {
-      if (newObject.jsIsRoom && settings.jsNewRoomWhere === "Location") {
-        console.log("Looking for room");
-        while (currentObject && !currentObject.jsIsRoom) {
-          currentObject = this.state.objects.find(el => el.name === currentObject.loc)
-        }
-      }  
-      if (newObject.jsIsRoom && settings.jsNewRoomWhere === "Zone") {
-        console.log("Looking for zone");
-        while (currentObject && !currentObject.jsIsZone) {
-          currentObject = this.state.objects.find(el => el.name === currentObject.loc)
-        }
-      }  
-      if (currentObject) newObject.loc = currentObject.name
-      console.log("Set location to: " + currentObject.name);
-    }
+    const newObject = QuestObject.create(this.state, objectType)
     console.log(newObject);
       
     this.setState({
@@ -365,9 +319,7 @@ export default class App extends React.Component {
   };
   
   duplicateObject(name) {
-    if (name === undefined) {
-      name = this.state.currentObjectName;
-    }
+    if (name === undefined) name = this.state.currentObjectName
     if (name === false) return;
     
     const currentObject = this.state.objects.find(el => {
@@ -383,14 +335,16 @@ export default class App extends React.Component {
     })
   };
   
+  
+  
+  
+  
   selectTab(s) {
     const state = {
       objects: this.state.objects,
       currentObjectName: this.state.currentObjectName,
     }
-    const currentObject = state.objects.find(el => {
-      return (el.name == this.state.currentObjectName);
-    });
+    const currentObject = QuestObject.getCurrent(state);
     currentObject.jsTabName = s;
     
     this.setState(state)
@@ -560,6 +514,11 @@ export default class App extends React.Component {
     this.setValue(e.target.id, e.target.value);
   }
   
+  handleIdChange(e) {
+    console.log("------------------")
+    this.setValue(e.target.id, e.target.value);
+  }
+  
   // numbers need their own handler so they get converted to numbers
   handleIntChange(e) {
     console.log(e.target.value);
@@ -669,7 +628,7 @@ export default class App extends React.Component {
 
   render() {
 
-    const currentObject = this.state.objects.find(el => el.name === this.state.currentObjectName);
+    const currentObject = QuestObject.getCurrent(this.state);
     return (<div>
       <MainPane
         object={currentObject} 
@@ -678,6 +637,7 @@ export default class App extends React.Component {
         removefromlist={this.removefromlist.bind(this)} 
         removeConversionNotes={this.removeConversionNotes.bind(this)} 
         addtolist={this.addtolist.bind(this)}
+        handleIdChange={this.handleIdChange.bind(this)}
         handleCBChange={this.handleCBChange.bind(this)}
         handleIntChange={this.handleIntChange.bind(this)} 
         handleListChange={this.handleListChange.bind(this)} 

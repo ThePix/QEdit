@@ -3,10 +3,14 @@
 const useWithDoor = "useWithDoor";
 const DSPY_SCENERY = 5;
 
+let nextId = 0
+
 
 
 class QuestObject {
   constructor (data, version) {
+    this.id = nextId
+    nextId++
     if (data.getAttribute) {
       // Is this an XML element? We could test if the class is Element, but then the unit tests fails
       this.translateObjectFromXml(data, version);
@@ -17,7 +21,107 @@ class QuestObject {
       }
     }
   }
- 
+  
+  static getSettings(state) {
+    return state.objects.find(el => el.jsIsSettings)
+  } 
+  
+  static getByName(state, name) {
+    return state.objects.find(el => el.name === name)
+  } 
+  
+  static getCurrent(state) {
+    return state.objects.find(el => el.name === state.currentObjectName)
+  } 
+  
+  static getById(state, id) {
+    return state.objects.find(el => el.id === id)
+  }
+  
+  
+  static create(state, objectType) {
+    const newObject = new QuestObject({
+      name:"new_" + objectType,
+      jsIsStub:(objectType === "stub"),
+      jsIsRoom:(objectType === "room"),
+      jsMobilityType:'Immobile',
+    });
+    newObject.makeUniqueName(state)
+    console.log("objectType=" + objectType);
+    
+    const settings = QuestObject.getSettings(state)
+    let currentObject = QuestObject.getCurrent(state)
+    // If the current object is the settings, OR if the current object is a room and new rooms go top,
+    // then loc is undefined, otherwise, do this:
+    if (currentObject.jsIsSettings) {
+      currentObject = undefined
+    }
+    else {
+      if (newObject.jsIsRoom) {
+        if (settings.jsNewRoomWhere === "Top") {
+          currentObject = undefined
+        }
+        else if (settings.jsNewRoomWhere === "Location") {
+          console.log("Looking for room");
+          while (currentObject && !currentObject.jsIsRoom) {
+            currentObject = state.objects.find(el => el.name === currentObject.loc)
+          }
+        }  
+        else if (settings.jsNewRoomWhere === "Zone") {
+          console.log("Looking for zone");
+          while (currentObject && !currentObject.jsIsZone) {
+            currentObject = state.objects.find(el => el.name === currentObject.loc)
+          }
+        }  
+      }
+      else {
+        if (settings.jsNewItemWhere === "Top") {
+          currentObject = undefined
+        }
+        else if (settings.jsNewItemWhere === "Location") {
+          console.log("Looking for room");
+          while (currentObject && !currentObject.jsIsRoom) {
+            currentObject = state.objects.find(el => el.name === currentObject.loc)
+          }
+        }  
+        else if (settings.jsNewItemWhere === "Zone") {
+          console.log("Looking for zone");
+          while (currentObject && !currentObject.jsIsZone) {
+            currentObject = state.objects.find(el => el.name === currentObject.loc)
+          }
+        }  
+      }
+    }
+    if (currentObject) {
+      newObject.loc = currentObject.name
+      console.log("Set location to: " + currentObject.name);
+    }
+    return newObject
+  }
+  
+  
+  
+  
+  
+  makeUniqueName(state) {
+    console.log('here')
+    // Is it already unique?
+    if (!state.objects.find(el => (el.name === this.name && el !== this))) return
+    console.log('not unique')
+
+    const res = /(\d+)$/.exec(this.name);
+    // Does not end in a number
+    if (!res) {
+      this.name += '0'
+    }
+    else {
+      const n = parseInt(res[0]) + 1;
+      console.log(n)
+      this.name = this.name.replace(/(\d+)$/, "" + n)
+    }
+    this.makeUniqueName(state)
+  }
+  
  
   //---------------------------------------------------------------------
   //----------           For React                  ---------------------

@@ -4,7 +4,8 @@
     <jsIsSettings type="boolean">true</jsIsSettings>
     <jsColour><![CDATA[black]]></jsColour>
     <jsShowRoomsOnly type="boolean">true</jsShowRoomsOnly>
-    <jsNewRoomWhere type="string">Location</jsNewRoomWhere>
+    <jsNewRoomWhere type="string">Top</jsNewRoomWhere>
+    <jsNewItemWhere type="string">Location</jsNewItemWhere>
     <jsAutosaveInterval type="int">5</jsAutosaveInterval>
   </object>
 

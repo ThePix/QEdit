@@ -1,5 +1,3 @@
-Need to write styles.css
-
 No STATUS (function)
 No INVENTORIES
 ROOM_TEMPLATE
@@ -22,9 +20,6 @@ ____________
 
 
 Changing a location's name messes up the loc of its contents
-
-
-Auto-save
 
 
 ____________
