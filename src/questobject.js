@@ -340,9 +340,20 @@ class QuestObject {
     return arr;
   }  
   
+  
+  
+  
   importSettings(xmlDoc) {
     const gameObject = xmlDoc.getElementsByTagName("game")[0];
-    this.TITLE = gameObject.getAttribute('name');
+    
+    const defaults = {
+      jsIsSettings:true,
+      jsShowRoomsOnly:true,
+      jsNewRoomWhere:'Location',
+      jsAutosaveInterval:1,
+      title:gameObject.getAttribute('name'),
+    }
+    for (key in defaults) this[key] = defaults[key]
 
     this.importSetting(gameObject, "subtitle", "SUBTITLE");
     this.importSetting(gameObject, "author", "AUTHOR");

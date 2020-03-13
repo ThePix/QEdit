@@ -3,6 +3,7 @@ out
 .eslintcache
 Blood Witch.aslx
 Blood Witch.asl6
+autosaves/*.*
 blockly/*.*
 blockly/javascript_compressed.js
 blockly/blockly_compressed.js

@@ -3,7 +3,6 @@ import React from 'react';
 
 const prompt = require('electron-prompt');
 
-
 import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 //import {FileStore, Exit} from './filestore';
@@ -103,7 +102,7 @@ export default class App extends React.Component {
     this.searchCaseSensitive = true
     this.fs = new FileStore();
     
-    this.controls = new TabControls(["settings", "merch", "container", "wearable", "furniture", "switchable", "component"]).getControls();
+    this.controls = new TabControls(this.fs.getTabFiles()).getControls();
     const settings = this.createDefaultSettings();
     this.state = {
       objects:this.fs.readFile("blank.asl6", settings),
@@ -130,6 +129,13 @@ export default class App extends React.Component {
       console.log(e)
       console.log(quitConfirmed)
     });
+    
+    const _this = this
+    window.addEventListener('load', function(e) {
+      _this.message("All good to go...")
+      setTimeout(_this.autosaveXml.bind(_this), 300000)
+    })
+    
   }
   
   findMenuItem(template, label) {
@@ -201,6 +207,19 @@ export default class App extends React.Component {
       this.message("Open file cancelled");
     }
   }
+  
+  
+  autosaveXml() {
+    if (this.autosaveCount === undefined) this.autosaveCount = -1
+    this.autosaveCount++
+    if (this.autosaveCount > 9) this.autosaveCount = 0
+    this.saveXml("autosaves/autosave" + this.autosaveCount + ".asl6")
+    const settings = this.state.objects.find(el => el.jsIsSettings)
+    if (settings.jsAutosaveInterval !== 0) {
+      setTimeout(this.autosaveXml.bind(this), settings.jsAutosaveInterval * 60000)
+    }
+  }
+  
   
   saveXml(filename) {
     if (!filename) {

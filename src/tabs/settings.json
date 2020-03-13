@@ -82,6 +82,13 @@
 				"default": "Top",
 				"display": "Create locations",
 				"tooltip": "By default, new locations are created at the top level of the hierarchy."
+			},
+			{
+				"name": "jsAutosaveInterval",
+				"type": "number",
+				"default": 1,
+				"display": "Autosave interval",
+				"tooltip": "Your game will be saved every so often. Set the number of minutes between saves here."
 			}
 		]
 	},

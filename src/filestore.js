@@ -16,7 +16,10 @@ and it is reasonable to expect the user to wait whilst it happens.
 */
 
 export class FileStore {
-
+  
+  getTabFiles() {
+    return fs.readdirSync('src/tabs')
+  }
 
   // This should read both Quest 5 and Quest 6 XML files,
   // which hopefully are pretty much the same
@@ -99,7 +102,7 @@ export class FileStore {
     }
     str += "</asl>"
     fs.writeFileSync(filename, str, "utf8");
-    return "Saved"
+    return "Saved: " + filename
   }
 
   writeFileJS(objects, filename) {

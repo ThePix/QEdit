@@ -101,7 +101,7 @@ export class TabControls {
     ];
     
     for (let filename of files) {
-      const json = require('./tabs/' + filename + '.json');
+      const json = require('./tabs/' + filename);
       for (let j = 0; j < json.length; j++) {
         if (json[j].action === "tab") {
           this.controls.push(json[j]);

@@ -5,6 +5,7 @@
     <jsColour><![CDATA[black]]></jsColour>
     <jsShowRoomsOnly type="boolean">true</jsShowRoomsOnly>
     <jsNewRoomWhere type="string">Location</jsNewRoomWhere>
+    <jsAutosaveInterval type="int">5</jsAutosaveInterval>
   </object>
 
   <object name="lounge">
