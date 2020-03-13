@@ -85,7 +85,7 @@
 			},
 			{
 				"name": "jsAutosaveInterval",
-				"type": "number",
+				"type": "int",
 				"default": 1,
 				"display": "Autosave interval",
 				"tooltip": "Your game will be saved every so often. Set the number of minutes between saves here."
@@ -98,6 +98,21 @@
 		"tabName": "Gameplay",
 		"displayIf": "o.jsIsSettings",
 		"tabControls": [
+			{
+				"name": "debug",
+				"type": "flag",
+				"default": true,
+				"display": "Debugging mode?",
+				"tooltip": "In debugging mode some extra commands are available in game. Untick this before exporting to JavaScript for release."
+			},
+			{
+				"name": "test",
+				"type": "flag",
+				"default": true,
+				"displayIf": "o.debug",
+				"display": "Include unit tests?",
+				"tooltip": "Include the testing library and your unit tests in the output files?"
+			},
       {
 				"name": "splitLinesOn",
 				"type": "string",
@@ -105,13 +120,6 @@
 				"display": "Split lines on",
 				"displayIf": "o.jsAdvanced",
 				"tooltip": "In a text area, what string denotes a line break? The default is what Quest 5 used."
-			},
-			{
-				"name": "debug",
-				"type": "flag",
-				"default": true,
-				"display": "Debugging mode?",
-				"tooltip": "In debugging mode some extra commands are available in game. Untick this before exporting to JavaScript for release."
 			},
 			{
 				"name": "failCountsAsTurn",
