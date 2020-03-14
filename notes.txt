@@ -1,9 +1,13 @@
+Settings
 No STATUS (function)
 No INVENTORIES
 ROOM_TEMPLATE
-FILES
+... but there are defaults
 
+Set up like quest 5 (and import)
+Only set these on export
 
+______
 
 
 
@@ -16,10 +20,11 @@ Other field types
 
 
 
-____________
+
+_____
 
 
-Changing a location's name messes up the loc of its contents
+May be issue with flags that default to true?
 
 
 ____________
@@ -28,5 +33,3 @@ Functions and commands
 ----------------------
 
 Including exporting
-
-

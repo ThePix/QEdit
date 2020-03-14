@@ -82,7 +82,10 @@ export default class App extends React.Component {
     this.searchCaseSensitive = true
     this.fs = new FileStore();
     
-    this.controls = new TabControls(this.fs.getTabFiles()).getControls();
+    const files = this.fs.getTabFiles()
+    console.log(files)
+    
+    this.controls = new TabControls(files).getControls();
     const settings = this.createDefaultSettings();
     this.state = {
       objects:this.fs.readFile("blank.asl6", settings),
@@ -510,45 +513,58 @@ export default class App extends React.Component {
     return count !== 1;
   }
   
+  
+  
+  
+  
+  
   handleChange(e) {
-    this.setValue(e.target.id, e.target.value);
+    this.setValue(e.target.id, e.target.value, {type:e.target.dataset.type});
   }
   
+  // id needs its own handler so it gets tested properly for uniqueness
   handleIdChange(e) {
     console.log("------------------")
-    this.setValue(e.target.id, e.target.value);
+    if (!/^[a-zA-Z_][\w]*$/.test(e.target.value)) return
+
+
+    this.setValue(e.target.id, e.target.value, {id:true, type:'id'});
   }
   
   // numbers need their own handler so they get converted to numbers
   handleIntChange(e) {
-    console.log(e.target.value);
-    console.log(typeof e.target.value);
-    this.setValue(e.target.id, parseInt(e.target.value));
+    const value = parseInt(e.target.value)
+    if (e.target.min && value < e.target.min) return
+    if (e.target.max && value > e.target.max) return
+    this.setValue(e.target.id, value, {type:'int'});
   }
 
   // numbers need their own handler so they get converted to numbers
   handleListChange(e) {
     console.log(e.target.value);
     console.log(typeof e.target.value);
-    this.setValue(e.target.id, e.target.value.split(/\r?\n/));
+    this.setValue(e.target.id, e.target.value.split(/\r?\n/), {id:true, type:'stringlist'});
   }
 
   // Checkboxes need their own handler as they use the "checked" property...
   handleCBChange(e) {
-    this.setValue(e.target.id, e.target.checked);
+    this.setValue(e.target.id, e.target.checked, {type:'flag'});
   }
   
   treeToggle(obj) {
-    this.setValue("jsCollapsed", !obj.jsCollapsed, obj);
+    this.setValue("jsCollapsed", !obj.jsCollapsed, {obj:obj, type:'treetoggle'});
   }
   
-  setValue(name, value, obj) {
+  setValue(name, value, options) {
+    if (!options) options = {}
     //console.log("----------------------------");
     //console.log(name);
     //console.log(value);
     //console.log(obj);
-    const objName = (obj === undefined ? this.state.currentObjectName : obj.name);
-    //console.log(objName);
+    const obj = options.obj ? obj : QuestObject.getCurrent(this.state)
+    const oldValue = obj[name]
+    
+    console.log(oldValue);
     const newObjects = []  // cloning the state
     for (let i = 0; i < this.state.objects.length; i++) {
       newObjects.push(new QuestObject(this.state.objects[i]));
@@ -556,7 +572,7 @@ export default class App extends React.Component {
       
     // Need to look in new list for old name, as the name may be changing
     const newObject = newObjects.find(el => {
-      return (el.name == objName);
+      return (el.name == obj.name);
     });
 
     if (/_exit_/.test(name)) {
@@ -567,15 +583,22 @@ export default class App extends React.Component {
       //console.log("now=" + newObject[dir].name);
     }
     else {
-      // Valid?
-      const control = this.findControl(name);
-      if (control && control.validator && control.validator(value, newObject)) return;
       // Do it!
       if (value === null) {
         delete newObject[name];
       }
       else {
+        console.log("Set to " + value)
         newObject[name] = value;
+      }
+    }
+    
+    // For ID need to change anything set to this
+    if (options.id) {
+      for (let o of newObjects) {
+        for (let key in o) {
+          if (o[key] === oldValue) o[key] = value
+        }
       }
     }
 

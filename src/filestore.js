@@ -6,7 +6,7 @@ const [QuestObject] = require('./questobject')
 const useWithDoor = "useWithDoor";
 const DSPY_SCENERY = 5;
 
-const base_path = 'C:/Users/andyj/Documents/GitHub/QuestJS/'
+const QUEST_JS_PATH = '../../QuestJS/'
 
 /*
 
@@ -136,7 +136,7 @@ export class FileStore {
       ]      
       for (let filename of filenames) {
         console.log("About to copy " + filename + '...');
-        fs.copyFile(base_path + filename, outputPath + filename, (err) => {
+        fs.copyFile(QUEST_JS_PATH + filename, outputPath + filename, (err) => {
           if (err) throw err;
           console.log("...Done");
         });

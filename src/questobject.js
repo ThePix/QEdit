@@ -2,6 +2,7 @@
 
 const useWithDoor = "useWithDoor";
 const DSPY_SCENERY = 5;
+const QUEST_JS_PATH = '../../QuestJS/'
 
 let nextId = 0
 
@@ -41,7 +42,7 @@ class QuestObject {
   
   static create(state, objectType) {
     const newObject = new QuestObject({
-      name:"new_" + objectType,
+      name:"_new_" + objectType,
       jsIsStub:(objectType === "stub"),
       jsIsRoom:(objectType === "room"),
       jsMobilityType:'Immobile',
@@ -594,7 +595,7 @@ class QuestObject {
   toJsSettings() {
     if (!this.jsIsSettings) return '';
 
-    const {settings} = require("./settings.js")
+    const {settings} = require(QUEST_JS_PATH + "lib/settings.js")
     console.log(this)
     
     let str = "\n\n\n";

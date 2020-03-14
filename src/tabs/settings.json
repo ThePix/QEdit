@@ -39,14 +39,6 @@
 				"tooltip": "List all your contributors, like beta-testers."
 			},
 			{
-				"name": "jsFilename",
-				"type": "readonly",
-				"default": "",
-				"display": "Filename",
-				"displayIf": "o.jsAdvanced",
-				"tooltip": "Sorry, this cannot be changed; do 'Save as...'"
-			},
-			{
 				"name": "lang",
 				"type": "text",
 				"default": "lang-en",
@@ -59,6 +51,22 @@
 				"default": false,
 				"display": "Advanced options",
 				"tooltip": "Tick this to see more advanced options across various tabs."
+			},
+			{
+				"name": "jsFilename",
+				"type": "readonly",
+				"default": "",
+				"display": "Filename",
+				"displayIf": "o.jsAdvanced",
+				"tooltip": "Sorry, this cannot be changed; do 'Save as...'"
+			},
+			{
+				"name": "files",
+				"type": "stringlist",
+				"default": ["code", "data"],
+				"display": "Include these files",
+				"displayIf": "o.jsAdvanced",
+				"tooltip": "A list of files to be included in your game. This must include 'code' and 'data', but you may want to include your own files. Library files are handled separately."
 			}
 		]
 	},
@@ -109,7 +117,7 @@
 			{
 				"name": "debug",
 				"type": "flag",
-				"default": true,
+				"default": false,
 				"display": "Debugging mode?",
 				"tooltip": "In debugging mode some extra commands are available in game. Untick this before exporting to JavaScript for release."
 			},
@@ -164,9 +172,10 @@
 				"name": "maxUndo",
 				"type": "int",
 				"default": 10,
+        "min": 0,
 				"display": "Max. undo",
 				"displayIf": "o.jsAdvanced",
-				"tooltip": "The number of game state saves to keep in memory, and hence the maximum times the player can UNDO in one go."
+				"tooltip": "The number of game state saves to keep in memory, and hence the maximum times the player can UNDO in one go. Set to zero to disable undo."
 			},
 			{
 				"name": "saveDisabled",

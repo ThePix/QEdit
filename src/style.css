@@ -44,8 +44,6 @@ body {
   padding:4px;
   background:#EEF;
   border:1px solid #333;
-  overflow-y:auto;/*resets IE*/
-  overflow-x:hidden;/*resets IE*/
 }
 
 .stringlist {
@@ -54,14 +52,12 @@ body {
   -webkit-box-sizing:border-box;
   box-sizing:border-box;
   display:block;/*reset from inline*/
-  width:100%;
+  width:100px;
   height:150px;
   margin:0;/*remove defaults*/
   padding:4px;
   background:#FFF;
   border:1px solid #333;
-  overflow-y:auto;/*resets IE*/
-  overflow-x:hidden;/*resets IE*/
 }
 
 .fieldName {

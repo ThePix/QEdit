@@ -1,13 +1,14 @@
+const useWithDoor = function() {};
+const DSPY_SCENERY = 5;
+const QUEST_JS_PATH = '../../QuestJS/'
+
 import React from 'react';
 import {ExitsComp} from './exitscomp';
 import {ScriptOrStringComp} from './scriptorstringcomp';
 
 import {ScriptComp, SelectComp} from './components';
-
 const [QuestObject] = require('./questobject')
-
-const useWithDoor = function() {};
-const DSPY_SCENERY = 5;
+const {lang} = require(QUEST_JS_PATH + "lang/lang-en.js")
 
 
 
@@ -144,6 +145,16 @@ const InputComp = (props) => {
       </tr>
     );
   }
+  else if (props.input.type === "selectpronouns") {
+    return (
+      <tr className="form-group">
+        <td width="30%"><span className="fieldName">{props.input.display}</span></td>
+        <td>
+          <SelectComp name={props.input.name} options={Object.keys(lang.pronouns)} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>
+        </td>
+      </tr>
+    );
+  }
   else if (props.input.type === "objects") {
     const options = ["---"].concat(props.objects.filter(el => !el.jsIsSettings).map((o, i) => o.name));
     return (
@@ -247,9 +258,10 @@ const InputComp = (props) => {
             cols="400" rows="6"
             id={props.input.name}
             name={props.input.name}
-            value={value}
+            value={value.join('\n')}
+            data-type="stringlist"
             title={props.input.tooltip + " Each entry in the list should be on a line on its own; press Enter to go to the next entry."}
-            onChange={props.handleChange}
+            onChange={props.handleListChange}
           />
         </td>
       </tr>
@@ -313,6 +325,8 @@ const InputComp = (props) => {
     )
   }
   else if (props.input.type === "int") {
+    console.log(props.object[props.input.name])
+    console.log(value)
     if (typeof value === 'string') value = parseInt(value)
     if (typeof value !== 'number') {
       console.log("Warning: Not an integer - " + props.input.name)
@@ -327,8 +341,10 @@ const InputComp = (props) => {
           name={props.input.name}
           type="number"
           size="2"
+          min={props.input.min}
+          max={props.input.max}
           title={props.input.tooltip}
-          value={value ? value : props.input.default}
+          value={value}
           onChange={props.handleIntChange}
         /></td>
       </tr>
