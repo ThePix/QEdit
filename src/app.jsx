@@ -82,10 +82,7 @@ export default class App extends React.Component {
     this.searchCaseSensitive = true
     this.fs = new FileStore();
     
-    const files = this.fs.getTabFiles()
-    console.log(files)
-    
-    this.controls = new TabControls(files).getControls();
+    this.controls = new TabControls().controls;
     const settings = this.createDefaultSettings();
     this.state = {
       objects:this.fs.readFile("blank.asl6", settings),

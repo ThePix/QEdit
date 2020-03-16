@@ -17,10 +17,6 @@ and it is reasonable to expect the user to wait whilst it happens.
 
 export class FileStore {
   
-  getTabFiles() {
-    return fs.readdirSync('src/tabs')
-  }
-
   // This should read both Quest 5 and Quest 6 XML files,
   // which hopefully are pretty much the same
   readFile(filename, settings) {
@@ -150,12 +146,15 @@ export class FileStore {
     let str2 = "\"use strict\";";
     let str3 = "";
     let str4 = "\"use strict\";";
-    for (let i = 0; i < objects.length; i++) {
-      str1 += objects[i].toJs();
-      str2 += objects[i].toJsSettings();
-      str3 += objects[i].toCss();
-      str4 += objects[i].toCode();
+    for (let obj of objects) {
+      console.log(obj.name)
+      str1 += obj.toJs();
+      str2 += obj.toJsSettings();
+      str3 += obj.toCss();
+      str4 += obj.toCode();
     }
+    console.log(str2)
+    console.log('About to write files')
     fs.writeFileSync(outputPath + "game/data.js", str1, "utf8");
     fs.writeFileSync(outputPath + "game/settings.js", str2, "utf8");
     fs.writeFileSync(outputPath + "game/style.css", str3, "utf8");

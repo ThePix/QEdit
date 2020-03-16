@@ -8,7 +8,10 @@ import {ScriptOrStringComp} from './scriptorstringcomp';
 
 import {ScriptComp, SelectComp} from './components';
 const [QuestObject] = require('./questobject')
+
+console.log("About to...3")
 const {lang} = require(QUEST_JS_PATH + "lang/lang-en.js")
+console.log("... done")
 
 
 

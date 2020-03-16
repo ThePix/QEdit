@@ -3,6 +3,7 @@ import {ScriptComp, SelectComp} from './components';
 
 const QUEST_JS_PATH = '../../QuestJS/'
 
+console.log("About to...2")
 const {lang} = require(QUEST_JS_PATH + "lang/lang-en.js")
 //const useWithDoor = function() {};
 const DSPY_SCENERY = 5;

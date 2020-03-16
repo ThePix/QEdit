@@ -1,43 +1,48 @@
+console.log("About to...4")
+
+const fs = require('fs');
 const {lang} = require("./lang-en.js");
 
-
+// Assumes files are proved in alphabetical order, so aaa.js is first
+// custom files may want to have _ at the start so they are added later
 export class TabControls {
-  constructor(files) {
+  constructor() {
+    const files = fs.readdirSync('src/tabs')
+    console.log(files)
+
     this.controls = [];
+    this.libraries = []
     
     for (let filename of files) {
       const json = require('./tabs/' + filename);
-      for (let j = 0; j < json.length; j++) {
-        if (json[j].action === "tab") {
-          this.controls.push(json[j]);
+      for (let data of json) {
+        if (data.action === "tab") {
+          this.controls.push(data);
         }
-        if (json[j].action === "extend") {
-          //const tabName = json[j].tabName
+        if (data.action === "extend") {
+          //const tabName = data.tabName
           const tab = this.controls.find(function(el) {
-            return el.tabName === json[j].tabName;
+            return el.tabName === data.tabName;
           });
           if (!tab) {
             console.log("------------------------------");
             console.log("Error with extending tab");
-            console.log("Failed to find a tab called: " + json[j].tabName);
+            console.log("Failed to find a tab called: " + data.tabName);
             console.log("File: " + filename);
             console.log("Note that this is case sensitive!");
           }
           else {
-            tab.tabControls.push(json[j]);
+            tab.tabControls.push(data);
           }
         }
-        
+        if (data.action === "library") {
+          console.log('library')
+          console.log(data)
+          this.libraries.push({name:data.name, files:data.files})
+          console.log(this.libraries)
+        }
       }
     }
     
   }
-  
-  getControls() {
-    //for (let i = 0; i < this.controls.length; i++) {
-    //  console.log(this.controls[i].tabName);
-    //}    
-    return this.controls;
-  }
-
 }

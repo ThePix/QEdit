@@ -33,3 +33,15 @@ Functions and commands
 ----------------------
 
 Including exporting
+
+
+
+_______________
+
+Custom libraries
+
+We have the data in the controls tab
+
+
+
+Need to convert <br> on import

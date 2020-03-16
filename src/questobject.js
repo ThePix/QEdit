@@ -6,6 +6,13 @@ const QUEST_JS_PATH = '../../QuestJS/'
 
 let nextId = 0
 
+import {TabControls} from './tabcontrols';
+console.log("About to...")
+const {lang} = require(QUEST_JS_PATH + "lang/lang-en")
+console.log("... done")
+//const {settings} = require(QUEST_JS_PATH + "lib/settings")
+const {settings} = require("./settings.js")
+console.log("... done2")
 
 
 class QuestObject {
@@ -460,11 +467,11 @@ class QuestObject {
     }
     for (key in defaults) this[key] = defaults[key]
 
-    this.importSetting(gameObject, "subtitle", "SUBTITLE");
-    this.importSetting(gameObject, "author", "AUTHOR");
-    this.importSetting(gameObject, "version", "VERSION");
-    this.importSetting(gameObject, "echocommand", "CMD_ECHO", "boolean");
-    this.importSetting(gameObject, "showcommandbar", "TEXT_INPUT", "boolean");
+    this.importSetting(gameObject, "subtitle", "subtitle");
+    this.importSetting(gameObject, "author", "author");
+    this.importSetting(gameObject, "version", "version");
+    this.importSetting(gameObject, "echocommand", "cmdEcho", "boolean");
+    this.importSetting(gameObject, "showcommandbar", "textInput", "boolean");
 
 
     this.importSetting(gameObject, "defaultfont", "jsStyleMain_font_family");
@@ -473,7 +480,18 @@ class QuestObject {
     this.importSetting(gameObject, "defaultbackground", "jsStyleMain_background_color");
     this.importSetting(gameObject, "backgroundimage", "jsStyleMain_background_image");
 
-    this.importSetting(gameObject, "moneyformat", "MONEY_FORMAT");
+    this.importSetting(gameObject, "moneyformat", "moneyFormat");
+    
+    this.importSetting(gameObject, "autodescription_youarein", "jsRoomTitlePos", "int");
+    this.importSetting(gameObject, "autodescription_youcansee", "jsRoomItemsPos", "int");
+    this.importSetting(gameObject, "autodescription_youcango", "jsRoomExitsPos", "int");
+    this.importSetting(gameObject, "autodescription_description", "jsRoomDescPos", "int");
+    this.importSetting(gameObject, "autodescription_youarein_newline", "jsRoomTitleNewLine", "boolean");
+    this.importSetting(gameObject, "autodescription_youcansee_newline", "jsRoomItemsNewLine", "boolean");
+    this.importSetting(gameObject, "autodescription_youcango_newline", "jsRoomExitsNewLine", "boolean");
+    this.importSetting(gameObject, "autodescription_description_newline", "jsRoomDescNewLine", "boolean");
+    this.importSetting(gameObject, "clearscreenonroomenter", "clearScreenOnRoomEnter", "boolean");
+    
 
 
     // If there is a web font, we will use that, but flag that we need extrea code in style.css
@@ -595,10 +613,21 @@ class QuestObject {
   toJsSettings() {
     if (!this.jsIsSettings) return '';
 
-    const {settings} = require(QUEST_JS_PATH + "lib/settings.js")
     console.log(this)
     
     let str = "\n\n\n";
+    
+    console.log("here1")
+    const libs = new TabControls().libraries;
+    for (let lib of libs) {
+    console.log(lib)
+      str += "settings.customLibraries.push({folder:'" + lib.name + "', files:["
+    console.log(lib.files)
+      str += lib.files.map(el => ('"' + el + '"')).join(', ')
+    console.log(str)
+      str += "]})\n"
+    }
+    console.log("here2")
     
     for (let key in this) {
       console.log("Doing: " + key)

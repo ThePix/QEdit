@@ -1,0 +1,26 @@
+[{
+		"action": "tab",
+		"tabName": "QuestX",
+		"displayIf": "o.jsIsQuestX",
+		"tabControls": [{
+				"name": "QuestX",
+				"type": "title",
+				"display": "QuestX"
+			}
+		]
+	},
+	{
+		"action": "extend",
+		"tabName": "Home",
+		"name": "jsIsQuestX",
+		"type": "flag",
+		"default": false,
+		"display": "QuestX?",
+		"tooltip": "What it says."
+	},
+	{
+		"action": "library",
+		"name": "libx",
+		"files": ["wearableX", "npcX", "worldX", "templatesX"]
+	}
+]
