@@ -2,7 +2,7 @@
 <asl version="600">
   <object name="Settings">
     <id type="int">1</id>
-    <jsIsSettings type="boolean">true</jsIsSettings>
+    <jsObjType type="string">settings</jsObjType>
     <jsColour type="string"><![CDATA[black]]></jsColour>
     <jsShowRoomsOnly type="boolean">true</jsShowRoomsOnly>
     <jsNewRoomWhere type="string"><![CDATA[Top]]></jsNewRoomWhere>

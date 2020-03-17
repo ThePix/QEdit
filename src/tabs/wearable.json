@@ -29,6 +29,6 @@
     "default":false,
     "display":"Wearable?",  
     "tooltip":"What it says.",
-    "displayIf":"!o.jsIsRoom && !o.jsIsStub && o.jsMobilityType === 'Takeable'"
+    "displayIf":"o.jsObjType !== 'room' && o.jsObjType !== 'stub' && o.jsMobilityType === 'Takeable'"
   }
 ]

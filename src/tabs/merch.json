@@ -21,6 +21,6 @@
     "default":false,
     "display":"Merchandise?",  
     "tooltip":"Can be bought and sold",
-    "displayIf":"!o.jsIsRoom && !o.jsIsStub && o.jsMobilityType === 'Takeable'"
+    "displayIf":"o.jsObjType !== 'room' && o.jsObjType !== 'stub' && o.jsMobilityType === 'Takeable'"
   }
 ]

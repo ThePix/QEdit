@@ -1,7 +1,7 @@
 [{
 		"action": "tab",
 		"tabName": "Meta-Data",
-		"displayIf": "o.jsIsSettings",
+		"displayIf": "o.jsObjType === 'settings'",
 		"tabControls": [
       {
 				"name": "title",
@@ -74,7 +74,7 @@
 	{
 		"action": "tab",
 		"tabName": "Editor",
-		"displayIf": "o.jsIsSettings && o.jsAdvanced",
+		"displayIf": "o.jsObjType === 'settings' && o.jsAdvanced",
 		"tabControls": [
 			{
 				"name": "jsShowRoomsOnly",
@@ -112,7 +112,7 @@
 	{
 		"action": "tab",
 		"tabName": "Gameplay",
-		"displayIf": "o.jsIsSettings",
+		"displayIf": "o.jsObjType === 'settings'",
 		"tabControls": [
 			{
 				"name": "debug",
@@ -373,7 +373,7 @@
 	{
 		"action": "tab",
 		"tabName": "Start-up",
-		"displayIf": "o.jsIsSettings",
+		"displayIf": "o.jsObjType === 'settings'",
 		"tabControls": [{
 			"name": "intro",
 			"type": "textarea",
@@ -386,7 +386,7 @@
 	{
 		"action": "tab",
 		"tabName": "Main Pane",
-		"displayIf": "o.jsIsSettings",
+		"displayIf": "o.jsObjType === 'settings'",
 		"tabControls": [{
 				"name": "textInput",
 				"type": "flag",
@@ -434,6 +434,92 @@
 
 			{
 				"type": "title",
+				"display": "Location descriptions"
+			},
+			{
+				"name": "clearScreenOnRoomEnter",
+				"type": "flag",
+				"default": false,
+				"display": "Clear screen on location enter",
+				"tooltip": "Should the screen be cleared whenever the player enters a new location?"
+			},
+			{
+				"name": "jsRoomTitlePos",
+				"type": "int",
+				"default": 1,
+        "min":0,
+        "max":4,
+				"display": "Name position",
+				"tooltip": "Where do we display the location name in relation to other parts of the location description (set to zero to turn it off)?"
+			},
+			{
+				"name": "jsRoomTitleNewLine",
+				"type": "flag",
+				"default": false,
+				"display": "New line after name",
+				"tooltip": "Should a new line get added after the location name?"
+			},
+			{
+				"name": "jsRoomTitleYouAreIn",
+				"type": "flag",
+				"default": false,
+				"display": "Prefix name with 'You are in'",
+				"tooltip": "If this is off, the location name will be shown as a title."
+			},
+
+			{
+				"name": "jsRoomItemsPos",
+				"type": "int",
+				"default": 2,
+        "min":0,
+        "max":4,
+				"display": "Item list position",
+				"tooltip": "Where do we display the list of items in relation to other parts of the location description (set to zero to turn it off)?"
+			},
+			{
+				"name": "jsRoomItemsNewLine",
+				"type": "flag",
+				"default": false,
+				"display": "New line after item list",
+				"tooltip": "Should a new line get added after the list of items?"
+			},
+
+			{
+				"name": "jsRoomExitsPos",
+				"type": "int",
+				"default": 3,
+        "min":0,
+        "max":4,
+				"display": "Exit list position",
+				"tooltip": "Where do we display the list of exits in relation to other parts of the location description (set to zero to turn it off)?"
+			},
+			{
+				"name": "jsRoomExitsNewLine",
+				"type": "flag",
+				"default": false,
+				"display": "New line after exit list",
+				"tooltip": "Should a new line get added after the exit list?"
+			},
+
+			{
+				"name": "jsRoomDescPos",
+				"type": "int",
+				"default": 4,
+        "min":0,
+        "max":4,
+				"display": "Description position",
+				"tooltip": "Where do we display the descriptive text in relation to other parts of the location description (set to zero to turn it off)?"
+			},
+			{
+				"name": "jsRoomDescNewLine",
+				"type": "flag",
+				"default": false,
+				"display": "New line after description",
+				"tooltip": "Should a new line get added after the descriptive text?"
+			},
+
+			{
+				"type": "title",
 				"display": "Text style"
 			},
 			{
@@ -477,7 +563,7 @@
 	{
 		"action": "tab",
 		"tabName": "Side Pane",
-		"displayIf": "o.jsIsSettings",
+		"displayIf": "o.jsObjType === 'settings'",
 		"tabControls": [{
 				"name": "panes",
 				"type": "select",

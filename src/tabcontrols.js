@@ -1,15 +1,11 @@
-console.log("About to...4")
-
 const fs = require('fs');
 const {lang} = require("./lang-en.js");
 
 // Assumes files are proved in alphabetical order, so aaa.js is first
 // custom files may want to have _ at the start so they are added later
-export class TabControls {
+class TabControls {
   constructor() {
     const files = fs.readdirSync('src/tabs')
-    console.log(files)
-
     this.controls = [];
     this.libraries = []
     
@@ -46,3 +42,6 @@ export class TabControls {
     
   }
 }
+
+
+module.exports = [TabControls]

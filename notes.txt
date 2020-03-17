@@ -1,11 +1,8 @@
 Settings
 No STATUS (function)
 No INVENTORIES
-ROOM_TEMPLATE
 ... but there are defaults
 
-Set up like quest 5 (and import)
-Only set these on export
 
 ______
 
@@ -38,10 +35,6 @@ Including exporting
 
 _______________
 
-Custom libraries
-
-We have the data in the controls tab
 
 
-
-Need to convert <br> on import
+wait

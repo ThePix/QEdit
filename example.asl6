@@ -1,7 +1,7 @@
 <!--Saved by Quest 6.0.0-->
 <asl version="600">
   <object name="Settings">
-    <jsIsSettings type="boolean">true</jsIsSettings>
+    <jsObjType type="string">settings</jsObjType>
     <loc><![CDATA[---]]></loc>
     <jsPronoun><![CDATA[thirdperson]]></jsPronoun>
     <jsColour><![CDATA[blue]]></jsColour>

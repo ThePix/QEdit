@@ -21,6 +21,6 @@
     "default":false,
     "display":"Switchable?",  
     "tooltip":"Can this item be turned on and off.",
-    "displayIf":"!o.jsIsRoom && !o.jsIsStub"
+    "displayIf":"o.jsObjType !== 'room' && o.jsObjType !== 'stub'"
   }
 ]

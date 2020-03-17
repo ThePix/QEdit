@@ -34,7 +34,7 @@
         "default":false, 
         "display":"Can this be locked?",
         "tooltip":"What it says.",
-        "displayIf":"!o.jsIsRoom && !o.jsIsStub && (o.jsContainerType === 'Container' || o.jsContainerType === 'Openable')"
+        "displayIf":"o.jsObjType !== 'room' && o.jsObjType !== 'stub' && (o.jsContainerType === 'Container' || o.jsContainerType === 'Openable')"
       }
     ]
   },
@@ -48,7 +48,7 @@
     "display":"Container/openable",  
     "options":["No", "Container", "Surface", "Openable", "Vessel"],
     "tooltip":"A container might be a box or chest that perhaps can be opened or locked. A surface can have things put on it; a table or shelf. A door or gate is openable, but you cannot put things inside it. A vessel will hold liquids.",
-    "displayIf":"!o.jsIsRoom && !o.jsIsStub && (o.jsMobilityType === 'Immobile' || o.jsMobilityType === 'Takeable')"
+    "displayIf":"o.jsObjType !== 'room' && o.jsObjType !== 'stub' && (o.jsMobilityType === 'Immobile' || o.jsMobilityType === 'Takeable')"
   }
         
 ]

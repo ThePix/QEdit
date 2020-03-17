@@ -53,6 +53,9 @@ export class Menus {
           { type: 'separator' },
           { label: 'Delete object', },
           { label: 'Duplicate object', accelerator: 'CmdOrCtrl+D',},
+          { type: 'separator' },
+          { label: 'Add function', accelerator: 'Alt+CmdOrCtrl+F',},
+          { label: 'Add command', accelerator: 'Alt+CmdOrCtrl+C',},
         ]
       },
       {

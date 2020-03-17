@@ -114,11 +114,11 @@ const ExitDetails = (props) => {
     let list = props.objects;
     const settings = QuestObject.getSettings(props)
     if (settings.jsShowRoomsOnly) {
-      list = props.objects.filter(o => o.jsIsRoom);
+      list = props.objects.filter(o => o.jsObjType === 'room');
       console.log(list)
     }
     else {
-      list = props.objects.filter(o => !o.jsIsSettings);
+      list = props.objects.filter(o => o.jsObjType !== 'settings');
       console.log(list)
     }
     const options = ["---"].concat(list.map((o, i) => o.name));

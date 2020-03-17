@@ -4,21 +4,18 @@ const useWithDoor = "useWithDoor";
 const DSPY_SCENERY = 5;
 const QUEST_JS_PATH = '../../QuestJS/'
 
-let nextId = 0
+//let nextId = 0
 
-import {TabControls} from './tabcontrols';
-console.log("About to...")
+const [TabControls] = require('./tabcontrols')
 const {lang} = require(QUEST_JS_PATH + "lang/lang-en")
-console.log("... done")
 //const {settings} = require(QUEST_JS_PATH + "lib/settings")
 const {settings} = require("./settings.js")
-console.log("... done2")
 
 
 class QuestObject {
   constructor (data, version) {
-    this.id = nextId
-    nextId++
+    //this.id = nextId
+    //nextId++
     if (data.getAttribute) {
       // Is this an XML element? We could test if the class is Element, but then the unit tests fails
       this.translateObjectFromXml(data, version);
@@ -31,7 +28,7 @@ class QuestObject {
   }
   
   static getSettings(state) {
-    return state.objects.find(el => el.jsIsSettings)
+    return state.objects.find(el => el.jsObjType === 'settings')
   } 
   
   static getByName(state, name) {
@@ -50,8 +47,7 @@ class QuestObject {
   static create(state, objectType) {
     const newObject = new QuestObject({
       name:"_new_" + objectType,
-      jsIsStub:(objectType === "stub"),
-      jsIsRoom:(objectType === "room"),
+      jsObjType:objectType,
       jsMobilityType:'Immobile',
     });
     newObject.makeUniqueName(state)
@@ -61,17 +57,17 @@ class QuestObject {
     let currentObject = QuestObject.getCurrent(state)
     // If the current object is the settings, OR if the current object is a room and new rooms go top,
     // then loc is undefined, otherwise, do this:
-    if (currentObject.jsIsSettings) {
+    if (currentObject.jsObjType === 'settings' || newObject.jsObjType === 'junction' || newObject.jsObjType === 'command') {
       currentObject = undefined
     }
     else {
-      if (newObject.jsIsRoom) {
+      if (newObject.jsObjType === 'room') {
         if (settings.jsNewRoomWhere === "Top") {
           currentObject = undefined
         }
         else if (settings.jsNewRoomWhere === "Location") {
           console.log("Looking for room");
-          while (currentObject && !currentObject.jsIsRoom) {
+          while (currentObject && !currentObject.jsObjType === 'room') {
             currentObject = state.objects.find(el => el.name === currentObject.loc)
           }
         }  
@@ -88,7 +84,7 @@ class QuestObject {
         }
         else if (settings.jsNewItemWhere === "Location") {
           console.log("Looking for room");
-          while (currentObject && !currentObject.jsIsRoom) {
+          while (currentObject && !currentObject.jsObjType === 'room') {
             currentObject = state.objects.find(el => el.name === currentObject.loc)
           }
         }  
@@ -179,14 +175,14 @@ class QuestObject {
   }
 
   treeStyleClass() {
-    if (this.jsIsSettings) {
+    if (this.jsObjType === 'settings') {
       return "treeSettings";
     }
-    else if (this.jsIsRoom) {
+    else if (this.jsObjType === 'room') {
       return this.jsIsZone ? "treeZone" : "treeRoom";
     }
     else {
-      return this.jsIsStub ? "treeStub" : "treeItem";
+      return this.jsObjType === 'stub' ? "treeStub" : "treeItem";
     }
   }
 
@@ -275,7 +271,7 @@ class QuestObject {
       let inherits = this.getDirectChildAttributes(xml, "inherit", 'name');
       //console.log(inherits);
       
-      this.jsIsRoom = inherits.includes("editor_room");
+      this.jsObjType = inherits.includes("editor_room") ? 'room' : 'item'
       inherits = this.removeFromArray(inherits, "editor_room");
       inherits = this.removeFromArray(inherits, "editor_object");
       
@@ -283,7 +279,7 @@ class QuestObject {
       inherits = this.removeFromArray(inherits, "talkingchar");
       this.jsPronoun = "thirdperson";
 
-      if (!this.jsIsRoom) {
+      if (!this.jsObjType === 'room') {
         if (this.take) {
           this.jsMobilityType = "Takeable";
         }
@@ -459,7 +455,7 @@ class QuestObject {
     const gameObject = xmlDoc.getElementsByTagName("game")[0];
     
     const defaults = {
-      jsIsSettings:true,
+      jsObjType:'settings',
       jsShowRoomsOnly:true,
       jsNewRoomWhere:'Location',
       jsAutosaveInterval:1,
@@ -482,6 +478,7 @@ class QuestObject {
 
     this.importSetting(gameObject, "moneyformat", "moneyFormat");
     
+    this.importSetting(gameObject, "clearscreenonroomenter", "clearScreenOnRoomEnter", "boolean");
     this.importSetting(gameObject, "autodescription_youarein", "jsRoomTitlePos", "int");
     this.importSetting(gameObject, "autodescription_youcansee", "jsRoomItemsPos", "int");
     this.importSetting(gameObject, "autodescription_youcango", "jsRoomExitsPos", "int");
@@ -490,8 +487,7 @@ class QuestObject {
     this.importSetting(gameObject, "autodescription_youcansee_newline", "jsRoomItemsNewLine", "boolean");
     this.importSetting(gameObject, "autodescription_youcango_newline", "jsRoomExitsNewLine", "boolean");
     this.importSetting(gameObject, "autodescription_description_newline", "jsRoomDescNewLine", "boolean");
-    this.importSetting(gameObject, "clearscreenonroomenter", "clearScreenOnRoomEnter", "boolean");
-    
+    this.importSetting(gameObject, "autodescription_youarein_useprefix", "jsRoomTitleYouAreIn", "boolean");
 
 
     // If there is a web font, we will use that, but flag that we need extrea code in style.css
@@ -582,11 +578,11 @@ class QuestObject {
   // Converts one item to JavaScript code
   // Unit tested
   toJs() {
-    if (this.jsIsStub || this.jsIsSettings) return '';
+    if (this.jsObjType === 'stub' || this.jsObjType === 'settings') return '';
     
     let str = "\n\n\n";
 
-    str += "create" + (this.jsIsRoom ? "Room" : "Item") + "(\"" + this.name + "\", ";
+    str += "create" + (this.jsObjType === 'room' ? "Room" : "Item") + "(\"" + this.name + "\", ";
 
     const jsTemplates = [];
     if (this.jsMobilityType === "Takeable") jsTemplates.push("TAKEABLE()");
@@ -611,13 +607,12 @@ class QuestObject {
   
   // Converts one item to JavaScript code
   toJsSettings() {
-    if (!this.jsIsSettings) return '';
+    if (this.jsObjType !== 'settings') return '';
 
-    console.log(this)
+    //console.log(this)
     
     let str = "\n\n\n";
     
-    console.log("here1")
     const libs = new TabControls().libraries;
     for (let lib of libs) {
     console.log(lib)
@@ -627,13 +622,50 @@ class QuestObject {
     console.log(str)
       str += "]})\n"
     }
-    console.log("here2")
+    
+    str += "settings.template = [\n"
+    
+    let line = ''
+    for (let i = 1; i < 5; i++) {
+      let newline
+      if (this.jsRoomTitlePos === i) {
+        if (this.jsRoomTitleYouAreIn) {
+          line += "You are in {hereName}."
+        }
+        else if (this.jsRoomTitleNewLine) {
+          line += "#{cap:{hereName}}"
+        }
+        else  {
+          line += "{b:{cap:{hereName}}}"
+        }
+        newline = this.jsRoomTitleNewLine
+      }
+      if (this.jsRoomItemsPos === i) {
+        line += "{objectsHere:You can see {objects} here.}"
+        newline = this.jsRoomItemsNewLine
+      }
+      if (this.jsRoomExitsPos === i) {
+        line += "{exitsHere:You can go {exits}.}"
+        newline = this.jsRoomExitsNewLine
+      }
+      if (this.jsRoomDescPos === i) {
+        line += "{terse:{hereDesc}}"
+        newline = this.jsRoomDescNewLine
+      }
+        
+      if (newline) {
+        str += "  '" + line + "',\n"
+        line = ''
+      }
+      else {
+        line += ' '
+      }
+    }
+    str += "  '" + line + "',\n"
+    str += "]\n"
     
     for (let key in this) {
-      console.log("Doing: " + key)
-      
       if (/^js[A-Z]/.test(key) || key === 'name') continue;
-      console.log("Not internal")
 
       // Some settings are either false or a string, and in the editor set in two places
       if (/^js[a-z]/.test(key)) {
@@ -645,14 +677,12 @@ class QuestObject {
       }
 
       str += 'settings.' + key.replace("__", ".") + " = "
-      console.log(str)
       switch (typeof this[key]) {
         case "boolean": str += (this[key] ? "true" : "false"); break;
         case "string":  str += "\"" + this[key] + "\""; break;
         case "number": str += this[key]; break;
         default: str += '[' + this.key.map(el => '"' + el + '"').join(', ') + ']'
       }
-      console.log(str)
       str += "\n";
     }
     return str;
@@ -660,7 +690,7 @@ class QuestObject {
   
   // Converts one item to CSS settings
   toCss() {
-    if (!this.jsIsSettings) return '';
+    if (this.jsObjType !== 'settings') return '';
     
     let str = "";
     
@@ -862,7 +892,7 @@ const removeCDATA = function(s) {
 }
 
 const removeBR = function(s) {
-  return s.replace(/\<br\/\>/i, "\n");
+  return s.replace(/\<br\/\>/i, "|");
 }
 
 

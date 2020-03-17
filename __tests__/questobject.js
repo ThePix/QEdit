@@ -359,17 +359,52 @@ test('toJsSettings with boolean/string', () => {
   expect(result).toBe('');
 
   const result2 = obj.toJsSettings()
-  const expected2 = '\n\n\nsettings.stringAtt = "Some string"\n'
+  const expected2 = "\n\n\nsettings.template = [\n  '    ',\n]\nsettings.stringAtt = \"Some string\"\n"
   expect(result2).toBe(expected2);
   
   obj.jsstringAtt = false
 
   const result3 = obj.toJsSettings()
-  const expected3 = '\n\n\nsettings.stringAtt = false\n'
+  const expected3 = "\n\n\nsettings.template = [\n  '    ',\n]\nsettings.stringAtt = false\n"
   expect(result3).toBe(expected3);
 });
 
 
+test('toJsSettings with room description, ordered', () => {
+  const obj = new QuestObject({name:'Settings', jsIsSettings:true, jsRoomTitlePos:1, jsRoomItemsPos:2, jsRoomExitsPos:3, jsRoomDescPos:4})
+
+  const result1 = obj.toJsSettings()
+  //console.log(result1)
+  const expected1 = "\n\n\nsettings.template = [\n  '{b:{cap:{hereName}}} {objectsHere:You can see {objects} here.} {exitsHere:You can go {exits}.} {terse:{hereDesc}} ',\n]\n"
+  expect(result1).toBe(expected1);
+  
+  obj.jsRoomDescPos = 2
+  obj.jsRoomItemsPos = 4
+  const result2 = obj.toJsSettings()
+  //console.log(result2)
+  const expected2 = "\n\n\nsettings.template = [\n  '{b:{cap:{hereName}}} {terse:{hereDesc}} {exitsHere:You can go {exits}.} {objectsHere:You can see {objects} here.} ',\n]\n"
+  expect(result2).toBe(expected2);
+});
+
+
+
+test('toJsSettings with room description, options', () => {
+  const obj = new QuestObject({name:'Settings', jsIsSettings:true, jsRoomTitlePos:1, jsRoomItemsPos:2, jsRoomExitsPos:3, jsRoomDescPos:4, jsRoomTitleNewLine:true})
+
+  const result1 = obj.toJsSettings()
+  //console.log(result1)
+  const expected1 = "\n\n\nsettings.template = [\n  '#{cap:{hereName}}',\n  '{objectsHere:You can see {objects} here.} {exitsHere:You can go {exits}.} {terse:{hereDesc}} ',\n]\n"
+  expect(result1).toBe(expected1);
+  
+  obj.jsRoomDescPos = 2
+  obj.jsRoomItemsPos = 4
+  obj.jsRoomTitleNewLine = false
+  obj.jsRoomTitleYouAreIn = true
+  const result2 = obj.toJsSettings()
+  //console.log(result2)
+  const expected2 = "\n\n\nsettings.template = [\n  'You are in {hereName}. {terse:{hereDesc}} {exitsHere:You can go {exits}.} {objectsHere:You can see {objects} here.} ',\n]\n"
+  expect(result2).toBe(expected2);
+});
 
 
 

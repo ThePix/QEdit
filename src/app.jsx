@@ -7,8 +7,9 @@ const {Menu, dialog, app} = require('electron').remote;
 import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 import {FileStore} from './filestore';
-import {TabControls} from './tabcontrols';
+//import {TabControls} from './tabcontrols';
 import {Menus} from './menus';
+const [TabControls] = require('./tabcontrols')
 const [QuestObject] = require('./questobject')
 
 // Next four lines disable warning from React-hot-loader
@@ -51,16 +52,18 @@ export default class App extends React.Component {
     super(props);
     
     const menuMapping = {
-      'New':        () => this.newGame(),
-      'Open...':    () => this.openXml(),
-      'Save':       () => this.saveXml(),
-      'Save As...': () => this.saveXmlAs(),
+      'New':           () => this.newGame(),
+      'Open...':       () => this.openXml(),
+      'Save':          () => this.saveXml(),
+      'Save As...':    () => this.saveXmlAs(),
       'Export to JavaScript': () => this.saveJs(),
-      'Exit':       () => this.exitApp(),
+      'Exit':          () => this.exitApp(),
 
-      'Add location':   () => this.addObject("room"),
-      'Add item':   () => this.addObject("item"),
-      'Add stub':   () => this.addObject("stub"),
+      'Add location':  () => this.addObject("room"),
+      'Add item':      () => this.addObject("item"),
+      'Add stub':      () => this.addObject("stub"),
+      'Add function':  () => this.addObject("function"),
+      'Add command':   () => this.addObject("command"),
       'Delete object': () => this.removeObject(),
       'Duplicate object': () => this.duplicateObject(),
       
@@ -130,7 +133,7 @@ export default class App extends React.Component {
   
   
   createDefaultSettings(settings) {
-    const obj = new QuestObject({ name:"Settings", jsIsSettings:true });
+    const obj = new QuestObject({ name:"Settings", jsObjType:'settings' });
     obj.addDefaults(this.controls);
     return obj;
   }
@@ -236,7 +239,7 @@ export default class App extends React.Component {
     const filename = dialog.showSaveDialog(dialogOptions)
     console.log(filename)
     if (filename) {
-      const settingsIndex = this.state.objects.findIndex(el => el.jsIsSettings)
+      const settingsIndex = this.state.objects.findIndex(el => el.jsObjType === 'settings')
       this.state.objects[settingsIndex].jsFilename = filename
       this.setState({
         objects:this.state.objects,
@@ -249,6 +252,7 @@ export default class App extends React.Component {
   }
   
   saveJs(filename) {
+    saveXml(filename) // make sure this is saved to asl6 first
     const settings = QuestObject.getSettings(this.state)
     if (!settings.jsFilename) {
       console.log('Save your game before exporting');

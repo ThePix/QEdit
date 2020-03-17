@@ -1,7 +1,7 @@
 [{
 		"tabName": "Home",
 		"action": "tab",
-		"displayIf": "!o.jsIsSettings",
+		"displayIf": "o.jsObjType !== 'settings'",
 		"tabControls": [{
 				"name": "name",
 				"type": "id",
@@ -15,6 +15,7 @@
 				"type": "otherobjects",
 				"default": "---",
 				"display": "Location",
+    		"displayIf": "!o.jsIsJunction && !o.jsIsCommand",
 				"tooltip": "Where the object is at the start of the game, the location or container. Should usually be blank for locations (as they are not inside anything)."
 			},
 
@@ -24,7 +25,7 @@
 				"default": "thirdperson",
 				"display": "Pronouns",
 				"tooltip": "How should the game refer to this?",
-				"displayIf": "!o.jsIsRoom && !o.jsIsStub"
+				"displayIf": "o.jsObjType !== 'room' && o.jsObjType !== 'stub' && !o.jsIsJunction && !o.jsIsCommand"
 			},
 
 			{
@@ -51,14 +52,14 @@
 				"default": false,
 				"display": "Zone?",
 				"tooltip": "Zones are a way to group rooms, making it easier to build large maps (in fact, they are just rooms in a different colour).",
-				"displayIf": "o.jsIsRoom || o.jsIsStub"
+				"displayIf": "o.jsObjType !== 'room' && o.jsObjType !== 'stub' && !o.jsIsJunction && !o.jsIsCommand"
 			},
 
 			{
 				"name": "title1",
 				"type": "title",
 				"display": "Templates",
-				"displayIf": "!o.jsIsRoom && !o.jsIsStub"
+				"displayIf": "o.jsObjType !== 'room' && o.jsObjType !== 'stub' && !o.jsIsJunction && !o.jsIsCommand"
 			},
 
 			{
@@ -68,7 +69,7 @@
 				"display": "Mobility",
 				"options": ["Immobile", "Takeable", "Player", "NPC", "Topic"],
 				"tooltip": "If the item never moves, it is immobile. If it can be taken by the player or a character, it is takeable.",
-				"displayIf": "!o.jsIsRoom && !o.jsIsStub"
+				"displayIf": "o.jsObjType !== 'room' && o.jsObjType !== 'stub'"
 			},
 
 			{
@@ -77,7 +78,7 @@
 				"default": false,
 				"display": "Edible?",
 				"tooltip": "Can this item be eaten or drunk?",
-				"displayIf": "!o.jsIsRoom && !o.jsIsStub && o.jsMobilityType === 'Takeable'"
+				"displayIf": "o.jsObjType !== 'room' && o.jsObjType !== 'stub' && o.jsMobilityType === 'Takeable'"
 			},
 
 			{
@@ -86,7 +87,7 @@
 				"default": false,
 				"display": "Countable?",
 				"tooltip": "An item is countable if there are several of them at a few locations, and they are to be grouped together.",
-				"displayIf": "!o.jsIsRoom && !o.jsIsStub && o.jsMobilityType === 'Takeable'"
+				"displayIf": "o.jsObjType !== 'room' && o.jsObjType !== 'stub' && o.jsMobilityType === 'Takeable'"
 			}
 		]
 	},
@@ -94,14 +95,14 @@
 	{
 		"tabName": "Text",
 		"action": "tab",
-		"displayIf": "!o.jsIsSettings",
+		"displayIf": "o.jsObjType !== 'settings' && !o.jsIsJunction && !o.jsIsCommand",
 		"tabControls": [{
 				"name": "desc",
 				"type": "scriptstring",
 				"default": "",
 				"display": "Description",
 				"tooltip": "A description of the location.",
-				"displayIf": "o.jsIsRoom && !o.jsIsStub",
+				"displayIf": "o.jsObjType === 'room' && o.jsObjType !== 'stub'",
 				"parameters": "",
 				"return": "boolean"
 			},
@@ -111,7 +112,7 @@
 				"default": "",
 				"display": "Description",
 				"tooltip": "A description of the item.",
-				"displayIf": "!o.jsIsRoom && !o.jsIsStub",
+				"displayIf": "o.jsObjType !== 'room' && o.jsObjType !== 'stub'",
 				"parameters": "isMultiple",
 				"return": "boolean"
 			},
@@ -128,7 +129,7 @@
 	{
 		"tabName": "Exits",
 		"action": "tab",
-		"displayIf": "o.jsIsRoom",
+		"displayIf": "o.jsObjType === 'room'",
 		"tabControls": [{
 			"name": "exits",
 			"type": "exits",
