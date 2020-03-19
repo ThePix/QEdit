@@ -42,8 +42,7 @@ const settings = {
   cursor:">",             // The cursor, obviously
   cmdEcho:true,           // Commands are printed to the screen
   typewriter:false,       // Text is displayed one character at a time, with a delay of TYPEWRITER_DELAY millisecond between each
-  typewriterDelay:25,     // and a delay of TYPEWRITER_DELAY_LINE milliseconds at the end of a line
-  typewriterDelayLine:100,
+  textEffectDelay:50,     // and a delay of TYPEWRITER_DELAY_LINE milliseconds at the end of a line
   roomTemplate:[
     "%",
     "{objectsHere:You can see {objects} here.}",

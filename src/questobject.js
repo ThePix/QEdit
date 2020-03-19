@@ -279,7 +279,7 @@ class QuestObject {
       inherits = this.removeFromArray(inherits, "talkingchar");
       this.jsPronoun = "thirdperson";
 
-      if (!this.jsObjType === 'room') {
+      if (this.jsObjType !== 'room') {
         if (this.take) {
           this.jsMobilityType = "Takeable";
         }
@@ -605,6 +605,7 @@ class QuestObject {
     return str;
   }
   
+  
   // Converts one item to JavaScript code
   toJsSettings() {
     if (this.jsObjType !== 'settings') return '';
@@ -623,8 +624,24 @@ class QuestObject {
       str += "]})\n"
     }
     
+    str += "settings.inventories = [\n"
+    if (this.jsInvHeld) str += "  {name:'Items Held', alt:'itemsHeld', test:settings.isHeldNotWorn, getLoc:function() { return game.player.name; } },\n"
+    if (this.jsInvWorn) str += "  {name:'Items Worn', alt:'itemsWorn', test:settings.isWorn, getLoc:function() { return game.player.name; } },\n"
+    if (this.jsInvHere) str += "  {name:'Items Here', alt:'itemsHere', test:settings.isHere, getLoc:function() { return game.player.loc; } },\n"
+    str += "]\n"
+
+    const _ = require('lodash');
+
+    if (this.jsStatusList) {
+      str += "settings.status = [\n"
+      for (let s of this.jsStatusList) {
+        str += '  function() { return "<td>' + s + ':</td><td>" + game.player.' + _.camelCase(s) + ' + "</td>"; },\n'
+      }
+      str += "]\n"
+    }
+
+
     str += "settings.template = [\n"
-    
     let line = ''
     for (let i = 1; i < 5; i++) {
       let newline

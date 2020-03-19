@@ -37,4 +37,6 @@ _______________
 
 
 
-wait
+Need to check menus and add ask and input. Hopefully one system
+
+______

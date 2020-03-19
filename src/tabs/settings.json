@@ -409,27 +409,11 @@
 				"tooltip": "Tick to have the player's commands added to the text window."
 			},
 			{
-				"name": "typewriter",
-				"type": "flag",
-				"default": false,
-				"display": "Typewriter effect?",
-				"tooltip": "Gives a slight pause before printing each character."
-			},
-			{
-				"name": "typewriterDelay",
+				"name": "textEffectDelay",
 				"type": "int",
-				"default": 25,
-				"displayIf": "o.typewriter",
-				"display": "Typewriter pause (ms)",
-				"tooltip": "How long to waiting between printing each character, in milliseconds."
-			},
-			{
-				"name": "typewriterDelayLine",
-				"type": "int",
-				"default": 25,
-				"displayIf": "o.typewriter",
-				"display": "Line pause (ms)",
-				"tooltip": "How long to waiting between printing characters on separate lines, in milliseconds."
+				"default": 50,
+				"display": "Text effect pause (ms)",
+				"tooltip": "How long to wait between revealing each character when using a text effect, in milliseconds."
 			},
 
 			{
@@ -579,6 +563,38 @@
 				"display": "Compass?",
 				"displayIf": "o.panes !== 'None'",
 				"tooltip": "Show the compass rose?"
+			},
+			{
+				"name": "jsInvHere",
+				"type": "flag",
+				"default": true,
+				"display": "Here inventory?",
+				"displayIf": "o.panes !== 'None'",
+				"tooltip": "Show an inventory of items at this location?"
+			},
+			{
+				"name": "jsInvHeld",
+				"type": "flag",
+				"default": true,
+				"display": "Held inventory?",
+				"displayIf": "o.panes !== 'None'",
+				"tooltip": "Show an inventory of items the player is holding?"
+			},
+			{
+				"name": "jsInvWorn",
+				"type": "flag",
+				"default": true,
+				"display": "Worn inventory?",
+				"displayIf": "o.panes !== 'None'",
+				"tooltip": "Show an inventory of items the player is wearing?"
+			},
+			{
+				"name": "jsInvHere",
+				"type": "flag",
+				"default": true,
+				"display": "Here inventory?",
+				"displayIf": "o.panes !== 'None'",
+				"tooltip": "Show an inventory of items at this location?"
 			},
 			{
 				"name": "jsStatusPaneFlag",
