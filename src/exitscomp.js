@@ -1,7 +1,7 @@
 import React from 'react';
 import {ScriptComp, SelectComp} from './components';
 
-const QUEST_JS_PATH = '../../QuestJS/'
+const QUEST_JS_PATH = '../questjs/'
 
 console.log("About to...2")
 const {lang} = require(QUEST_JS_PATH + "lang/lang-en.js")

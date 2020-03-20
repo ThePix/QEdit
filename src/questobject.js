@@ -2,14 +2,13 @@
 
 const useWithDoor = "useWithDoor";
 const DSPY_SCENERY = 5;
-const QUEST_JS_PATH = '../../QuestJS/'
+const QUEST_JS_PATH = '../questjs/'
 
 //let nextId = 0
 
 const [TabControls] = require('./tabcontrols')
 const {lang} = require(QUEST_JS_PATH + "lang/lang-en")
-//const {settings} = require(QUEST_JS_PATH + "lib/settings")
-const {settings} = require("./settings.js")
+const {settings} = require(QUEST_JS_PATH + "lib/settings")
 
 
 class QuestObject {
@@ -42,7 +41,6 @@ class QuestObject {
   static getById(state, id) {
     return state.objects.find(el => el.id === id)
   }
-  
   
   static create(state, objectType) {
     const newObject = new QuestObject({
@@ -268,15 +266,15 @@ class QuestObject {
     // If this is a conversion from Quest 5 we need to handle the "inherit"
     // elements, which correspond approximately to templates
     if (version < 600) {
-      let inherits = this.getDirectChildAttributes(xml, "inherit", 'name');
+      let inherits = this._getDirectChildAttributes(xml, "inherit", 'name');
       //console.log(inherits);
       
       this.jsObjType = inherits.includes("editor_room") ? 'room' : 'item'
-      inherits = this.removeFromArray(inherits, "editor_room");
-      inherits = this.removeFromArray(inherits, "editor_object");
+      inherits = this._removeFromArray(inherits, "editor_room");
+      inherits = this._removeFromArray(inherits, "editor_object");
       
       // I think we can safely remove these as the defaults handle it
-      inherits = this.removeFromArray(inherits, "talkingchar");
+      inherits = this._removeFromArray(inherits, "talkingchar");
       this.jsPronoun = "thirdperson";
 
       if (this.jsObjType !== 'room') {
@@ -286,7 +284,7 @@ class QuestObject {
         
         else if (inherits.includes("editor_player")) {
           this.jsMobilityType = "Player";
-          inherits = this.removeFromArray(inherits, "editor_player");
+          inherits = this._removeFromArray(inherits, "editor_player");
           this.jsPronoun = "secondperson";
         }
         
@@ -294,7 +292,7 @@ class QuestObject {
           this.jsMobilityType = "NPC";
           this.jsFemale = true;
           this.properName = true;
-          inherits = this.removeFromArray(inherits, "namedfemale");
+          inherits = this._removeFromArray(inherits, "namedfemale");
           this.jsPronoun = "female";
         }
           
@@ -302,7 +300,7 @@ class QuestObject {
           this.jsMobilityType = "NPC";
           this.jsFemale = false;
           this.properName = true;
-          inherits = this.removeFromArray(inherits, "namedmale");
+          inherits = this._removeFromArray(inherits, "namedmale");
           this.jsPronoun = "male";
         }
           
@@ -310,7 +308,7 @@ class QuestObject {
           this.jsMobilityType = "NPC";
           this.jsFemale = true;
           this.properName = false;
-          inherits = this.removeFromArray(inherits, "female");
+          inherits = this._removeFromArray(inherits, "female");
           this.jsPronoun = "female";
         }
           
@@ -318,20 +316,20 @@ class QuestObject {
           this.jsMobilityType = "NPC";
           this.jsFemale = false;
           this.properName = false;
-          inherits = this.removeFromArray(inherits, "male");
+          inherits = this._removeFromArray(inherits, "male");
           this.jsPronoun = "male";
         }
         
         else if (inherits.includes("topic")) {
           this.jsMobilityType = "Topic";
           this.jsFromStart = false;
-          inherits = this.removeFromArray(inherits, "topic");
+          inherits = this._removeFromArray(inherits, "topic");
         }
         
         else if (inherits.includes("startingtopic")) {
           this.jsMobilityType = "Topic";
           this.jsFromStart = true;
-          inherits = this.removeFromArray(inherits, "startingtopic");
+          inherits = this._removeFromArray(inherits, "startingtopic");
         }
         
         else {
@@ -341,31 +339,31 @@ class QuestObject {
 
         if (inherits.includes("surface")) {
           this.jsContainerType = "Surface";
-          inherits = this.removeFromArray(inherits, "surface");
+          inherits = this._removeFromArray(inherits, "surface");
         }
 
         else if (inherits.includes("container_open")) {
           this.jsContainerType = "Container";
           this.jsContainerClosed = false;
-          inherits = this.removeFromArray(inherits, "container_open");
+          inherits = this._removeFromArray(inherits, "container_open");
         }
 
         else if (inherits.includes("container_closed")) {
           this.jsContainerType = "Container";
           this.jsContainerClosed = true;
-          inherits = this.removeFromArray(inherits, "container_closed");
+          inherits = this._removeFromArray(inherits, "container_closed");
         }
 
         else if (inherits.includes("container_limited")) {
           this.jsContainerType = "Container";
           this.jsContainerClosed = false;
-          inherits = this.removeFromArray(inherits, "container_limited");
+          inherits = this._removeFromArray(inherits, "container_limited");
           this.jsConversionNotes.push("Currently editor may not translate limited container properly");
         }
 
         else if (inherits.includes("openable")) {
           this.jsContainerType = "Openable";
-          inherits = this.removeFromArray(inherits, "openable");
+          inherits = this._removeFromArray(inherits, "openable");
         }
         else {
           this.jsContainerType = "No";
@@ -373,7 +371,7 @@ class QuestObject {
         
         if (inherits.includes("wearable")) {
           this.jsIsWearable = true;
-          inherits = this.removeFromArray(inherits, "wearable");
+          inherits = this._removeFromArray(inherits, "wearable");
           this.jsMobilityType = "Takeable";
         }
         else {
@@ -382,7 +380,7 @@ class QuestObject {
         
         if (inherits.includes("switchable")) {
           this.jsIsSwitchable = true;
-          inherits = this.removeFromArray(inherits, "switchable");
+          inherits = this._removeFromArray(inherits, "switchable");
         }
         else {
           this.jsIsSwitchable = false;
@@ -390,7 +388,7 @@ class QuestObject {
         
         if (inherits.includes("edible")) {
           this.jsIsEdible = true;
-          inherits = this.removeFromArray(inherits, "edible");
+          inherits = this._removeFromArray(inherits, "edible");
           this.jsMobilityType = "Takeable";
         }
         else {
@@ -399,7 +397,7 @@ class QuestObject {
 
         if (inherits.includes("plural")) {
           this.jsIsPronoun = "plural";
-          inherits = this.removeFromArray(inherits, "plural");
+          inherits = this._removeFromArray(inherits, "plural");
         }
       }
       if (this.look) {
@@ -434,13 +432,13 @@ class QuestObject {
     return this;    
   }
 
-  getDirectChildAttributes(element, tag, attr) {
+  _getDirectChildAttributes(element, tag, attr) {
     const types = Array.from(element.getElementsByTagName(tag));
     const types2 = types.filter(el => el.parentNode === element);
     return types2.map(el => el.getAttribute(attr));
   }
 
-  removeFromArray(arr, el) {
+  _removeFromArray(arr, el) {
     const index = arr.indexOf(el);
     if (index > -1) {
       arr.splice(index, 1);
@@ -463,41 +461,39 @@ class QuestObject {
     }
     for (key in defaults) this[key] = defaults[key]
 
-    this.importSetting(gameObject, "subtitle", "subtitle");
-    this.importSetting(gameObject, "author", "author");
-    this.importSetting(gameObject, "version", "version");
-    this.importSetting(gameObject, "echocommand", "cmdEcho", "boolean");
-    this.importSetting(gameObject, "showcommandbar", "textInput", "boolean");
+    this._importSetting(gameObject, "subtitle", "subtitle");
+    this._importSetting(gameObject, "author", "author");
+    this._importSetting(gameObject, "version", "version");
+    this._importSetting(gameObject, "echocommand", "cmdEcho", "boolean");
+    this._importSetting(gameObject, "showcommandbar", "textInput", "boolean");
 
+    this._importSetting(gameObject, "defaultfont", "jsStyleMain_font_family");
+    this._importSetting(gameObject, "defaultfontsize", "jsStyleMain_font_size", "int");
+    this._importSetting(gameObject, "defaultforeground", "jsStyleMain_color");
+    this._importSetting(gameObject, "defaultbackground", "jsStyleMain_background_color");
+    this._importSetting(gameObject, "backgroundimage", "jsStyleMain_background_image");
 
-    this.importSetting(gameObject, "defaultfont", "jsStyleMain_font_family");
-    this.importSetting(gameObject, "defaultfontsize", "jsStyleMain_font_size", "int");
-    this.importSetting(gameObject, "defaultforeground", "jsStyleMain_color");
-    this.importSetting(gameObject, "defaultbackground", "jsStyleMain_background_color");
-    this.importSetting(gameObject, "backgroundimage", "jsStyleMain_background_image");
-
-    this.importSetting(gameObject, "moneyformat", "moneyFormat");
+    this._importSetting(gameObject, "moneyformat", "moneyFormat");
     
-    this.importSetting(gameObject, "clearscreenonroomenter", "clearScreenOnRoomEnter", "boolean");
-    this.importSetting(gameObject, "autodescription_youarein", "jsRoomTitlePos", "int");
-    this.importSetting(gameObject, "autodescription_youcansee", "jsRoomItemsPos", "int");
-    this.importSetting(gameObject, "autodescription_youcango", "jsRoomExitsPos", "int");
-    this.importSetting(gameObject, "autodescription_description", "jsRoomDescPos", "int");
-    this.importSetting(gameObject, "autodescription_youarein_newline", "jsRoomTitleNewLine", "boolean");
-    this.importSetting(gameObject, "autodescription_youcansee_newline", "jsRoomItemsNewLine", "boolean");
-    this.importSetting(gameObject, "autodescription_youcango_newline", "jsRoomExitsNewLine", "boolean");
-    this.importSetting(gameObject, "autodescription_description_newline", "jsRoomDescNewLine", "boolean");
-    this.importSetting(gameObject, "autodescription_youarein_useprefix", "jsRoomTitleYouAreIn", "boolean");
+    this._importSetting(gameObject, "clearscreenonroomenter", "clearScreenOnRoomEnter", "boolean");
+    this._importSetting(gameObject, "autodescription_youarein", "jsRoomTitlePos", "int");
+    this._importSetting(gameObject, "autodescription_youcansee", "jsRoomItemsPos", "int");
+    this._importSetting(gameObject, "autodescription_youcango", "jsRoomExitsPos", "int");
+    this._importSetting(gameObject, "autodescription_description", "jsRoomDescPos", "int");
+    this._importSetting(gameObject, "autodescription_youarein_newline", "jsRoomTitleNewLine", "boolean");
+    this._importSetting(gameObject, "autodescription_youcansee_newline", "jsRoomItemsNewLine", "boolean");
+    this._importSetting(gameObject, "autodescription_youcango_newline", "jsRoomExitsNewLine", "boolean");
+    this._importSetting(gameObject, "autodescription_description_newline", "jsRoomDescNewLine", "boolean");
+    this._importSetting(gameObject, "autodescription_youarein_useprefix", "jsRoomTitleYouAreIn", "boolean");
 
-
-    // If there is a web font, we will use that, but flag that we need extrea code in style.css
     if (gameObject.getElementsByTagName("defaultwebfont").length > 0) {
       this.jsStyleMain_font_family = gameObject.getElementsByTagName("defaultwebfont")[0].innerHTML;
-      this.jsStyleUseWebFont = true;
+      this.jsGoogleFonts = [this.jsStyleMain_font_family]
     }
   }
   
-  importSetting(gameObject, tagName, attName, type) {
+  // Used in importSettings only
+  _importSetting(gameObject, tagName, attName, type) {
     const els = gameObject.getElementsByTagName(tagName)
     if (els.length === 0) return;
     if (type === "int") {
@@ -730,7 +726,8 @@ class QuestObject {
     return str;
   }
 
-  // Converts one item to CSS settings
+  // Converts one item to code.js settings
+  // This will be functions and commands
   toCode() {
     //TODO!!!
     return '';

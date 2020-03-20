@@ -22,15 +22,15 @@ export class SelectComp extends React.Component {
     
     return (
       <select
-          className="form-control"
-          id={this.props.name}
-          name={this.props.name}
-          value={this.props.value}
-          title={this.props.tooltip}
-          onChange={this.props.handleChange}
-        >
-        {this.props.options.map((s, i) => <option value={s} key={i}>{s}</option>)}
-        </select>
+        className="form-control"
+        id={this.props.name}
+        name={this.props.name}
+        value={this.props.value}
+        title={this.props.tooltip}
+        onChange={this.props.handleChange}
+      >
+      {this.props.options.map((s, i) => <option value={s} key={i}>{s}</option>)}
+      </select>
     )
   }
 }

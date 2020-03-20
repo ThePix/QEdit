@@ -1,6 +1,8 @@
 import React from 'react';
 
+//const Blockly = require('node-blockly/javascript');
 
+console.log("blockly loaded okay")
 
 // The input should (or might) specify:
 //    if a string is allowed
@@ -27,7 +29,7 @@ export class ScriptOrStringComp extends React.Component {
     }
     console.log(value)
     
-    e = {target:{ id:this.id,  value:value, }};
+    e = {target:{ id:this.id,  value:value, dataset:{type:'scriptType'}}};
     this.handleChange(e);
   }
 
@@ -41,7 +43,7 @@ export class ScriptOrStringComp extends React.Component {
     }
     console.log(value)
     
-    e = {target:{ id:this.id,  value:value, }};
+    e = {target:{ id:this.id,  value:value, dataset:{type:'scriptChange'}}};
     this.handleChange(e);
   }
 
@@ -51,15 +53,20 @@ export class ScriptOrStringComp extends React.Component {
       <tr className="form-group">
         <td colSpan="2">
         <span className="fieldName">{this.props.input.display}</span>
-        <input 
-            type="checkbox"
-            className="form-control"
-            id={this.props.input.name}
-            name={this.props.input.name}
-            checked={isScript}
-            title="Tick if this is a script, untick for a string"
-            onChange={this.handleTypeChange.bind(this)}
-          /> Script?
+
+        <span style={{textAlign:'right'}}>
+        <select
+          className="form-control"
+          id={this.props.name}
+          name={this.props.name}
+          value={this.props.value}
+          title={this.props.tooltip}
+          onChange={this.handleTypeChange.bind(this)}
+        >
+        {['Text', 'JavaScript', 'ASL'].map((s, i) => <option value={s} key={i}>{s}</option>)}
+        </select>
+        </span>
+
         <br/>
         <textarea
           className="form-control textarea"

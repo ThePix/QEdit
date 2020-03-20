@@ -1,6 +1,6 @@
 const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
-const QUEST_JS_PATH = '../../QuestJS/'
+const QUEST_JS_PATH = '../questjs/'
 
 import React from 'react';
 import {ExitsComp} from './exitscomp';

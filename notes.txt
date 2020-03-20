@@ -1,11 +1,3 @@
-Settings
-No STATUS (function)
-No INVENTORIES
-... but there are defaults
-
-
-______
-
 
 
 Function/JavaScript fields
@@ -33,10 +25,26 @@ Including exporting
 
 
 
-_______________
+
+Blockly
+
+
+I have to do this before I could install blockly (does the first do anything? following advice did the second as admin; check pythin is actually there for the third)
+npm config set node_gyp
+
+
+Blockly seems to use node-gyp. This is a library that offers a platform-neutral to native functions. On Windows, I had to first install windows build tools, which installed Python 2.7, and then tell npm where Python is.
+
+npm install --global --production windows-build-tools
+npm config set python C:\Python27\python.exe
+npm install -g node-gyp
 
 
 
-Need to check menus and add ask and input. Hopefully one system
+npm install node-blockly
 
-______
+
+
+
+
+Jitsi is free, just go to https://meet.jit.si/, and type in the meeting name, and you just connect to everyone else using that same name (you also need to install an app if using your phone). So far we are still working as normal at work, but I am anticipating people wanting to work from home, and I want to try this out.

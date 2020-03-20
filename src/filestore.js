@@ -6,7 +6,7 @@ const [QuestObject] = require('./questobject')
 const useWithDoor = "useWithDoor";
 const DSPY_SCENERY = 5;
 
-const QUEST_JS_PATH = '../../QuestJS/'
+const QUEST_JS_PATH = '../questjs/'
 
 /*
 
