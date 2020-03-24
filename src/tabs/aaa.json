@@ -52,7 +52,16 @@
 				"default": false,
 				"display": "Zone?",
 				"tooltip": "Zones are a way to group rooms, making it easier to build large maps (in fact, they are just rooms in a different colour).",
-				"displayIf": "o.jsObjType !== 'room' && o.jsObjType !== 'stub' && !o.jsIsJunction && !o.jsIsCommand"
+				"displayIf": "o.jsObjType === 'room'"
+			},
+
+			{
+				"name": "icon",
+				"type": "text",
+				"default": "",
+				"display": "Icon",
+				"tooltip": "Give the name of an icon image file (without path or extension) and it will appear in the hierarchy on the left, and also in the side pane when playing the game.",
+				"displayIf": "o.jsObjType !== 'room' && o.jsObjType !== 'stub'"
 			},
 
 			{

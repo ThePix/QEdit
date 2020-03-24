@@ -10,12 +10,13 @@
   </object>
 
   <object name="lounge">
-    <jsIsRoom type="boolean">true</jsIsRoom>
+    <jsObjType type="string">room</jsObjType>
     <desc><![CDATA[The lounge is big.]]></desc>
   </object>
 
   <object name="player">
     <loc><![CDATA[lounge]]></loc>
+    <jsObjType type="string">item</jsObjType>
     <jsPronoun><![CDATA[secondperson]]></jsPronoun>
     <jsMobilityType><![CDATA[Player]]></jsMobilityType>
     <examine><![CDATA[Looking good!]]></examine>

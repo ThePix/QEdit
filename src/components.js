@@ -1,6 +1,29 @@
 import React from 'react';
 
 
+export class TickComp extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <label
+        className="form-control tick-box"
+        htmlFor={this.props.name}
+        name={this.props.name}
+        title={this.props.tooltip}
+      >
+        <input type="checkbox"
+          id={this.props.name}
+          value={this.props.value}
+          onChange={this.props.handleChange}
+        ></input>
+        <span className={this.props.value ? 'tick-yes' : 'tick-no'}>{this.props.value ? 'YES' : 'NO'}</span>
+      </label>
+    )
+  }
+}
 
 
 

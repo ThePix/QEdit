@@ -1,4 +1,5 @@
 import React from 'react';
+import {TreeLink} from './treelink';
 
 
 
@@ -92,11 +93,3 @@ const TreeToggler = (props) => {
 }
 
 
-
-const TreeLink = (props) => {
-  const {object, showObject} = props;
-  let className = "tree " + object.treeStyleClass();
-  if (object === props.selected) className += " treeSelected";
-  
-  return  <a onClick={() => showObject(object.name)} className={className}><span style={{color:object.jsColour}}>{object.name}</span></a>
-}

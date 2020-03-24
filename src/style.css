@@ -1,7 +1,26 @@
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.app {
+  height: 100%;
+  animation: fadein 0.5s;
+}
+
+
+
+
 body {
   font: caption;
   background:white;  
 }
+
+
 
 
 
@@ -13,20 +32,34 @@ body {
   margin-right: 80px; /* Same as the width of the sidebar */
   padding: 0px 10px;
   margin-bottom: 20px;
+  margin-top: 48px;
   background:white;  
 }
 
 
 
 
+#toolbar {
+  height: 42px;
+  width: 100%;
+  background-color: #ccc;
+  position:fixed;
+  top:0px;
+  left:0px;
+  z-index: 2; /* Stay on top */
+  font-size: 11pt;
+  padding: 2px;
+}
+
 #statusbar {
-  margin-left: 0px;
-  margin-right: 0px;
+/*  margin-left: 0px;
+  margin-right: 0px;*/
   height: 14px;
   width: 100%;
-  background-color: white;
+  background-color: #ffe;
   position:fixed;
   bottom:0px;
+  left:0px;
   z-index: 2; /* Stay on top */
   border: 1px solid black;
   font-size: 11pt;
@@ -41,10 +74,39 @@ body {
   width:100%;
   height:200px;
   margin:0;/*remove defaults*/
-  padding:4px;
   background:#EEF;
   border:1px solid #333;
+  border-radius: 5px;
 }
+
+
+
+input, textarea, select {
+  border:1px solid #333;
+  border-radius: 5px;
+  background:white;
+  padding:4px;
+}
+
+
+
+input[type=checkbox] {
+  display: none;
+}
+
+.tick-yes, .tick-no {
+  padding: 3px;
+  font-size: 8pt;
+}
+
+.tick-yes {
+  background-color:limegreen;
+}
+
+.tick-no {
+  background-color:red;
+}
+
 
 .stringlist {
   height: 50px;
@@ -57,6 +119,9 @@ body {
   margin:0;/*remove defaults*/
   padding:4px;
   background:#FFF;
+  background-image:url('images/stringlist-bg.png');
+  background-size: cover;
+  background-repeat: no-repeat;  
   border:1px solid #333;
 }
 
@@ -75,6 +140,11 @@ body {
   color:grey;
 }
 
+
+
+
+
+
 .tabButton {
   color: blue;
   border: black solid 1px;
@@ -87,14 +157,14 @@ body {
 
 .tabButton[disabled] {
   color: black;
-  background:white;
+  background:#eee;
   border-bottom: none;
   padding: 2px;
 }
 
 .tabContent {
   border: black solid 1px;
-  background:white;
+  background:#eee;
   margin-bottom:10 px;
   border-radius: 0 0 5px 5px;
   padding: 3px;
@@ -146,11 +216,11 @@ ul.sidepane {
   position: fixed; /* Fixed Sidebar (stay in place on scroll) */
   z-index: 1; /* Stay on top */
   top: 0; /* Stay at the top */
-  background-color: #fdf;
-  background-image:url("images/back.png");
+  background-color: #eef;
   overflow-x: hidden; /* Disable horizontal scroll */
   padding-top: 5px;
   margin-bottom: 20px;
+  margin-top: 48px;
   font-size: 9pt;
   left: 0;
   user-select: none; /* Prevent text selection */

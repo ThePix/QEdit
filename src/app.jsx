@@ -680,6 +680,7 @@ export default class App extends React.Component {
         treeToggle={this.treeToggle.bind(this)}
         addObject={this.addObject.bind(this)}
       />
+      <div id="toolbar">Buttons appear here...</div>
       <div id="statusbar">Status:</div>
     </div>);
   }

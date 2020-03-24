@@ -6,7 +6,7 @@ import React from 'react';
 import {ExitsComp} from './exitscomp';
 import {ScriptOrStringComp} from './scriptorstringcomp';
 
-import {ScriptComp, SelectComp} from './components';
+import {ScriptComp, SelectComp, TickComp} from './components';
 const [QuestObject] = require('./questobject')
 
 console.log("About to...3")
@@ -184,15 +184,7 @@ const InputComp = (props) => {
     return (  
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
-        <td><input 
-          type="checkbox"
-          className="form-control"
-          id={props.input.name}
-          name={props.input.name}
-          checked={value}
-          title={props.input.tooltip}
-          onChange={props.handleCBChange}
-        /></td>
+        <td><TickComp name={props.input.name} options={Object.keys(lang.pronouns)} tooltip={props.input.tooltip} handleChange={props.handleCBChange} value={value}/></td>
       </tr>
     )
   }
