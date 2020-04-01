@@ -162,13 +162,6 @@
 				"tooltip": "Tick if you want the parser to understand the words 'one', 'two', etc. as well as the digits. Useful if you have COUNTABLE items, but a slight slow-down in the response."
 			},
 			{
-				"name": "roomHeadings",
-				"type": "flag",
-				"default": true,
-				"display": "Room headings?",
-				"tooltip": "Tick if you want the name of a room to appear as a heading when the player enters the room."
-			},
-			{
 				"name": "maxUndo",
 				"type": "int",
 				"default": 10,

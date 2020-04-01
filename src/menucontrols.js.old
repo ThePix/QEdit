@@ -38,11 +38,15 @@ return = [
       { role: 'zoomout' },
       { type: 'separator' },
       { role: 'togglefullscreen' },
+      { 
+        label: 'Dark mode',
+        type: 'checkbox',
+      },
       { type: 'separator' },
       { 
         label: 'Preview in browser',
         click () { require('electron').shell.openExternal("file://" + FILENAME) }
-      }
+      },
     ]
   },
   {

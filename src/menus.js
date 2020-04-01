@@ -37,6 +37,10 @@ export class Menus {
           { role: 'zoomout' },
           { type: 'separator' },
           { role: 'togglefullscreen' },
+          { 
+            label: 'Dark mode',
+            type: 'checkbox',
+          },
           //{ type: 'separator' },
           //{ 
           //  label: 'Preview in browser',

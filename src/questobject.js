@@ -10,6 +10,10 @@ const [TabControls] = require('./tabcontrols')
 const {lang} = require(QUEST_JS_PATH + "lang/lang-en")
 const {settings} = require(QUEST_JS_PATH + "lib/settings")
 
+const ALT_COLOURS = {
+  blue:'lightblue',
+  black:'white',
+}
 
 class QuestObject {
   constructor (data, version) {
@@ -184,23 +188,10 @@ class QuestObject {
     }
   }
 
-  getIcons() {
-    if (this.jsObjType !== 'item') return []
-    let list = []
-    if (this.jsMobilityType === 'Player') list.push('player')
-    if (this.jsMobilityType === 'NPC') list.push('npc')
-    if (this.jsMobilityType === 'Takeable') list.push('take')
-    if (this.jsMobilityType === 'Topic') list.push('topic')
-    if (this.jsMobilityType === 'Immobile') list.push('nailed')
-    if (this.jsIsEdible) list.push('edible')
-    if (this.jsIsCountable) list.push('coutable')
-    if (this.jsIsWearable) list.push('garment')
-    if (this.jsContainerType === 'Container') list.push('container')
-    if (this.jsContainerType === 'Surface') list.push('surface')
-    if (this.jsContainerType === 'Openable') list.push('openable')
-    if (this.jsContainerType === 'Vessel') list.push('vessel')
-      
-    return list
+  uiColour(darkMode) {
+    let colour = this.jsColour || 'blue'
+    if (darkMode && ALT_COLOURS[colour]) colour = ALT_COLOURS[colour]
+    return colour
   }
 
 

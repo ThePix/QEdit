@@ -18,8 +18,10 @@ export class TickComp extends React.Component {
           id={this.props.name}
           value={this.props.value}
           onChange={this.props.handleChange}
+          data-usingdefault={this.props.usingDefault}
+          //data-old={this.props.value.toString()}
         ></input>
-        <span className={this.props.value ? 'tick-yes' : 'tick-no'}>{this.props.value ? 'YES' : 'NO'}</span>
+        <img src={this.props.value ? 'images/tick.png' : 'images/cross.png'}></img>
       </label>
     )
   }

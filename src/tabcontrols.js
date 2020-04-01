@@ -1,7 +1,7 @@
 const fs = require('fs');
 const {lang} = require("./lang-en.js");
 
-// Assumes files are proved in alphabetical order, so aaa.js is first
+// Assumes files are provided in alphabetical order, so aaa.js is first
 // custom files may want to have _ at the start so they are added later
 class TabControls {
   constructor() {

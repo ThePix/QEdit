@@ -59,6 +59,8 @@ export default class App extends React.Component {
       'Export to JavaScript': () => this.saveJs(),
       'Exit':          () => this.exitApp(),
 
+      'Dark mode':  () => this.toggleOption('darkMode'),
+
       'Add location':  () => this.addObject("room"),
       'Add item':      () => this.addObject("item"),
       'Add stub':      () => this.addObject("stub"),
@@ -90,6 +92,9 @@ export default class App extends React.Component {
     this.state = {
       objects:this.fs.readFile("blank.asl6", settings),
       currentObjectName: false,
+      options:{
+        darkMode:false,
+      },
     };
     this.state.currentObjectName = this.state.objects[0].name;
     
@@ -183,7 +188,7 @@ export default class App extends React.Component {
       settings.jsFilename = result[0];
       this.setState({
         objects:this.fs.readFile(result[0], settings),
-        currentObjectName: false,
+        currentObjectName: objects[0].name,
       });
       this.message("Opened: " + result[0]);
     }
@@ -267,6 +272,7 @@ export default class App extends React.Component {
   
   
   
+  
   //---------------------------
   //--      OBJECT  SYSTEM    ---
   
@@ -306,7 +312,7 @@ export default class App extends React.Component {
   showObject(name) {
     //console.log("showObject" + index);
     this.setState({
-      objects: this.state.objects,
+      //objects: this.state.objects,
       currentObjectName: name,
     })
   };
@@ -344,25 +350,20 @@ export default class App extends React.Component {
   
   
   selectTab(s) {
-    const state = {
-      objects: this.state.objects,
-      currentObjectName: this.state.currentObjectName,
-    }
-    const currentObject = QuestObject.getCurrent(state);
+    const currentObject = QuestObject.getCurrent(this.state);
     currentObject.jsTabName = s;
-    
-    this.setState(state)
+    this.setState({
+      objects: this.state.objects,
+    })
   };
 
   
   toggleOption(name) {
-    const state = {
-      objects: this.state.objects,
-      currentObjectName: this.state.currentObjectName,
+    console.log("Toggling " + name)
+    this.state.options[name] = !this.state.options[name];
+    this.setState({
       options: this.state.options
-    }
-    state.options[name] = !this.state.options[name];
-    this.setState(state)
+    })
   };
 
   
@@ -520,7 +521,8 @@ export default class App extends React.Component {
   
   
   handleChange(e) {
-    this.setValue(e.target.id, e.target.value, {type:e.target.dataset.type});
+    console.log(e.target.dataset)
+    this.setValue(e.target.id, e.target.value, {type:e.target.dataset.type, default:e.target.dataset.default});
   }
   
   // id needs its own handler so it gets tested properly for uniqueness
@@ -549,7 +551,13 @@ export default class App extends React.Component {
 
   // Checkboxes need their own handler as they use the "checked" property...
   handleCBChange(e) {
+    console.log(e.target.dataset.default);
+    
+    if (e.target.dataset.default !== 'nodefault') {
+      this.setValue(e.target.id, e.target.dataset.default, {type:'flag'});
+    }
     this.setValue(e.target.id, e.target.checked, {type:'flag'});
+
   }
   
   treeToggle(obj) {
@@ -562,10 +570,9 @@ export default class App extends React.Component {
     //console.log(name);
     //console.log(value);
     //console.log(obj);
-    const obj = options.obj ? obj : QuestObject.getCurrent(this.state)
+    const obj = options.obj ? options.obj : QuestObject.getCurrent(this.state)
     const oldValue = obj[name]
     
-    console.log(oldValue);
     const newObjects = []  // cloning the state
     for (let i = 0; i < this.state.objects.length; i++) {
       newObjects.push(new QuestObject(this.state.objects[i]));
@@ -606,6 +613,7 @@ export default class App extends React.Component {
     this.setState({
       objects:newObjects, 
       currentObjectName:name === "name" ? value: this.state.currentObjectName,
+      //options:this.state.option,
     });
   }
   
@@ -651,9 +659,10 @@ export default class App extends React.Component {
   }
 
   render() {
+    console.log(this.state)
 
     const currentObject = QuestObject.getCurrent(this.state);
-    return (<div>
+    return (<div id='main' className={this.state.options.darkMode ? 'dark' : 'light'}>
       <MainPane
         object={currentObject} 
         handleChange={this.handleChange.bind(this)}
@@ -679,6 +688,7 @@ export default class App extends React.Component {
         showObject={this.showObject.bind(this)}
         treeToggle={this.treeToggle.bind(this)}
         addObject={this.addObject.bind(this)}
+        darkMode={this.state.options.darkMode}
       />
       <div id="toolbar">Buttons appear here...</div>
       <div id="statusbar">Status:</div>

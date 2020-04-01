@@ -43,8 +43,3 @@ npm install -g node-gyp
 
 npm install node-blockly
 
-
-
-
-
-Jitsi is free, just go to https://meet.jit.si/, and type in the meeting name, and you just connect to everyone else using that same name (you also need to install an app if using your phone). So far we are still working as normal at work, but I am anticipating people wanting to work from home, and I want to try this out.

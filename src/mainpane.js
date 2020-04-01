@@ -28,8 +28,12 @@ export class MainPane extends React.Component {
     if (this.props.object) {
       const control = this.props.object.getCurrentTab(this.props.controls);
       const tab = control.tabName;
-      //const style = {color:this.props.object.jsColour};
-      const pStyle = {backgroundColor:this.props.warning ? 'yellow' : 'white', padding:3};
+      const pStyle = {
+        color:this.props.object.uiColour(this.props.options.darkMode),
+        padding:3,
+      };
+      //const pStyle = {padding:3};
+      if (this.props.warning) pStyle.backgroundColor = 'yellow'
       const controls = control.tabControls;
       
       // Will later need to check if this object has the current tab and set tab to zero if not
@@ -137,13 +141,14 @@ const InputComp = (props) => {
   if (!props.object.displayIf(props.input)) return null;
 
   let value = props.object[props.input.name]
+  const usingDefault = (value === undefined)
   if (value === undefined) value = props.input.default
   if (props.input.type === "select") {
     return (
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td>
-          <SelectComp name={props.input.name} options={props.input.options} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>
+          <SelectComp name={props.input.name} options={props.input.options} tooltip={props.input.tooltip} usingDefault={usingDefault} handleChange={props.handleChange} value={value}/>
         </td>
       </tr>
     );
@@ -153,7 +158,7 @@ const InputComp = (props) => {
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td>
-          <SelectComp name={props.input.name} options={Object.keys(lang.pronouns)} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>
+          <SelectComp name={props.input.name} options={Object.keys(lang.pronouns)} tooltip={props.input.tooltip} usingDefault={usingDefault} handleChange={props.handleChange} value={value}/>
         </td>
       </tr>
     );
@@ -164,7 +169,7 @@ const InputComp = (props) => {
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td>
-          <SelectComp name={props.input.name} options={options} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>
+          <SelectComp name={props.input.name} options={options} tooltip={props.input.tooltip} usingDefault={usingDefault} handleChange={props.handleChange} value={value}/>
         </td>
       </tr>
     );
@@ -175,7 +180,7 @@ const InputComp = (props) => {
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td>
-          <SelectComp name={props.input.name} options={options} tooltip={props.input.tooltip} handleChange={props.handleChange} value={value}/>
+          <SelectComp name={props.input.name} options={options} tooltip={props.input.tooltip} usingDefault={usingDefault} handleChange={props.handleChange} value={value}/>
         </td>
       </tr>
     );
@@ -184,7 +189,7 @@ const InputComp = (props) => {
     return (  
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
-        <td><TickComp name={props.input.name} options={Object.keys(lang.pronouns)} tooltip={props.input.tooltip} handleChange={props.handleCBChange} value={value}/></td>
+        <td><TickComp name={props.input.name} options={Object.keys(lang.pronouns)} tooltip={props.input.tooltip} usingDefault={usingDefault} handleChange={props.handleCBChange} value={value}/></td>
       </tr>
     )
   }
@@ -216,6 +221,7 @@ const InputComp = (props) => {
           cols="500" rows="8"
           id={props.input.name}
           name={props.input.name}
+          data-usingdefault={usingDefault}
           value={value}
           title={props.input.tooltip}
           onChange={props.handleChange}
@@ -243,7 +249,6 @@ const InputComp = (props) => {
     )
   }
   else if (props.input.type === "stringlist") {
-    //return null;
     return (  
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
@@ -253,6 +258,7 @@ const InputComp = (props) => {
             cols="400" rows="6"
             id={props.input.name}
             name={props.input.name}
+            data-usingdefault={usingDefault} 
             value={value.join('\n')}
             data-type="stringlist"
             title={props.input.tooltip + " Each entry in the list should be on a line on its own; press Enter to go to the next entry."}
@@ -280,6 +286,7 @@ const InputComp = (props) => {
           name={props.input.name}
           type={props.input.type}
           title={props.input.tooltip}
+          data-usingdefault={usingDefault} 
           value={value}
           onChange={props.handleChange}
         /></td>
@@ -296,6 +303,7 @@ const InputComp = (props) => {
           name={props.input.name}
           type={props.input.type}
           title={props.input.tooltip}
+          data-usingdefault={usingDefault} 
           value={value}
           onChange={props.handleIdChange}
         /></td>
@@ -313,6 +321,7 @@ const InputComp = (props) => {
           type={props.input.type}
           size="120"
           title={props.input.tooltip}
+          data-usingdefault={usingDefault} 
           value={value}
           onChange={props.handleChange}
         /></td>
@@ -338,6 +347,7 @@ const InputComp = (props) => {
           size="2"
           min={props.input.min}
           max={props.input.max}
+          data-usingdefault={usingDefault} 
           title={props.input.tooltip}
           value={value}
           onChange={props.handleIntChange}

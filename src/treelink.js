@@ -11,9 +11,13 @@ export class TreeLink extends React.Component {
     const {object, showObject} = this.props;
     let className = "tree " + object.treeStyleClass();
     if (object === this.props.selected) className += " treeSelected";
+    console.log(object.name)
+    console.log(this.props.darkMode)
+    console.log(object.uiColour(this.props.darkMode))
+    
     
     return  (<a onClick={() => showObject(object.name)} className={className}>
-      <span style={{color:object.jsColour}}>{object.name}</span>
+      <span style={{color:object.uiColour(this.props.darkMode)}}>{object.name}</span>
       {this.getIcons()}
     </a>)
   }

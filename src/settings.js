@@ -37,7 +37,6 @@ const settings = {
 
 
   // Other UI settings
-  roomHeadings:true,      // Print the room name as a title when the player enters a room
   textInput:true,         // Allow the player to type commands
   cursor:">",             // The cursor, obviously
   cmdEcho:true,           // Commands are printed to the screen

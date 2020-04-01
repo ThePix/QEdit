@@ -51,12 +51,12 @@ export class SidePane extends React.Component {
       console.log(remainder);
     }
     
-    return <div id="sidepane"><TreeView tree={tree} selected={this.props.object} showObject={this.props.showObject} treeToggle={this.props.treeToggle}/></div>
+    return <div id="sidepane"><TreeView tree={tree} selected={this.props.object} showObject={this.props.showObject} treeToggle={this.props.treeToggle} darkMode={this.props.darkMode}/></div>
   }
 }
 
 const TreeView = (props) => {
-  const {tree, showObject, treeToggle} = props;
+  const {tree, showObject, treeToggle, darkMode} = props;
 
   if (tree.length === 0) return null;
   return (<ul className="active sidepane">
@@ -64,30 +64,30 @@ const TreeView = (props) => {
     if (node.branch.length === 0) {
       return (<li key={index}>
         {String.fromCharCode(9678)}
-        <TreeLink object={node.object} showObject={showObject} selected={props.selected}/>
+        <TreeLink object={node.object} showObject={showObject} selected={props.selected} darkMode={darkMode}/>
       </li>)
     }
     else {
-      return (<TreeToggler tree={node} key={index} showObject={showObject} treeToggle={treeToggle} selected={props.selected}/>)
+      return (<TreeToggler tree={node} key={index} showObject={showObject} treeToggle={treeToggle} selected={props.selected} darkMode={darkMode}/>)
     }
   })}
   </ul>)
 }
 
 const TreeToggler = (props) => {
-  const {tree, showObject, treeToggle} = props;
+  const {tree, showObject, treeToggle, darkMode} = props;
   
   if (!tree.object.jsCollapsed) {
     return (<li>
       <a onClick={() => treeToggle(tree.object)} className="caret">{String.fromCharCode(9660)}</a>
-      <TreeLink object={tree.object} showObject={showObject} selected={props.selected}/>
-      <TreeView tree={tree.branch} showObject={showObject} treeToggle={treeToggle} selected={props.selected}/>
+      <TreeLink object={tree.object} showObject={showObject} selected={props.selected} darkMode={darkMode}/>
+      <TreeView tree={tree.branch} showObject={showObject} treeToggle={treeToggle} selected={props.selected} darkMode={darkMode}/>
     </li>)
   }
   else {
     return (<li>
       <a onClick={() => treeToggle(tree.object)} className="caret">{String.fromCharCode(9654)}</a>
-      <TreeLink object={tree.object} showObject={showObject} selected={props.selected}/>
+      <TreeLink object={tree.object} showObject={showObject} selected={props.selected} darkMode={darkMode}/>
     </li>)
   }      
 }
