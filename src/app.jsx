@@ -21,7 +21,6 @@ setConfig({
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
 
-
 const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
 const template = new Menus().getMenus();
@@ -50,7 +49,7 @@ const newOptions  = {
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    
+
     const menuMapping = {
       'New':           () => this.newGame(),
       'Open...':       () => this.openXml(),
@@ -68,7 +67,7 @@ export default class App extends React.Component {
       'Add command':   () => this.addObject("command"),
       'Delete object': () => this.removeObject(),
       'Duplicate object': () => this.duplicateObject(),
-      
+
       'Find': () => this.find(),
       'Find next': () => this.findNext(),
       'Search backwards': () => this.searchBackwards = !this.searchBackwards,
@@ -86,18 +85,18 @@ export default class App extends React.Component {
     this.searchBackwards = false
     this.searchCaseSensitive = true
     this.fs = new FileStore();
-    
+
     this.controls = new TabControls().controls;
     const settings = this.createDefaultSettings();
     this.state = {
-      objects:this.fs.readFile("blank.asl6", settings),
+      objects:this.fs.readFile(__dirname + '/../blank.asl6', settings),
       currentObjectName: false,
       options:{
         darkMode:false,
       },
     };
     this.state.currentObjectName = this.state.objects[0].name;
-    
+
     window.addEventListener("beforeunload", function(e) {
       console.log("beforeunload")
       console.log(quitConfirmed)
@@ -113,15 +112,15 @@ export default class App extends React.Component {
       console.log(e)
       console.log(quitConfirmed)
     });
-    
+
     const _this = this
     window.addEventListener('load', function(e) {
       _this.message("All good to go...")
       setTimeout(_this.autosaveXml.bind(_this), 300000)
     })
-    
+
   }
-  
+
   // Used to set upo the menus during set up
   findMenuItem(template, label) {
     for (let i = 0; i < template.length; i++) {
@@ -130,23 +129,23 @@ export default class App extends React.Component {
       }
     }
   }
-  
-  
+
+
   message(s) {
     document.getElementById('statusbar').innerHTML = "Status: <i>" + s + "</i>";
   }
-  
-  
+
+
   createDefaultSettings(settings) {
     const obj = new QuestObject({ name:"Settings", jsObjType:'settings' });
     obj.addDefaults(this.controls);
     return obj;
   }
 
-  
+
   //---------------------------
   //--      FILE  SYSTEM    ---
-  
+
   exitApp() {
     const response = dialog.showMessageBox(quitOptions)
     if (response === 0) {
@@ -154,8 +153,8 @@ export default class App extends React.Component {
       app.quit(0)
     }
     return false
-  }    
-  
+  }
+
   newGame() {
     const response = dialog.showMessageBox(newOptions)
     if (response === 0) {
@@ -170,7 +169,7 @@ export default class App extends React.Component {
       this.message("New game cancelled");
     }
   }
-  
+
   openXml() {
     const dialogOptions = {
       //defaultPath: "c:/",
@@ -196,8 +195,8 @@ export default class App extends React.Component {
       this.message("Open file cancelled");
     }
   }
-  
-  
+
+
   autosaveXml() {
     if (this.autosaveCount === undefined) this.autosaveCount = -1
     this.autosaveCount++
@@ -208,8 +207,8 @@ export default class App extends React.Component {
       setTimeout(this.autosaveXml.bind(this), settings.jsAutosaveInterval * 60000)
     }
   }
-  
-  
+
+
   saveXml(filename) {
     if (!filename) {
       const settings = QuestObject.getSettings(this.state)
@@ -225,11 +224,11 @@ export default class App extends React.Component {
       this.saveXmlAs()
     }
   }
-  
-  
-  
-  
-  
+
+
+
+
+
   saveXmlAs() {
     const dialogOptions = {
       //defaultPath: "c:/",
@@ -255,7 +254,7 @@ export default class App extends React.Component {
       this.message("Save as file cancelled");
     }
   }
-  
+
   saveJs(filename) {
     saveXml(filename) // make sure this is saved to asl6 first
     const settings = QuestObject.getSettings(this.state)
@@ -263,20 +262,20 @@ export default class App extends React.Component {
       console.log('Save your game before exporting');
       this.message('Save your game before exporting');
       return
-    }      
-    
+    }
+
     const result = this.fs.writeFileJS(this.state.objects, settings.jsFilename);
     console.log(result);
     this.message(result);
   }
-  
-  
-  
-  
+
+
+
+
   //---------------------------
   //--      OBJECT  SYSTEM    ---
-  
-  
+
+
   removeObject(name) {
     if (name === undefined) {
       name = this.state.currentObjectName;
@@ -285,12 +284,12 @@ export default class App extends React.Component {
 
     // may want to do this different, if setting has another name, say for another language
     console.log(name);
-    if (name === "Settings") {    
+    if (name === "Settings") {
       window.alert("Cannot delete the 'Settings' object.");
       return;
     }
     console.log("name");
-    
+
     if (window.confirm('Delete the object "' + name + '"?')) {
       let s = this.state.currentObjectName === name ? this.state.objects[0].name : this.state.currentObjectName;
       this.setState({
@@ -321,34 +320,34 @@ export default class App extends React.Component {
   addObject(objectType) {
     const newObject = QuestObject.create(this.state, objectType)
     console.log(newObject);
-      
+
     this.setState({
       objects: this.state.objects.concat([newObject]),
       currentObjectName: newObject.name,
     })
   };
-  
+
   duplicateObject(name) {
     if (name === undefined) name = this.state.currentObjectName
     if (name === false) return;
-    
+
     const currentObject = this.state.objects.find(el => {
       return (el.name == name);
     });
-    
+
     const newObject = new QuestObject(JSON.parse(JSON.stringify(currentObject))); // cloning the state
     newObject.name = this.nextName(name);
-      
+
     this.setState({
       objects: this.state.objects.concat([newObject]),
       currentObjectName: newObject.name,
     })
   };
-  
-  
-  
-  
-  
+
+
+
+
+
   selectTab(s) {
     const currentObject = QuestObject.getCurrent(this.state);
     currentObject.jsTabName = s;
@@ -357,7 +356,7 @@ export default class App extends React.Component {
     })
   };
 
-  
+
   toggleOption(name) {
     console.log("Toggling " + name)
     this.state.options[name] = !this.state.options[name];
@@ -366,7 +365,7 @@ export default class App extends React.Component {
     })
   };
 
-  
+
   find() {
     // https://www.npmjs.com/package/electron-prompt
     prompt({
@@ -392,7 +391,7 @@ export default class App extends React.Component {
     .catch(console.error);
     //console.log("Searchng for: " + term);
   };
-  
+
   findNext() {
     if (this.searchTerm.length > 0) {
       this.searchForObject()
@@ -401,16 +400,16 @@ export default class App extends React.Component {
       this.find()
     }
   }
-    
-  
+
+
   searchForObject() {
     const currentIndex = this.state.objects.findIndex(el => el.name === this.state.currentObjectName)
     console.log(currentIndex)
     console.log("L=" + this.state.objects.length)
     const regex = new RegExp(this.searchTerm, this.searchCaseSensitive ? undefined : 'i')
-    
+
     let index = currentIndex
-    
+
     while (true) {
       if (this.searchBackwards) {
         index--
@@ -432,41 +431,41 @@ export default class App extends React.Component {
         return
       }
     }
-  };  
-  
+  };
+
   // remove on item from an attribute that is an array of strings
   removefromlist(item, att, name) {
     console.log("About to remove " + item + " from " + att);
 
     if (name === undefined) name = this.state.currentObjectName;
     if (name === false) return;
-    
+
     const newObjects = JSON.parse(JSON.stringify(this.state.objects)); // cloning the state
     const currentObject = newObjects.find(el => el.name == name);
     console.log("currentObject is " + currentObject.name);
-    
+
     currentObject[att] = currentObject[att].filter(el => el !== item);
-    
+
     this.setState({
-      objects:newObjects, 
+      objects:newObjects,
       currentObjectName:this.state.currentObjectName,
     });
   }
-  
+
   // remove on item from an attribute that is an array of strings
   addtolist(item, att, name) {
     console.log("About to add " + item + " to " + att);
     if (name === undefined) name = this.state.currentObjectName;
     if (name === false) return;
-    
+
     const newObjects = JSON.parse(JSON.stringify(this.state.objects)); // cloning the state
     const currentObject = newObjects.find(el => el.name == name);
     console.log("currentObject is " + currentObject.name);
-    
+
     currentObject[att].push(item);
-    
+
     this.setState({
-      objects:newObjects, 
+      objects:newObjects,
       currentObjectName:this.state.currentObjectName,
     });
   };
@@ -483,7 +482,7 @@ export default class App extends React.Component {
       }
     }
   }
-  
+
   findControl(name) {
     for (let i = 0; i < this.controls.length; i++) {
       const cons = this.controls[i].tabControls
@@ -495,7 +494,7 @@ export default class App extends React.Component {
     }
     return null;
   }
-  
+
   nextName(s) {
     if (/\d$/.test(s)) {
       const res = /(\d+)$/.exec(s);
@@ -506,7 +505,7 @@ export default class App extends React.Component {
       return s + "1";
     }
   }
-  
+
   nameTest(s) {
     let count = 0;
     for (let i = 0; i < this.state.objects.length; i++) {
@@ -514,17 +513,17 @@ export default class App extends React.Component {
     }
     return count !== 1;
   }
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
   handleChange(e) {
     console.log(e.target.dataset)
     this.setValue(e.target.id, e.target.value, {type:e.target.dataset.type, default:e.target.dataset.default});
   }
-  
+
   // id needs its own handler so it gets tested properly for uniqueness
   handleIdChange(e) {
     console.log("------------------")
@@ -533,7 +532,7 @@ export default class App extends React.Component {
 
     this.setValue(e.target.id, e.target.value, {id:true, type:'id'});
   }
-  
+
   // numbers need their own handler so they get converted to numbers
   handleIntChange(e) {
     const value = parseInt(e.target.value)
@@ -552,18 +551,18 @@ export default class App extends React.Component {
   // Checkboxes need their own handler as they use the "checked" property...
   handleCBChange(e) {
     console.log(e.target.dataset.default);
-    
+
     if (e.target.dataset.default !== 'nodefault') {
       this.setValue(e.target.id, e.target.dataset.default, {type:'flag'});
     }
     this.setValue(e.target.id, e.target.checked, {type:'flag'});
 
   }
-  
+
   treeToggle(obj) {
     this.setValue("jsCollapsed", !obj.jsCollapsed, {obj:obj, type:'treetoggle'});
   }
-  
+
   setValue(name, value, options) {
     if (!options) options = {}
     //console.log("----------------------------");
@@ -572,12 +571,12 @@ export default class App extends React.Component {
     //console.log(obj);
     const obj = options.obj ? options.obj : QuestObject.getCurrent(this.state)
     const oldValue = obj[name]
-    
+
     const newObjects = []  // cloning the state
     for (let i = 0; i < this.state.objects.length; i++) {
       newObjects.push(new QuestObject(this.state.objects[i]));
     }
-      
+
     // Need to look in new list for old name, as the name may be changing
     const newObject = newObjects.find(el => {
       return (el.name == obj.name);
@@ -600,7 +599,7 @@ export default class App extends React.Component {
         newObject[name] = value;
       }
     }
-    
+
     // For ID need to change anything set to this
     if (options.id) {
       for (let o of newObjects) {
@@ -611,12 +610,12 @@ export default class App extends React.Component {
     }
 
     this.setState({
-      objects:newObjects, 
+      objects:newObjects,
       currentObjectName:name === "name" ? value: this.state.currentObjectName,
       //options:this.state.option,
     });
   }
-  
+
   updateExit(name, action, data) {
     console.log("X----------------------------");
     console.log(name);
@@ -653,7 +652,7 @@ export default class App extends React.Component {
     }
 
     this.setState({
-      objects:newObjects, 
+      objects:newObjects,
       currentObjectName:name === "name" ? value: this.state.currentObjectName,
     });
   }
@@ -664,27 +663,27 @@ export default class App extends React.Component {
     const currentObject = QuestObject.getCurrent(this.state);
     return (<div id='main' className={this.state.options.darkMode ? 'dark' : 'light'}>
       <MainPane
-        object={currentObject} 
+        object={currentObject}
         handleChange={this.handleChange.bind(this)}
-        removeObject={this.removeObject.bind(this)} 
-        removefromlist={this.removefromlist.bind(this)} 
-        removeConversionNotes={this.removeConversionNotes.bind(this)} 
+        removeObject={this.removeObject.bind(this)}
+        removefromlist={this.removefromlist.bind(this)}
+        removeConversionNotes={this.removeConversionNotes.bind(this)}
         addtolist={this.addtolist.bind(this)}
         handleIdChange={this.handleIdChange.bind(this)}
         handleCBChange={this.handleCBChange.bind(this)}
-        handleIntChange={this.handleIntChange.bind(this)} 
-        handleListChange={this.handleListChange.bind(this)} 
+        handleIntChange={this.handleIntChange.bind(this)}
+        handleListChange={this.handleListChange.bind(this)}
         updateExit={this.updateExit.bind(this)}
         showObject={this.showObject.bind(this)}
         selectTab={this.selectTab.bind(this)}
         controls={this.controls}
-        objects={this.state.objects} 
-        options={this.state.options} 
+        objects={this.state.objects}
+        options={this.state.options}
         warning={this.nameTest(this.state.currentObjectName)}
       />
-      <SidePane 
-        object={currentObject} 
-        objects={this.state.objects} 
+      <SidePane
+        object={currentObject}
+        objects={this.state.objects}
         showObject={this.showObject.bind(this)}
         treeToggle={this.treeToggle.bind(this)}
         addObject={this.addObject.bind(this)}
@@ -694,20 +693,5 @@ export default class App extends React.Component {
       <div id="statusbar">Status:</div>
     </div>);
   }
-  
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
