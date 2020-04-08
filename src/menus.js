@@ -99,6 +99,10 @@ export class Menus {
         ]
       });
 
+      // File menu
+      template[1].submenu.pop()
+      template[1].submenu.pop()
+
       // Edit menu
       template[2].submenu.push(
         { type: 'separator' },

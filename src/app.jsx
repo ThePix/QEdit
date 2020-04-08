@@ -75,6 +75,10 @@ export default class App extends React.Component {
 
     }
 
+    if (process.platform === 'darwin') {
+      delete menuMapping.Exit
+    }
+
     for (let key in menuMapping) {
       this.findMenuItem(template, key).click = menuMapping[key]
     }
@@ -158,7 +162,7 @@ export default class App extends React.Component {
   newGame() {
     const response = dialog.showMessageBox(newOptions)
     if (response === 0) {
-      const objects = this.fs.readFile("blank.asl6", {})
+      const objects = this.fs.readFile(__dirname + '/../blank.asl6', {})
       this.setState({
         objects:objects,
         currentObjectName: objects[0].name,
@@ -174,21 +178,24 @@ export default class App extends React.Component {
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
-        { name: "All Files", extensions: ["*"] },
         { name: "Quest files", extensions: ["asl6", "aslx"] },
+        { name: "All Files", extensions: ["*"] },
       ],
       properties: ["openFile"],
       title: 'Open file',
     };
-    const { dialog } = require('electron').remote
+//    const { dialog } = require('electron').remote
     const result = dialog.showOpenDialog(dialogOptions)
+    console.log(result);
     if (result) {
       const settings = this.createDefaultSettings();
       settings.jsFilename = result[0];
       this.setState({
         objects:this.fs.readFile(result[0], settings),
-        currentObjectName: objects[0].name,
+//        currentObjectName: objects[0].name,
       });
+      // TODO: @@@Here
+      console.log(this.state.objects);
       this.message("Opened: " + result[0]);
     }
     else {
@@ -233,13 +240,12 @@ export default class App extends React.Component {
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
-        { name: "All Files", extensions: ["*"] },
         { name: "Quest files", extensions: ["asl6", "aslx"] },
+        { name: "All Files", extensions: ["*"] },
       ],
-      properties: ["openFile"],
-      title: 'Open file',
+      title: 'Save file',
     };
-    const { dialog } = require('electron').remote
+//    const { dialog } = require('electron').remote
     const filename = dialog.showSaveDialog(dialogOptions)
     console.log(filename)
     if (filename) {
