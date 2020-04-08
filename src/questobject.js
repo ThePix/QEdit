@@ -263,6 +263,9 @@ class QuestObject {
           this[node.getAttribute('alias')] = Exit.createFromXml(node);
           //console.log("Exit");
         }
+        else if ((value === '' || value === undefined) && node.attributes.length === 0) {
+          this[name] = true;
+        }
         else if (attType === 'string' || attType === '' || attType === null || attType === 'object') {
           this[name] = removeBR(removeCDATA(value));
         }
