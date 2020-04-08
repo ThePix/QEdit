@@ -29,23 +29,23 @@ class QuestObject {
       }
     }
   }
-  
+
   static getSettings(state) {
     return state.objects.find(el => el.jsObjType === 'settings')
-  } 
-  
+  }
+
   static getByName(state, name) {
     return state.objects.find(el => el.name === name)
-  } 
-  
+  }
+
   static getCurrent(state) {
     return state.objects.find(el => el.name === state.currentObjectName)
-  } 
-  
+  }
+
   static getById(state, id) {
     return state.objects.find(el => el.id === id)
   }
-  
+
   static create(state, objectType) {
     const newObject = new QuestObject({
       name:"_new_" + objectType,
@@ -54,7 +54,7 @@ class QuestObject {
     });
     newObject.makeUniqueName(state)
     console.log("objectType=" + objectType);
-    
+
     const settings = QuestObject.getSettings(state)
     let currentObject = QuestObject.getCurrent(state)
     // If the current object is the settings, OR if the current object is a room and new rooms go top,
@@ -72,13 +72,13 @@ class QuestObject {
           while (currentObject && !currentObject.jsObjType === 'room') {
             currentObject = state.objects.find(el => el.name === currentObject.loc)
           }
-        }  
+        }
         else if (settings.jsNewRoomWhere === "Zone") {
           console.log("Looking for zone");
           while (currentObject && !currentObject.jsIsZone) {
             currentObject = state.objects.find(el => el.name === currentObject.loc)
           }
-        }  
+        }
       }
       else {
         if (settings.jsNewItemWhere === "Top") {
@@ -89,13 +89,13 @@ class QuestObject {
           while (currentObject && !currentObject.jsObjType === 'room') {
             currentObject = state.objects.find(el => el.name === currentObject.loc)
           }
-        }  
+        }
         else if (settings.jsNewItemWhere === "Zone") {
           console.log("Looking for zone");
           while (currentObject && !currentObject.jsIsZone) {
             currentObject = state.objects.find(el => el.name === currentObject.loc)
           }
-        }  
+        }
       }
     }
     if (currentObject) {
@@ -104,11 +104,11 @@ class QuestObject {
     }
     return newObject
   }
-  
-  
-  
-  
-  
+
+
+
+
+
   makeUniqueName(state) {
     console.log('here')
     // Is it already unique?
@@ -127,11 +127,11 @@ class QuestObject {
     }
     this.makeUniqueName(state)
   }
-  
- 
+
+
   //---------------------------------------------------------------------
   //----------           For React                  ---------------------
-  
+
   addDefaults(controls) {
     for (let i = 0; i < controls.length; i++) {
       if (this.displayIf(controls[i])) {
@@ -142,17 +142,17 @@ class QuestObject {
           }
         }
       }
-    }  
+    }
   }
 
   getCurrentTab(controls) {
     let tab = (this.jsTabName ? this.jsTabName : controls[0].tabName);
     let control = controls.find(el => el.tabName === tab);
-    
+
     if (!control) console.log("Failed to find control: " + tab);
     if (!this.displayIf(control)) {
       control = controls.find(el => {return this.displayIf(el);} );
-    } 
+    }
     if (control === undefined) {
       console.log("Still not found a suitable default tab, so just going with zero");
       control = controls[0];
@@ -204,7 +204,7 @@ class QuestObject {
   // This has been unit tested with Quest 5 XML for an NPM, a wearable and a room
   // For Quest 6 the different types of attributes have been tested
   translateObjectFromXml(xml, version) {
-    
+
     const object = {};
     this.jsConversionNotes = [];
 
@@ -215,7 +215,7 @@ class QuestObject {
       this.name = this.name.replace(/ /, "_");
     }
 
-    
+
     // Parent -> loc
     if (xml.parentNode.nodeType === 1) {
       //console.log("Parent is: " + xml.parentNode.tagName);
@@ -231,7 +231,7 @@ class QuestObject {
         const attType = node.getAttribute('type');
         const value = node.innerHTML;
         const name = (node.tagName === "attr" ? node.getAttribute('name') : node.tagName);
-        
+
         if (name === "inherit") {
           this.inherit = node.getAttribute('name');
         }
@@ -278,11 +278,11 @@ class QuestObject {
     if (version < 600) {
       let inherits = this._getDirectChildAttributes(xml, "inherit", 'name');
       //console.log(inherits);
-      
+
       this.jsObjType = inherits.includes("editor_room") ? 'room' : 'item'
       inherits = this._removeFromArray(inherits, "editor_room");
       inherits = this._removeFromArray(inherits, "editor_object");
-      
+
       // I think we can safely remove these as the defaults handle it
       inherits = this._removeFromArray(inherits, "talkingchar");
       this.jsPronoun = "thirdperson";
@@ -291,13 +291,13 @@ class QuestObject {
         if (this.take) {
           this.jsMobilityType = "Takeable";
         }
-        
+
         else if (inherits.includes("editor_player")) {
           this.jsMobilityType = "Player";
           inherits = this._removeFromArray(inherits, "editor_player");
           this.jsPronoun = "secondperson";
         }
-        
+
         else if (inherits.includes("namedfemale")) {
           this.jsMobilityType = "NPC";
           this.jsFemale = true;
@@ -305,7 +305,7 @@ class QuestObject {
           inherits = this._removeFromArray(inherits, "namedfemale");
           this.jsPronoun = "female";
         }
-          
+
         else if (inherits.includes("namedmale")) {
           this.jsMobilityType = "NPC";
           this.jsFemale = false;
@@ -313,7 +313,7 @@ class QuestObject {
           inherits = this._removeFromArray(inherits, "namedmale");
           this.jsPronoun = "male";
         }
-          
+
         else if (inherits.includes("female")) {
           this.jsMobilityType = "NPC";
           this.jsFemale = true;
@@ -321,7 +321,7 @@ class QuestObject {
           inherits = this._removeFromArray(inherits, "female");
           this.jsPronoun = "female";
         }
-          
+
         else if (inherits.includes("male")) {
           this.jsMobilityType = "NPC";
           this.jsFemale = false;
@@ -329,19 +329,19 @@ class QuestObject {
           inherits = this._removeFromArray(inherits, "male");
           this.jsPronoun = "male";
         }
-        
+
         else if (inherits.includes("topic")) {
           this.jsMobilityType = "Topic";
           this.jsFromStart = false;
           inherits = this._removeFromArray(inherits, "topic");
         }
-        
+
         else if (inherits.includes("startingtopic")) {
           this.jsMobilityType = "Topic";
           this.jsFromStart = true;
           inherits = this._removeFromArray(inherits, "startingtopic");
         }
-        
+
         else {
           this.jsMobilityType = "Immobile";
         }
@@ -378,7 +378,7 @@ class QuestObject {
         else {
           this.jsContainerType = "No";
         }
-        
+
         if (inherits.includes("wearable")) {
           this.jsIsWearable = true;
           inherits = this._removeFromArray(inherits, "wearable");
@@ -387,7 +387,7 @@ class QuestObject {
         else {
           this.jsIsWearable = false;
         }
-        
+
         if (inherits.includes("switchable")) {
           this.jsIsSwitchable = true;
           inherits = this._removeFromArray(inherits, "switchable");
@@ -395,7 +395,7 @@ class QuestObject {
         else {
           this.jsIsSwitchable = false;
         }
-        
+
         if (inherits.includes("edible")) {
           this.jsIsEdible = true;
           inherits = this._removeFromArray(inherits, "edible");
@@ -439,7 +439,7 @@ class QuestObject {
     if (this.jsConversionNotes.length === 0) delete this.jsConversionNotes;
 
     //console.log(this);
-    return this;    
+    return this;
   }
 
   _getDirectChildAttributes(element, tag, attr) {
@@ -454,14 +454,14 @@ class QuestObject {
       arr.splice(index, 1);
     }
     return arr;
-  }  
-  
-  
-  
-  
+  }
+
+
+
+
   importSettings(xmlDoc) {
     const gameObject = xmlDoc.getElementsByTagName("game")[0];
-    
+
     const defaults = {
       jsObjType:'settings',
       jsShowRoomsOnly:true,
@@ -469,7 +469,7 @@ class QuestObject {
       jsAutosaveInterval:1,
       title:gameObject.getAttribute('name'),
     }
-    for (key in defaults) this[key] = defaults[key]
+    for (let key in defaults) this[key] = defaults[key]
 
     this._importSetting(gameObject, "subtitle", "subtitle");
     this._importSetting(gameObject, "author", "author");
@@ -484,7 +484,7 @@ class QuestObject {
     this._importSetting(gameObject, "backgroundimage", "jsStyleMain_background_image");
 
     this._importSetting(gameObject, "moneyformat", "moneyFormat");
-    
+
     this._importSetting(gameObject, "clearscreenonroomenter", "clearScreenOnRoomEnter", "boolean");
     this._importSetting(gameObject, "autodescription_youarein", "jsRoomTitlePos", "int");
     this._importSetting(gameObject, "autodescription_youcansee", "jsRoomItemsPos", "int");
@@ -501,7 +501,7 @@ class QuestObject {
       this.jsGoogleFonts = [this.jsStyleMain_font_family]
     }
   }
-  
+
   // Used in importSettings only
   _importSetting(gameObject, tagName, attName, type) {
     const els = gameObject.getElementsByTagName(tagName)
@@ -516,17 +516,17 @@ class QuestObject {
       this[attName] = els[0].innerHTML;
     }
   }
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
   //---------------------------------------------------------------------
   //------------------  EXPORT FUNCTIONS  -------------------------
-  
+
   // Unit tested
   toXml() {
     let str = "  <object name=\"" + this.name + "\">\n";
@@ -575,17 +575,17 @@ class QuestObject {
           console.log("Not saving type: " + property + "/" + value);
         }
       }
-    }    
+    }
 
     //console.log(this);
     return str + "  </object>\n\n";
-  } 
-  
+  }
+
   // Converts one item to JavaScript code
   // Unit tested
   toJs() {
     if (this.jsObjType === 'stub' || this.jsObjType === 'settings') return '';
-    
+
     let str = "\n\n\n";
 
     str += "create" + (this.jsObjType === 'room' ? "Room" : "Item") + "(\"" + this.name + "\", ";
@@ -605,21 +605,21 @@ class QuestObject {
     if (this.jsIsSwitchable) jsTemplates.push("SWITCHABLE()");
     if (this.jsIsComponent) jsTemplates.push("COMPONENT()");
     if (jsTemplates.length > 0) str += jsTemplates.join(', ') + ", ";
-    
+
     str += this.beautifyObject(0);
     str += ")";
     return str;
   }
-  
-  
+
+
   // Converts one item to JavaScript code
   toJsSettings() {
     if (this.jsObjType !== 'settings') return '';
 
     //console.log(this)
-    
+
     let str = "\n\n\n";
-    
+
     const libs = new TabControls().libraries;
     for (let lib of libs) {
     console.log(lib)
@@ -629,7 +629,7 @@ class QuestObject {
     console.log(str)
       str += "]})\n"
     }
-    
+
     str += "settings.inventories = [\n"
     if (this.jsInvHeld) str += "  {name:'Items Held', alt:'itemsHeld', test:settings.isHeldNotWorn, getLoc:function() { return game.player.name; } },\n"
     if (this.jsInvWorn) str += "  {name:'Items Worn', alt:'itemsWorn', test:settings.isWorn, getLoc:function() { return game.player.name; } },\n"
@@ -675,7 +675,7 @@ class QuestObject {
         line += "{terse:{hereDesc}}"
         newline = this.jsRoomDescNewLine
       }
-        
+
       if (newline) {
         str += "  '" + line + "',\n"
         line = ''
@@ -686,7 +686,7 @@ class QuestObject {
     }
     str += "  '" + line + "',\n"
     str += "]\n"
-    
+
     for (let key in this) {
       if (/^js[A-Z]/.test(key) || key === 'name') continue;
 
@@ -710,13 +710,13 @@ class QuestObject {
     }
     return str;
   }
-  
+
   // Converts one item to CSS settings
   toCss() {
     if (this.jsObjType !== 'settings') return '';
-    
+
     let str = "";
-    
+
     if (this.jsGoogleFonts && this.jsGoogleFonts.length > 1) {
       str += "@import url('https://fonts.googleapis.com/css?family=" + this.jsGoogleFonts.map(el => el.replace(/ /g, '+')).join('|') + "');\n\n"
     }
@@ -732,7 +732,7 @@ class QuestObject {
     if (this.jsStyleSide_font_family) str += "  font-family:" + this.jsStyleSide_font_family + ";\n"
     if (this.jsStyleSide_font_size) str += "  font-size:" + this.jsStyleSide_font_size + "pt;\n"
     str += "}\n\n\n"
-    
+
     return str;
   }
 
@@ -745,7 +745,7 @@ class QuestObject {
 
   beautifyObject(indent) {
     return beautifyObjectHelper(this, indent);
-  }  
+  }
 
   beautifyFunction(str, indent) {
     if (indent === undefined) indent = 0;
@@ -787,16 +787,16 @@ class Exit {
     //if (typeof this.data.msg === "string") this.data.useType = "msg";
     //if (typeof this.data.use === "string") this.data.useType = "named";
     //if (typeof this.data.use === "function") this.data.useType = "custom";
-    
+
     // these are held elsewhere, deleted for testing import and export
     delete this.data.alias
     delete this.data.to
   }
-  
+
   static createFromXml(node) {
     return new Exit(node.getAttribute('to'), xmlToDict(node))
   }
-  
+
   toXml(property) {
     let str = "    <exit alias=\"" + property + "\" to=\"" + this.name + "\">\n"
     if (this.data.useType !== "default") {
@@ -808,7 +808,7 @@ class Exit {
     str += "    </exit>\n"
     return str
   }
-  
+
   beautify(dir, indent) {
     //console.log(this.data)
     let s = tabs(indent) + dir + ":new Exit(\"" + this.name + "\""
@@ -840,7 +840,7 @@ const beautifyObjectHelper = function(item, indent) {
     if (/^js[A-Z]/.test(key) || key === 'name') continue;
     switch (typeof item[key]) {
       case "boolean": str += tabs(indent) + key + ":" + (item[key] ? "true" : "false") + ","; break;
-      case "string": 
+      case "string":
         if (/^function\(/.test(item[key])) {
           str += tabs(indent) + key + ":" + item[key] + ","
         }
@@ -850,7 +850,7 @@ const beautifyObjectHelper = function(item, indent) {
         break;
       //case "function": str += tabs(indent) + key + ":" + this.beautifyFunction(item[key].toString(), indent); break;
       case "number": str += tabs(indent) + key + ":" + item[key] + ","; break;
-      case "object": 
+      case "object":
         if (item[key] instanceof Exit) {
           str += item[key].beautify(key, indent); break;
         }
