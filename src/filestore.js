@@ -104,7 +104,7 @@ export class FileStore {
   }
 
   writeFileJS(objects, filename) {
-    const outputPath = filename.replace(/\\/g, '/').replace('.asl6', '/')
+    const outputPath = filename.replace(/\\/g, '/').replace('.asl6', '/').replace('.aslx', '/')
     console.log('Export to JavaScript files')
     if (!fs.existsSync(outputPath)) {
       console.log('Folders need creating')
