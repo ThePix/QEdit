@@ -150,7 +150,6 @@ export default class App extends React.Component {
       properties: ["openFile"],
       title: 'Open file',
     };
-//    const { dialog } = require('electron').remote
     const result = dialog.showOpenDialog(dialogOptions)
     console.log(result);
     if (result) {
@@ -206,7 +205,6 @@ export default class App extends React.Component {
       ],
       title: 'Save file',
     };
-//    const { dialog } = require('electron').remote
     const filename = dialog.showSaveDialog(dialogOptions)
     console.log(filename)
     if (filename) {
@@ -223,7 +221,7 @@ export default class App extends React.Component {
   }
 
   saveJs(filename) {
-    saveXml(filename) // make sure this is saved to asl6 first
+    this.saveXml(filename) // make sure this is saved to asl6 first
     const settings = QuestObject.getSettings(this.state)
     if (!settings.jsFilename) {
       console.log('Save your game before exporting');

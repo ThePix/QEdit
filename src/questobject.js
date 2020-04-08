@@ -437,8 +437,6 @@ class QuestObject {
     }
 
     if (this.jsConversionNotes.length === 0) delete this.jsConversionNotes;
-
-    //console.log(this);
     return this;
   }
 
@@ -458,7 +456,7 @@ class QuestObject {
 
 
 
-
+  // Import setting from version < 600
   importSettings(xmlDoc) {
     const gameObject = xmlDoc.getElementsByTagName("game")[0];
 
@@ -484,6 +482,7 @@ class QuestObject {
     this._importSetting(gameObject, "backgroundimage", "jsStyleMain_background_image");
 
     this._importSetting(gameObject, "moneyformat", "moneyFormat");
+    this._importSetting(gameObject, 'feature_asktell', 'jsnoAskTell', 'invert-boolean');
 
     this._importSetting(gameObject, "clearscreenonroomenter", "clearScreenOnRoomEnter", "boolean");
     this._importSetting(gameObject, "autodescription_youarein", "jsRoomTitlePos", "int");
@@ -500,6 +499,19 @@ class QuestObject {
       this.jsStyleMain_font_family = gameObject.getElementsByTagName("defaultwebfont")[0].innerHTML;
       this.jsGoogleFonts = [this.jsStyleMain_font_family]
     }
+/*
+    const statusattributes = gameObject.getElementsByTagName('statusattributes');
+    if (statusattributes.length > 0) {
+      this.status = []
+      const items = statusattributes[0].getElementsByTagName('item');
+      console.log(items);
+      for (let item of items) {
+        console.log(item);
+        var key = item.getElementsByTagName('key')[0].innerHTML;
+        var value = item.getElementsByTagName('value')[0].innerHTML;
+        this.status.push('function() { return "<td>Spell points:</td><td>3</td>"; }');
+      }
+    }*/
   }
 
   // Used in importSettings only
@@ -511,6 +523,9 @@ class QuestObject {
     }
     else if (type === "boolean") {
       this[attName] = els[0].innerHTML === "true" || els[0].innerHTML === "";
+    }
+    else if (type === 'invert-boolean') {
+      this[attName] = els[0].innerHTML === 'false';
     }
     else {
       this[attName] = els[0].innerHTML;
@@ -688,6 +703,10 @@ class QuestObject {
     str += "]\n"
 
     for (let key in this) {
+      if (typeof key === 'undefined' || key === 'undefined') {
+        continue
+      }
+
       if (/^js[A-Z]/.test(key) || key === 'name') continue;
 
       // Some settings are either false or a string, and in the editor set in two places
@@ -704,7 +723,7 @@ class QuestObject {
         case "boolean": str += (this[key] ? "true" : "false"); break;
         case "string":  str += "\"" + this[key] + "\""; break;
         case "number": str += this[key]; break;
-        default: str += '[' + this.key.map(el => '"' + el + '"').join(', ') + ']'
+        default: str += '[' + this[key].map(el => '"' + el + '"').join(', ') + ']'
       }
       str += "\n";
     }
