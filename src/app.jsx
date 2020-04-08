@@ -172,7 +172,9 @@ export default class App extends React.Component {
     if (this.autosaveCount === undefined) this.autosaveCount = -1
     this.autosaveCount++
     if (this.autosaveCount > 9) this.autosaveCount = 0
-    this.saveXml("autosaves/autosave" + this.autosaveCount + ".asl6")
+    var autosavePath = app.getPath('userData') + '/' + app.getName() + '/autosaves/'
+    var autosaveFile = 'autosave' + this.autosaveCount + '.asl6'
+    this.saveXml(autosavePath + autosaveFile)
     const settings = QuestObject.getSettings(this.state)
     if (settings.jsAutosaveInterval !== 0) {
       setTimeout(this.autosaveXml.bind(this), settings.jsAutosaveInterval * 60000)

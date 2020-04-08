@@ -1,6 +1,8 @@
 'use strict'
 
 const fs = require('fs');
+const path = require('path');
+const mkdirp = require('mkdirp');
 const [QuestObject] = require('./questobject')
 
 const useWithDoor = "useWithDoor";
@@ -16,41 +18,41 @@ and it is reasonable to expect the user to wait whilst it happens.
 */
 
 export class FileStore {
-  
+
   // This should read both Quest 5 and Quest 6 XML files,
   // which hopefully are pretty much the same
   readFile(filename, settings) {
     const str = fs.readFileSync(filename, "utf8");
     return this.readXmlString(str, filename, settings)
-  }  
-  
+  }
+
   // Separated out so it can be unit tested more easily
   readXmlString(str, filename, settings) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(str, "text/xml");
-    
+
     const version = parseInt(xmlDoc.getElementsByTagName("asl")[0].getAttribute('version'));
-    
+
     console.log("Opening XML file (" + filename + "), version " + version);
-    
+
     const objects = [];
-    
+
     if (version < 600) {
       const obj = new QuestObject(settings);
       obj.importSettings(xmlDoc);
       objects.push(obj);
     }
-    
+
     const errs = xmlDoc.getElementsByTagName("parsererror");
     for (let err of errs) {
       console.log("XML Error: " + err.innerHTML)
-    }    
-    
+    }
+
     const arr = xmlDoc.getElementsByTagName("object");
     for (let xml of arr) {
       objects.push(new QuestObject(xml, version));
     }
-    
+
     // If we imported from Quest 5, object names will have been modified
     // so there is a chance of a new name collision
     if (version < 600) {
@@ -63,7 +65,7 @@ export class FileStore {
         }
       }
     }
-    
+
     console.log("Loaded " + objects.length + " objects (including setting)");
     return objects;
   }
@@ -81,8 +83,8 @@ export class FileStore {
     return res
   }
 
-  
-  writeFile(app, objects, filename) {
+
+  async writeFile (app, objects, filename) {
     if (filename.endsWith('.aslx')) {
       filename = filename.replace('.aslx', '.asl6')
       if (fs.existsSync(filename)) {
@@ -90,13 +92,13 @@ export class FileStore {
       }
     }
     console.log(filename)
-    
     let str = "<!--Saved by Quest 6.0.0-->\n<asl version=\"600\">\n"
 
     for (let i = 0; i < objects.length; i++) {
       str += objects[i].toXml();
     }
     str += "</asl>"
+    await mkdirp(path.dirname(filename));
     fs.writeFileSync(filename, str, "utf8");
     return "Saved: " + filename
   }
@@ -129,7 +131,7 @@ export class FileStore {
         'lib/settings.js',
         'images/favicon.png',
         'lib/style.css',
-      ]      
+      ]
       for (let filename of filenames) {
         console.log("About to copy " + filename + '...');
         fs.copyFile(QUEST_JS_PATH + filename, outputPath + filename, (err) => {
@@ -137,11 +139,11 @@ export class FileStore {
           console.log("...Done");
         });
       }
-    }    
+    }
     else {
       console.log('Folders already exist')
     }
-    
+
     let str1 = "\"use strict\";";
     let str2 = "\"use strict\";";
     let str3 = "";
@@ -162,12 +164,5 @@ export class FileStore {
     return('Export completed')
   }
 
-  
+
 }
-
-
-
-
-
-
-
