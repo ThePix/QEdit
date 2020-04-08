@@ -14,9 +14,6 @@ const quitOptions  = {
   buttons: ["Yes", "No"],
   message: "Do you really want to quit?",
   detail:'Any unsaved work will be lost.',
-  defaultId: 1,
-  cancelId : 1,
-  title: 'Confirm quit',
   type:'warning',
 };
 

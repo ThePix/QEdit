@@ -156,12 +156,11 @@ export default class App extends React.Component {
     if (result) {
       const settings = this.createDefaultSettings();
       settings.jsFilename = result[0];
+      const objects = this.fs.readFile(result[0], settings)
       this.setState({
-        objects:this.fs.readFile(result[0], settings),
-//        currentObjectName: objects[0].name,
+        objects: objects,
+        currentObjectName: objects[0].name,
       });
-      // TODO: @@@Here
-      console.log(this.state.objects);
       this.message("Opened: " + result[0]);
     }
     else {
