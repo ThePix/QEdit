@@ -95,7 +95,7 @@ export class Menus {
           { role: 'hideothers' },
           { role: 'unhide' },
           { type: 'separator' },
-          { role: 'quit' }
+          { label: 'Quit', role: 'quit' }
         ]
       });
 

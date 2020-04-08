@@ -25,21 +25,12 @@ const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
 const template = new Menus().getMenus();
 
-let quitConfirmed = false
-const quitOptions  = {
-  buttons: ["Yes", "No"],
-  message: "Do you really want to quit?",
-  detail:'Any unsaved work will be lost.',
-  type:'warning',
-}
 const newOptions  = {
   buttons: ["Yes", "No"],
   message: "Do you really want to start a new game?",
   detail:'Any unsaved work will be lost.',
   type:'warning',
 }
-
-
 
 
 
@@ -56,7 +47,6 @@ export default class App extends React.Component {
       'Save':          () => this.saveXml(),
       'Save As...':    () => this.saveXmlAs(),
       'Export to JavaScript': () => this.saveJs(),
-      'Exit':          () => this.exitApp(),
 
       'Dark mode':  () => this.toggleOption('darkMode'),
 
@@ -75,13 +65,14 @@ export default class App extends React.Component {
 
     }
 
-    if (process.platform === 'darwin') {
-      delete menuMapping.Exit
+    if (process.platform !== 'darwin') {
+      menuMapping.Exit = () => app.quit();
     }
 
     for (let key in menuMapping) {
       this.findMenuItem(template, key).click = menuMapping[key]
     }
+
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
 
@@ -100,22 +91,6 @@ export default class App extends React.Component {
       },
     };
     this.state.currentObjectName = this.state.objects[0].name;
-
-    window.addEventListener("beforeunload", function(e) {
-      console.log("beforeunload")
-      console.log(quitConfirmed)
-      //e.defaultPrevented = true;
-      if (!quitConfirmed) {
-        const response = dialog.showMessageBox(quitOptions)
-        console.log(response)
-        if (response === 1) {
-          console.log('here')
-          e.returnValue = "\o/";
-        }
-      }
-      console.log(e)
-      console.log(quitConfirmed)
-    });
 
     const _this = this
     window.addEventListener('load', function(e) {
@@ -149,15 +124,6 @@ export default class App extends React.Component {
 
   //---------------------------
   //--      FILE  SYSTEM    ---
-
-  exitApp() {
-    const response = dialog.showMessageBox(quitOptions)
-    if (response === 0) {
-      quitConfirmed = true
-      app.quit(0)
-    }
-    return false
-  }
 
   newGame() {
     const response = dialog.showMessageBox(newOptions)
@@ -203,7 +169,6 @@ export default class App extends React.Component {
     }
   }
 
-
   autosaveXml() {
     if (this.autosaveCount === undefined) this.autosaveCount = -1
     this.autosaveCount++
@@ -214,7 +179,6 @@ export default class App extends React.Component {
       setTimeout(this.autosaveXml.bind(this), settings.jsAutosaveInterval * 60000)
     }
   }
-
 
   saveXml(filename) {
     if (!filename) {
@@ -231,10 +195,6 @@ export default class App extends React.Component {
       this.saveXmlAs()
     }
   }
-
-
-
-
 
   saveXmlAs() {
     const dialogOptions = {

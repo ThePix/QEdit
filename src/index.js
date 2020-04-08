@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, dialog } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 
@@ -9,6 +9,16 @@ import { enableLiveReload } from 'electron-compile';
 let mainWindow;
 
 const isDevMode = process.execPath.match(/[\\/]electron/);
+
+const quitOptions  = {
+  buttons: ["Yes", "No"],
+  message: "Do you really want to quit?",
+  detail:'Any unsaved work will be lost.',
+  defaultId: 1,
+  cancelId : 1,
+  title: 'Confirm quit',
+  type:'warning',
+};
 
 if (isDevMode) enableLiveReload({ strategy: 'react-hmr' });
 
@@ -33,6 +43,21 @@ const createWindow = async () => {
     await installExtension(REACT_DEVELOPER_TOOLS);
     mainWindow.webContents.openDevTools();
   }
+
+  //Listen close event to show dialog message box
+   mainWindow.on('close', (e) => {
+
+     //Cancel the current event to prevent window from closing
+     e.preventDefault()
+
+     dialog.showMessageBox(mainWindow, quitOptions, (res, checked) => {
+     if (res === 0){
+      //Yes button pressed
+      mainWindow.destroy()
+      app.quit();
+     }
+   });
+ });
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
