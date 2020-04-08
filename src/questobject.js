@@ -502,14 +502,21 @@ class QuestObject {
 
     const statusattributes = gameObject.getElementsByTagName('statusattributes');
     if (statusattributes.length > 0) {
-      this.jsStatusList = []
+      this.jsStatusList = this.jsStatusList || [];
       const items = statusattributes[0].getElementsByTagName('item');
-      console.log(items);
       for (let item of items) {
-        console.log(item);
         var key = item.getElementsByTagName('key')[0].innerHTML;
 //        var value = item.getElementsByTagName('value')[0].innerHTML;
         this.jsStatusList.push(key);
+      }
+    }
+
+    const showmoney = gameObject.getElementsByTagName('showmoney')
+    if (showmoney.length > 0) {
+      const value = showmoney.innerHTML;
+      if (value === 'true' || value === '' || value === undefined) {
+        this.jsStatusList = this.jsStatusList || [];
+        this.jsStatusList.push('money');
       }
     }
   }
