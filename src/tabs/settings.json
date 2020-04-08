@@ -638,6 +638,14 @@
 				"tooltip": "File name for an image to be inserted between each component."
 			},
 			{
+				"name": "jsStatusList",
+				"type": "stringlist",
+				"default": [],
+				"display": "Status attributes",
+				"displayIf": "o.jsStatusPaneFlag",
+				"tooltip": "List all your status attributes for the player."
+			},
+			{
 				"type": "title",
 				"display": "Text style"
 			},

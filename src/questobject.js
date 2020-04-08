@@ -499,19 +499,19 @@ class QuestObject {
       this.jsStyleMain_font_family = gameObject.getElementsByTagName("defaultwebfont")[0].innerHTML;
       this.jsGoogleFonts = [this.jsStyleMain_font_family]
     }
-/*
+
     const statusattributes = gameObject.getElementsByTagName('statusattributes');
     if (statusattributes.length > 0) {
-      this.status = []
+      this.jsStatusList = []
       const items = statusattributes[0].getElementsByTagName('item');
       console.log(items);
       for (let item of items) {
         console.log(item);
         var key = item.getElementsByTagName('key')[0].innerHTML;
-        var value = item.getElementsByTagName('value')[0].innerHTML;
-        this.status.push('function() { return "<td>Spell points:</td><td>3</td>"; }');
+//        var value = item.getElementsByTagName('value')[0].innerHTML;
+        this.jsStatusList.push(key);
       }
-    }*/
+    }
   }
 
   // Used in importSettings only
