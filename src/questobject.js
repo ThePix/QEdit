@@ -499,6 +499,7 @@ class QuestObject {
 
     this._importSetting(gameObject, "moneyformat", "moneyFormat");
     this._importSetting(gameObject, 'feature_asktell', 'jsnoAskTell', 'invert-boolean');
+    this._importSetting(gameObject, 'feature_devmode', 'debug', 'boolean');
 
     this._importSetting(gameObject, "clearscreenonroomenter", "clearScreenOnRoomEnter", "boolean");
     this._importSetting(gameObject, "autodescription_youarein", "jsRoomTitlePos", "int");
