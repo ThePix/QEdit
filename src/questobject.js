@@ -237,10 +237,11 @@ class QuestObject {
         const name = (node.tagName === "attr" ? node.getAttribute('name') : node.tagName);
 
         if (name === "inherit") {
-          this.inherit = node.getAttribute('name');
+          this.inherit = this.inherit || []
+          this.inherit.push(node.getAttribute('name'))
         }
         else if (attType === 'boolean') {
-          this[name] = value === 'true' || value === '';
+          this[name] = value === 'true' || value === ''
           //console.log("Boolean");
         }
         else if (attType === 'int') {
@@ -252,7 +253,7 @@ class QuestObject {
           //console.log("RegExp");
         }
         else if (attType === 'stringlist') {
-          const els = node.getElementsByTagName('value');
+          const els = node.getElementsByTagName('value')
           const arr = [];
           for (let k = 0; k < els.length; k++) arr.push(els[k].innerHTML);
           this[name] = arr;
@@ -283,7 +284,7 @@ class QuestObject {
     // If this is a conversion from Quest 5 we need to handle the "inherit"
     // elements, which correspond approximately to templates
     if (version < 600) {
-      let inherits = this._getDirectChildAttributes(xml, "inherit", 'name');
+      this.inherit = this.inherit|| []
       if (xml.tagName === 'command') {
         this.jsObjType = 'command';
         this.jsIsCommand = true;
@@ -293,14 +294,14 @@ class QuestObject {
         }
       }
       else {
-        this.jsObjType = inherits.includes("editor_room") ? 'room' : 'item';
+        this.jsObjType = this.inherit.includes("editor_room") ? 'room' : 'item';
       }
 
-      inherits = this._removeFromArray(inherits, "editor_room");
-      inherits = this._removeFromArray(inherits, "editor_object");
+      this.inherit = this._removeFromArray(this.inherit, "editor_room");
+      this.inherit = this._removeFromArray(this.inherit, "editor_object");
 
       // I think we can safely remove these as the defaults handle it
-      inherits = this._removeFromArray(inherits, "talkingchar");
+      this.inherit = this._removeFromArray(this.inherit, "talkingchar");
       this.jsPronoun = "thirdperson";
 
       if (this.jsObjType !== 'room') {
@@ -308,54 +309,54 @@ class QuestObject {
           this.jsMobilityType = "Takeable";
         }
 
-        else if (inherits.includes("editor_player")) {
+        else if (this.inherit.includes("editor_player")) {
           this.jsMobilityType = "Player";
-          inherits = this._removeFromArray(inherits, "editor_player");
+          this.inherit = this._removeFromArray(this.inherit, "editor_player");
           this.jsPronoun = "secondperson";
         }
 
-        else if (inherits.includes("namedfemale")) {
+        else if (this.inherit.includes("namedfemale")) {
           this.jsMobilityType = "NPC";
           this.jsFemale = true;
           this.properName = true;
-          inherits = this._removeFromArray(inherits, "namedfemale");
+          this.inherit = this._removeFromArray(this.inherit, "namedfemale");
           this.jsPronoun = "female";
         }
 
-        else if (inherits.includes("namedmale")) {
+        else if (this.inherit.includes("namedmale")) {
           this.jsMobilityType = "NPC";
           this.jsFemale = false;
           this.properName = true;
-          inherits = this._removeFromArray(inherits, "namedmale");
+          this.inherit = this._removeFromArray(this.inherit, "namedmale");
           this.jsPronoun = "male";
         }
 
-        else if (inherits.includes("female")) {
+        else if (this.inherit.includes("female")) {
           this.jsMobilityType = "NPC";
           this.jsFemale = true;
           this.properName = false;
-          inherits = this._removeFromArray(inherits, "female");
+          this.inherit = this._removeFromArray(this.inherit, "female");
           this.jsPronoun = "female";
         }
 
-        else if (inherits.includes("male")) {
+        else if (this.inherit.includes("male")) {
           this.jsMobilityType = "NPC";
           this.jsFemale = false;
           this.properName = false;
-          inherits = this._removeFromArray(inherits, "male");
+          this.inherit = this._removeFromArray(this.inherit, "male");
           this.jsPronoun = "male";
         }
 
-        else if (inherits.includes("topic")) {
+        else if (this.inherit.includes("topic")) {
           this.jsMobilityType = "Topic";
           this.jsFromStart = false;
-          inherits = this._removeFromArray(inherits, "topic");
+          this.inherit = this._removeFromArray(this.inherit, "topic");
         }
 
-        else if (inherits.includes("startingtopic")) {
+        else if (this.inherit.includes("startingtopic")) {
           this.jsMobilityType = "Topic";
           this.jsFromStart = true;
-          inherits = this._removeFromArray(inherits, "startingtopic");
+          this.inherit = this._removeFromArray(this.inherit, "startingtopic");
         }
 
         else {
@@ -363,67 +364,67 @@ class QuestObject {
         }
 
 
-        if (inherits.includes("surface")) {
+        if (this.inherit.includes("surface")) {
           this.jsContainerType = "Surface";
-          inherits = this._removeFromArray(inherits, "surface");
+          this.inherit = this._removeFromArray(this.inherit, "surface");
         }
 
-        else if (inherits.includes("container_open")) {
+        else if (this.inherit.includes("container_open")) {
           this.jsContainerType = "Container";
           this.jsContainerClosed = false;
-          inherits = this._removeFromArray(inherits, "container_open");
+          this.inherit = this._removeFromArray(this.inherit, "container_open");
         }
 
-        else if (inherits.includes("container_closed")) {
+        else if (this.inherit.includes("container_closed")) {
           this.jsContainerType = "Container";
           this.jsContainerClosed = true;
-          inherits = this._removeFromArray(inherits, "container_closed");
+          this.inherit = this._removeFromArray(this.inherit, "container_closed");
         }
 
-        else if (inherits.includes("container_limited")) {
+        else if (this.inherit.includes("container_limited")) {
           this.jsContainerType = "Container";
           this.jsContainerClosed = false;
-          inherits = this._removeFromArray(inherits, "container_limited");
+          this.inherit = this._removeFromArray(this.inherit, "container_limited");
           this.jsConversionNotes.push("Currently editor may not translate limited container properly");
         }
 
-        else if (inherits.includes("openable")) {
+        else if (this.inherit.includes("openable")) {
           this.jsContainerType = "Openable";
-          inherits = this._removeFromArray(inherits, "openable");
+          this.inherit = this._removeFromArray(this.inherit, "openable");
         }
         else {
           this.jsContainerType = "No";
         }
 
-        if (inherits.includes("wearable")) {
+        if (this.inherit.includes("wearable")) {
           this.jsIsWearable = true;
-          inherits = this._removeFromArray(inherits, "wearable");
+          this.inherit = this._removeFromArray(this.inherit, "wearable");
           this.jsMobilityType = "Takeable";
         }
         else {
           this.jsIsWearable = false;
         }
 
-        if (inherits.includes("switchable")) {
+        if (this.inherit.includes("switchable")) {
           this.jsIsSwitchable = true;
-          inherits = this._removeFromArray(inherits, "switchable");
+          this.inherit = this._removeFromArray(this.inherit, "switchable");
         }
         else {
           this.jsIsSwitchable = false;
         }
 
-        if (inherits.includes("edible")) {
+        if (this.inherit.includes("edible")) {
           this.jsIsEdible = true;
-          inherits = this._removeFromArray(inherits, "edible");
+          this.inherit = this._removeFromArray(this.inherit, "edible");
           this.jsMobilityType = "Takeable";
         }
         else {
           this.jsIsEdible = false;
         }
 
-        if (inherits.includes("plural")) {
+        if (this.inherit.includes("plural")) {
           this.jsIsPronoun = "plural";
-          inherits = this._removeFromArray(inherits, "plural");
+          this.inherit = this._removeFromArray(this.inherit, "plural");
         }
       }
       if (this.look) {
@@ -449,7 +450,12 @@ class QuestObject {
         delete this.inventoryverbs;
         delete this.displayverbs;
       }
-      if (inherits.length > 0) this.jsConversionNotes.push("Failed to do anything with these inherited types: " + inherits);
+      if (this.inherit.length > 0) {
+        this.jsConversionNotes.push("Failed to do anything with these inherited types: " + this.inherit)
+      }
+      else {
+        delete this.inherit
+      }
     }
 
     if (this.jsConversionNotes.length === 0) delete this.jsConversionNotes;
@@ -463,9 +469,11 @@ class QuestObject {
   }
 
   _removeFromArray(arr, el) {
-    const index = arr.indexOf(el);
-    if (index > -1) {
-      arr.splice(index, 1);
+    if (arr !== undefined) {
+      const index = arr.indexOf(el);
+      if (index > -1) {
+        arr.splice(index, 1);
+      }
     }
     return arr;
   }
