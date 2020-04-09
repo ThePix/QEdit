@@ -16,12 +16,12 @@ const ALT_COLOURS = {
 }
 
 class QuestObject {
-  constructor (data, version) {
+  constructor (data, version, settings) {
     //this.id = nextId
     //nextId++
     if (data.getAttribute) {
       // Is this an XML element? We could test if the class is Element, but then the unit tests fails
-      this.translateObjectFromXml(data, version);
+      this.translateObjectFromXml(data, version, settings)
     }
     else {
       for (let key in data) {
@@ -207,7 +207,7 @@ class QuestObject {
   // which could be Quest 5 or 6
   // This has been unit tested with Quest 5 XML for an NPM, a wearable and a room
   // For Quest 6 the different types of attributes have been tested
-  translateObjectFromXml(xml, version) {
+  translateObjectFromXml(xml, version, settings) {
 
     const object = {};
     this.jsConversionNotes = [];
@@ -268,6 +268,9 @@ class QuestObject {
           this[node.getAttribute('alias')] = Exit.createFromXml(node);
           //console.log("Exit");
         }
+        else if (name === 'statusattributes') {
+          this.statusattributes = node
+        }
         else if ((value === '' || value === undefined) && node.attributes.length === 0) {
           this[name] = true;
         }
@@ -309,10 +312,22 @@ class QuestObject {
           this.jsMobilityType = "Takeable";
         }
 
-        else if (this.inherit.includes("editor_player")) {
-          this.jsMobilityType = "Player";
-          this.inherit = this._removeFromArray(this.inherit, "editor_player");
-          this.jsPronoun = "secondperson";
+        else if (this.inherit.includes("editor_player") || this.feature_player) {
+          this.jsMobilityType = "Player"
+          this.inherit = this._removeFromArray(this.inherit, "editor_player")
+          this.jsPronoun = "secondperson"
+          delete this.feature_player
+          if (this.statusattributes !== undefined && settings !== undefined) {
+            settings.jsStatusList = settings.jsStatusList || [];
+            const items = this.statusattributes.getElementsByTagName('item');
+            for (let item of items) {
+              var key = item.getElementsByTagName('key')[0].innerHTML;
+        //       var value = item.getElementsByTagName('value')[0].innerHTML;
+              if (!settings.jsStatusList.includes(key)) {
+                settings.jsStatusList.push(key);
+              }
+            }
+          }
         }
 
         else if (this.inherit.includes("namedfemale")) {
@@ -456,6 +471,7 @@ class QuestObject {
       else {
         delete this.inherit
       }
+      delete this.statusattributes
     }
 
     if (this.jsConversionNotes.length === 0) delete this.jsConversionNotes;
@@ -532,7 +548,9 @@ class QuestObject {
       for (let item of items) {
         var key = item.getElementsByTagName('key')[0].innerHTML;
 //        var value = item.getElementsByTagName('value')[0].innerHTML;
-        this.jsStatusList.push(key);
+        if (!this.jsStatusList.includes(key)) {
+          this.jsStatusList.push(key);
+        }
       }
     }
 
