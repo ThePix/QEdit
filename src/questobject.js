@@ -476,6 +476,7 @@ class QuestObject {
         delete this.inherit
       }
       delete this.statusattributes
+      delete this.feature_container
 
       if (this.activeconversations) {
         settings.jsnoTalkTo = false
