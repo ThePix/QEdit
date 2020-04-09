@@ -196,7 +196,7 @@ export default class App extends React.Component {
     }
   }
 
-  saveXmlAs() {
+  async saveXmlAs() {
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
@@ -208,7 +208,7 @@ export default class App extends React.Component {
     const filename = dialog.showSaveDialog(dialogOptions)
     console.log(filename)
     if (filename) {
-      const settingsIndex = this.state.objects.findIndex(el => el.jsObjType === 'settings')
+      const settingsIndex = await this.state.objects.findIndex(el => el.jsObjType === 'settings')
       this.state.objects[settingsIndex].jsFilename = filename
       this.setState({
         objects:this.state.objects,
