@@ -216,7 +216,7 @@ class QuestObject {
     if (/ /.test(this.name)) {
       this.jsConversionNotes.push("Object name had spaces removed; update any references (locations have been updates automatically); check no naming collision.");
       this.jsOldName = this.name;
-      this.name = this.name.replace(/ /, "_");
+      this.name = this.name.replace(/\s/g, "_");
     }
 
 
