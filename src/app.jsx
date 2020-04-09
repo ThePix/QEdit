@@ -125,10 +125,10 @@ export default class App extends React.Component {
   //---------------------------
   //--      FILE  SYSTEM    ---
 
-  newGame() {
+  async newGame() {
     const response = dialog.showMessageBox(newOptions)
     if (response === 0) {
-      const objects = this.fs.readFile(__dirname + '/../blank.asl6', {})
+      const objects = await this.fs.readFile(__dirname + '/../blank.asl6', {})
       this.setState({
         objects:objects,
         currentObjectName: objects[0].name,
