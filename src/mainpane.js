@@ -20,9 +20,9 @@ export class MainPane extends React.Component {
   constructor(props) {
     super(props);
   }
-  
-  
-  
+
+
+
   render() {
 
     if (this.props.object) {
@@ -35,38 +35,38 @@ export class MainPane extends React.Component {
       //const pStyle = {padding:3};
       if (this.props.warning) pStyle.backgroundColor = 'yellow'
       const controls = control.tabControls;
-      
+
       // Will later need to check if this object has the current tab and set tab to zero if not
       const deleteLink = (this.props.object.jsObjType === 'settings' ? '' : <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a>)
-      
-      const title = (this.props.object.jsObjType === 'settings' ? 
-        <b><i>Editing Settings</i></b> : 
+
+      const title = (this.props.object.jsObjType === 'settings' ?
+        <b><i>Editing Settings</i></b> :
         <b><i>Editing {this.props.object.jsObjType === 'room' ? "Location" : "Item"}:</i> <span style={{color:this.props.object.jsColour}}>{this.props.object.name}</span></b>
       )
-      
+
       return (<div id="mainpane">
         <p style={pStyle}>
           <b>{title}</b>
           {deleteLink}
         </p>
-        
+
           <Tabs object={this.props.object} controls={this.props.controls} tab={tab} selectTab={this.props.selectTab}/>
-          
-          <TabComp 
+
+          <TabComp
             tab={tab}
-            object={this.props.object} 
-            removefromlist={this.props.removefromlist} 
-            addtolist={this.props.addtolist} 
-            handleChange={this.props.handleChange} 
+            object={this.props.object}
+            removefromlist={this.props.removefromlist}
+            addtolist={this.props.addtolist}
+            handleChange={this.props.handleChange}
             handleIntChange={this.props.handleIntChange}
             handleListChange={this.props.handleListChange}
             handleCBChange={this.props.handleCBChange}
             handleIdChange={this.props.handleIdChange}
             removeConversionNotes={this.props.removeConversionNotes}
-            controls={controls} 
-            objects={this.props.objects} 
-            updateExit={this.props.updateExit} 
-            showObject={this.props.showObject} 
+            controls={controls}
+            objects={this.props.objects}
+            updateExit={this.props.updateExit}
+            showObject={this.props.showObject}
             options={this.props.options}/>
 
       </div>);
@@ -92,7 +92,7 @@ const Tabs = (props) => {
   }
 
   return  <div>
-    {controls.map((item, i) => 
+    {controls.map((item, i) =>
         <a onClick={() => props.selectTab(item.tabName)} key={i} disabled={props.tab === item.tabName} className ="tabButton">{item.tabName}</a>
     )}
   </div>;
@@ -113,18 +113,18 @@ const TabComp = (props) => {
     return (
       <div className="tabContent">
       <table><tbody>
-        {controls.map((item, i) => <InputComp 
-          removefromlist={props.removefromlist} 
-          addtolist={props.addtolist} 
+        {controls.map((item, i) => <InputComp
+          removefromlist={props.removefromlist}
+          addtolist={props.addtolist}
           handleChange={props.handleChange}
           handleIntChange={props.handleIntChange}
           handleListChange={props.handleListChange}
           handleCBChange={props.handleCBChange}
           handleIdChange={props.handleIdChange}
           removeConversionNotes={props.removeConversionNotes}
-          input={item} 
-          key={i} 
-          objects={props.objects} 
+          input={item}
+          key={i}
+          objects={props.objects}
           object={props.object}/>
       )}
       </tbody></table>
@@ -186,7 +186,7 @@ const InputComp = (props) => {
     );
   }
   else if (props.input.type === "flag") {
-    return (  
+    return (
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td><TickComp name={props.input.name} options={Object.keys(lang.pronouns)} tooltip={props.input.tooltip} usingDefault={usingDefault} handleChange={props.handleCBChange} value={value}/></td>
@@ -194,7 +194,7 @@ const InputComp = (props) => {
     )
   }
   else if (props.input.type === "todolist") {
-    return (  
+    return (
       <tr className="form-group">
         <td colSpan="2">
         <br/>
@@ -212,7 +212,7 @@ const InputComp = (props) => {
     )
   }
   else if (props.input.type === "textarea") {
-    return (  
+    return (
       <tr className="form-group">
         <td colSpan="2"><span className="fieldName">{props.input.display}</span>
         <br/>
@@ -230,7 +230,7 @@ const InputComp = (props) => {
     )
   }
   else if (props.input.type === "title") {
-    return (  
+    return (
       <tr className="form-group">
         <td colSpan="2">
           <span className="fieldTitle">{props.input.display}</span>
@@ -249,7 +249,7 @@ const InputComp = (props) => {
     )
   }
   else if (props.input.type === "stringlist") {
-    return (  
+    return (
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td>
@@ -258,7 +258,7 @@ const InputComp = (props) => {
             cols="400" rows="6"
             id={props.input.name}
             name={props.input.name}
-            data-usingdefault={usingDefault} 
+            data-usingdefault={usingDefault}
             value={value.join('\n')}
             data-type="stringlist"
             title={props.input.tooltip + " Each entry in the list should be on a line on its own; press Enter to go to the next entry."}
@@ -269,15 +269,15 @@ const InputComp = (props) => {
     )
   }
   else if (props.input.type === "readonly") {
-    return (  
+    return (
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td><span className="fieldName" title={props.input.tooltip}>{value}</span></td>
       </tr>
     )
   }
-  else if (props.input.type === "text" || props.input.type === "string") {
-    return (  
+  else if (props.input.type === "text" || props.input.type === "string" || props.input.type === "regex") {
+    return (
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td><input
@@ -286,7 +286,7 @@ const InputComp = (props) => {
           name={props.input.name}
           type={props.input.type}
           title={props.input.tooltip}
-          data-usingdefault={usingDefault} 
+          data-usingdefault={usingDefault}
           value={value}
           onChange={props.handleChange}
         /></td>
@@ -294,7 +294,7 @@ const InputComp = (props) => {
     )
   }
   else if (props.input.type === "id") {
-    return (  
+    return (
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td><input
@@ -303,7 +303,7 @@ const InputComp = (props) => {
           name={props.input.name}
           type={props.input.type}
           title={props.input.tooltip}
-          data-usingdefault={usingDefault} 
+          data-usingdefault={usingDefault}
           value={value}
           onChange={props.handleIdChange}
         /></td>
@@ -311,7 +311,7 @@ const InputComp = (props) => {
     )
   }
   else if (props.input.type === "longtext" || props.input.type === "longstring") {
-    return (  
+    return (
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td><input
@@ -321,7 +321,7 @@ const InputComp = (props) => {
           type={props.input.type}
           size="120"
           title={props.input.tooltip}
-          data-usingdefault={usingDefault} 
+          data-usingdefault={usingDefault}
           value={value}
           onChange={props.handleChange}
         /></td>
@@ -336,7 +336,7 @@ const InputComp = (props) => {
       console.log("Warning: Not an integer - " + props.input.name)
       console.log(value)
     }
-    return (  
+    return (
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
         <td><input
@@ -347,7 +347,7 @@ const InputComp = (props) => {
           size="2"
           min={props.input.min}
           max={props.input.max}
-          data-usingdefault={usingDefault} 
+          data-usingdefault={usingDefault}
           title={props.input.tooltip}
           value={value}
           onChange={props.handleIntChange}
@@ -360,5 +360,3 @@ const InputComp = (props) => {
     return null;
   }
 }
-
-

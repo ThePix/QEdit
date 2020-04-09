@@ -47,7 +47,7 @@ class QuestObject {
   }
 
   static create(state, objectType) {
-    const newObject = new QuestObject({
+    var newObject = new QuestObject({
       name:"_new_" + objectType,
       jsObjType:objectType,
       jsMobilityType:'Immobile',
@@ -102,6 +102,10 @@ class QuestObject {
       newObject.loc = currentObject.name
       console.log("Set location to: " + currentObject.name);
     }
+    if (newObject.jsObjType === 'command') {
+      newObject.jsIsCommand = true
+    }
+
     return newObject
   }
 
@@ -280,9 +284,18 @@ class QuestObject {
     // elements, which correspond approximately to templates
     if (version < 600) {
       let inherits = this._getDirectChildAttributes(xml, "inherit", 'name');
-      //console.log(inherits);
+      if (xml.tagName === 'command') {
+        this.jsObjType = 'command';
+        this.jsIsCommand = true;
+        if (this.pattern !== null) {
+          this.regex = new RegExp(this.pattern);
+          delete this.pattern;
+        }
+      }
+      else {
+        this.jsObjType = inherits.includes("editor_room") ? 'room' : 'item';
+      }
 
-      this.jsObjType = inherits.includes("editor_room") ? 'room' : 'item'
       inherits = this._removeFromArray(inherits, "editor_room");
       inherits = this._removeFromArray(inherits, "editor_object");
 
@@ -609,7 +622,7 @@ class QuestObject {
   // Converts one item to JavaScript code
   // Unit tested
   toJs() {
-    if (this.jsObjType === 'stub' || this.jsObjType === 'settings') return '';
+    if (this.jsObjType !== 'room' && this.jsObjType !== 'item') return '';
 
     let str = "\n\n\n";
 
@@ -768,6 +781,8 @@ class QuestObject {
   // Converts one item to code.js settings
   // This will be functions and commands
   toCode() {
+    if (this.jsObjType !== 'command') return '';
+
     //TODO!!!
     return '';
   }

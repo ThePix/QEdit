@@ -48,11 +48,16 @@ export class FileStore {
       console.log("XML Error: " + err.innerHTML)
     }
 
-    const arr = xmlDoc.getElementsByTagName("object");
+    var arr = xmlDoc.getElementsByTagName("object");
     for (let xml of arr) {
       objects.push(new QuestObject(xml, version));
     }
 
+    arr = xmlDoc.getElementsByTagName("command");
+    for (let xml of arr) {
+      objects.push(new QuestObject(xml, version));
+    }
+    
     // If we imported from Quest 5, object names will have been modified
     // so there is a chance of a new name collision
     if (version < 600) {
