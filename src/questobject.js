@@ -366,12 +366,16 @@ class QuestObject {
           this.jsMobilityType = "Topic";
           this.jsFromStart = false;
           this.inherit = this._removeFromArray(this.inherit, "topic");
+          this.script = this.exchange
+          delete this.exchange
         }
 
         else if (this.inherit.includes("startingtopic")) {
           this.jsMobilityType = "Topic";
           this.jsFromStart = true;
           this.inherit = this._removeFromArray(this.inherit, "startingtopic");
+          this.script = this.exchange
+          delete this.exchange
         }
 
         else {
@@ -472,6 +476,11 @@ class QuestObject {
         delete this.inherit
       }
       delete this.statusattributes
+
+      if (this.activeconversations) {
+        settings.jsnoTalkTo = false
+        delete this.activeconversations
+      }
     }
 
     if (this.jsConversionNotes.length === 0) delete this.jsConversionNotes;

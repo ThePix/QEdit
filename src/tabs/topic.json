@@ -1,0 +1,40 @@
+[
+  {
+    "action":"tab",
+    "tabName":"Topic",
+    "displayIf":"o.jsMobilityType === 'Topic'",
+    "tabControls":[
+      {
+				"name": "jsFromStart",
+				"type": "flag",
+				"default": false,
+				"display": "Starting topic?",
+				"tooltip": "Topic to be shown when conversation begins."
+			},
+      {
+        "name": "alias",
+        "type": "longstring",
+        "default": "",
+        "display": "Player choice",
+        "tooltip": "The text the player sees."
+      },
+      {
+				"name": "nowshow",
+				"type": "stringlist",
+				"default": [],
+				"display": "Next topics",
+				"tooltip": "List the topics to be shown after this one."
+			},
+      {
+				"name": "script",
+				"type": "scriptstring",
+				"default": "",
+				"display": "The response",
+				"tooltip": "Either a text to be show or a script to run.",
+				"displayIf": "o.jsObjType !== 'room' && o.jsObjType !== 'stub'",
+				"parameters": "",
+				"return": "boolean"
+			}
+    ]
+  }
+]

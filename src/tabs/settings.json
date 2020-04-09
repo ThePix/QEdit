@@ -256,7 +256,7 @@
 				"type": "flag",
 				"default": true,
 				"display": "Disable TALK TO",
-				"tooltip": "Untick to alloqw players to TALK TO a character to see dynamic lists of topics."
+				"tooltip": "Untick to allow players to TALK TO a character to see dynamic lists of topics."
 			},
 			{
 				"name": "noTalkTo",
