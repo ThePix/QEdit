@@ -55,7 +55,10 @@ export class FileStore {
 
     arr = xmlDoc.getElementsByTagName("command")
     for (let xml of arr) {
-      objects.push(new QuestObject(xml, version))
+      const command = new QuestObject(xml, version)
+      if (command !== null) {
+        objects.push(command)
+      }
     }
 
     // If we imported from Quest 5, object names will have been modified

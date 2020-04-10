@@ -289,6 +289,9 @@ class QuestObject {
     if (version < 600) {
       this.inherit = this.inherit|| []
       if (xml.tagName === 'command') {
+        if (this.name === 'help') {
+          return null
+        }
         this.jsObjType = 'command';
         this.jsIsCommand = true;
         if (this.pattern !== null) {
