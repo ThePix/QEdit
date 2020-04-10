@@ -389,27 +389,55 @@ class QuestObject {
         }
 
         else if (this.inherit.includes("container_open")) {
-          this.jsContainerType = "Container";
-          this.jsContainerClosed = false;
-          this.inherit = this._removeFromArray(this.inherit, "container_open");
+          this.jsContainerType = "Container"
+          this.closed = false
+          if (this.isopen !== undefined) {
+            if (!this.isopen) {
+              this.closed = true
+            }
+          }
+          delete this.isopen
+          this.openable = true
+          this.inherit = this._removeFromArray(this.inherit, "container_open")
         }
 
         else if (this.inherit.includes("container_closed")) {
-          this.jsContainerType = "Container";
-          this.jsContainerClosed = true;
-          this.inherit = this._removeFromArray(this.inherit, "container_closed");
+          this.jsContainerType = "Container"
+          this.closed = true
+          if (this.isopen !== undefined) {
+            if (this.isopen) {
+              this.closed = false
+            }
+          }
+          delete this.isopen
+          this.openable = true
+          this.inherit = this._removeFromArray(this.inherit, "container_closed")
         }
 
         else if (this.inherit.includes("container_limited")) {
-          this.jsContainerType = "Container";
-          this.jsContainerClosed = false;
-          this.inherit = this._removeFromArray(this.inherit, "container_limited");
-          this.jsConversionNotes.push("Currently editor may not translate limited container properly");
+          this.jsContainerType = "Container"
+          this.closed = false
+          if (this.isopen !== undefined) {
+            if (!this.isopen) {
+              this.closed = true
+            }
+          }
+          delete this.isopen
+          this.openable = true
+          this.inherit = this._removeFromArray(this.inherit, "container_limited")
+          this.jsConversionNotes.push("Currently editor may not translate limited container properly")
         }
 
         else if (this.inherit.includes("openable")) {
           this.jsContainerType = "Openable";
           this.inherit = this._removeFromArray(this.inherit, "openable");
+          this.closed = true
+          if (this.isopen !== undefined) {
+            if (this.isopen) {
+              this.closed = false
+            }
+          }
+          delete this.isopen
         }
         else {
           this.jsContainerType = "No";
