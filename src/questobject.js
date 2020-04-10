@@ -488,17 +488,17 @@ class QuestObject {
       }
       if (this.description) {
         if (this.desc) {
-          this.jsConversionNotes.push("Cannot convert 'description' to 'desc' as object already has an 'desc' attribute");
+          this.jsConversionNotes.push("Cannot convert 'description' to 'desc' as object already has an 'desc' attribute")
         }
         else {
-          this.desc = this.description;
-          delete this.description;
+          this.desc = this.description
+          delete this.description
         }
       }
       if (this.displayverbs || this.inventoryverbs) {
-        this.jsConversionNotes.push("This object has custom inventory/display verbs set. These are handled very differently in Quest 6, so cannot be converted. You should modify the 'getVerbs' function yourself.");
-        delete this.inventoryverbs;
-        delete this.displayverbs;
+        this.jsConversionNotes.push("This object has custom inventory/display verbs set. These are handled very differently in Quest 6, so cannot be converted. You should modify the 'getVerbs' function yourself.")
+        delete this.inventoryverbs
+        delete this.displayverbs
       }
       if (this.inherit.length > 0) {
         this.jsConversionNotes.push("Failed to do anything with these inherited types: " + this.inherit)
@@ -513,10 +513,15 @@ class QuestObject {
         settings.jsnoTalkTo = false
         delete this.activeconversations
       }
+
+      if (this.visible !== undefined) {
+        this.jsVisible = this.visible
+        delete this.visible
+      }
     }
 
-    if (this.jsConversionNotes.length === 0) delete this.jsConversionNotes;
-    return this;
+    if (this.jsConversionNotes.length === 0) delete this.jsConversionNotes
+    return this
   }
 
   _getDirectChildAttributes(element, tag, attr) {
@@ -690,31 +695,32 @@ class QuestObject {
   // Converts one item to JavaScript code
   // Unit tested
   toJs() {
-    if (this.jsObjType !== 'room' && this.jsObjType !== 'item') return '';
+    if (this.jsObjType !== 'room' && this.jsObjType !== 'item') return ''
 
-    let str = "\n\n\n";
+    let str = "\n\n\n"
 
-    str += "create" + (this.jsObjType === 'room' ? "Room" : "Item") + "(\"" + this.name + "\", ";
+    str += "create" + (this.jsObjType === 'room' ? "Room" : "Item") + "(\"" + this.name + "\", "
 
-    const jsTemplates = [];
-    if (this.jsMobilityType === "Takeable") jsTemplates.push("TAKEABLE()");
-    if (this.jsMobilityType === "Player") jsTemplates.push("PLAYER()");
-    if (this.jsMobilityType === "NPC") jsTemplates.push("NPC()");
-    if (this.jsContainerType === "Container") jsTemplates.push("CONTAINER()");
-    if (this.jsContainerType === "Surface") jsTemplates.push("SURFACE()");
-    if (this.jsContainerType === "Openable") jsTemplates.push("OPENABLE()");
-    if (this.jsIsLockable) jsTemplates.push("LOCKED_WITH()");
-    if (this.jsIsWearable) jsTemplates.push("WEARABLE()");
-    if (this.jsIsEdible) jsTemplates.push("EDIBLE()");
-    if (this.jsIsCountable) jsTemplates.push("COUNTABLE()");
-    if (this.jsIsFurniture) jsTemplates.push("FURNITURE()");
-    if (this.jsIsSwitchable) jsTemplates.push("SWITCHABLE()");
-    if (this.jsIsComponent) jsTemplates.push("COMPONENT()");
-    if (jsTemplates.length > 0) str += jsTemplates.join(', ') + ", ";
+    const jsTemplates = []
+    if (this.jsMobilityType === "Takeable") jsTemplates.push("TAKEABLE()")
+    if (this.jsMobilityType === "Player") jsTemplates.push("PLAYER()")
+    if (this.jsMobilityType === "NPC") jsTemplates.push("NPC()")
+    if (this.jsContainerType === "Container") jsTemplates.push("CONTAINER()")
+    if (this.jsContainerType === "Surface") jsTemplates.push("SURFACE()")
+    if (this.jsContainerType === "Openable") jsTemplates.push("OPENABLE()")
+    if (this.jsIsLockable) jsTemplates.push("LOCKED_WITH()")
+    if (this.jsIsWearable) jsTemplates.push("WEARABLE()")
+    if (this.jsIsEdible) jsTemplates.push("EDIBLE()")
+    if (this.jsIsCountable) jsTemplates.push("COUNTABLE()")
+    if (this.jsIsFurniture) jsTemplates.push("FURNITURE()")
+    if (this.jsIsSwitchable) jsTemplates.push("SWITCHABLE()")
+    if (this.jsIsComponent) jsTemplates.push("COMPONENT()")
+    if (jsTemplates.length > 0) str += jsTemplates.join(', ') + ", "
 
-    str += this.beautifyObject(0);
-    str += ")";
-    return str;
+    str += this.beautifyObject(0)
+
+    str += ")"
+    return str
   }
 
 
@@ -946,44 +952,48 @@ const tabs = function(n) {
 
 
 const beautifyObjectHelper = function(item, indent) {
-  let str = tabs(indent) + "{\n";
-  indent++;
+  let str = tabs(indent) + "{\n"
+  indent++
   for (let key in item) {
-    if (/^js[A-Z]/.test(key) || key === 'name') continue;
+    if (key === 'name') continue
+    if (/^js[A-Z]/.test(key)) {
+      if (key === 'jsVisible' && item[key] === false) str += tabs(indent) + 'isAtLoc:function() { return false; },\n'
+      continue
+    }
     switch (typeof item[key]) {
-      case "boolean": str += tabs(indent) + key + ":" + (item[key] ? "true" : "false") + ","; break;
+      case "boolean": str += tabs(indent) + key + ":" + (item[key] ? "true" : "false") + ","; break
       case "string":
         if (/^function\(/.test(item[key])) {
           str += tabs(indent) + key + ":" + item[key] + ","
         }
         else {
-          str += tabs(indent) + key + ":\"" + item[key] + "\",";
+          str += tabs(indent) + key + ":\"" + item[key] + "\","
         }
-        break;
+        break
       //case "function": str += tabs(indent) + key + ":" + this.beautifyFunction(item[key].toString(), indent); break;
-      case "number": str += tabs(indent) + key + ":" + item[key] + ","; break;
+      case "number": str += tabs(indent) + key + ":" + item[key] + ","; break
       case "object":
         if (item[key] instanceof Exit) {
-          str += item[key].beautify(key, indent); break;
+          str += item[key].beautify(key, indent); break
         }
         else if (item[key] instanceof RegExp) {
-          str += tabs(indent) + key + ":/" + item[key].source + "/,"; break;
+          str += tabs(indent) + key + ":/" + item[key].source + "/,"; break
         }
         else if (item[key] instanceof Array) {
-          str += tabs(indent) + key + ':[' + item[key].map(el => '"' + el + '"').join(', ') + '],'; break;
+          str += tabs(indent) + key + ':[' + item[key].map(el => '"' + el + '"').join(', ') + '],'; break
         }
         else if (item[key].type === 'script') {
-          str += tabs(indent) + key + ":undefined, // WARNING: This script has not been included as it is in ASLX, not JavaScript"; break;
+          str += tabs(indent) + key + ":undefined, // WARNING: This script has not been included as it is in ASLX, not JavaScript"; break
         }
         else if (item[key].type === 'js') {
-          str += tabs(indent) + key + ":function(" + (item[key].params ? item[key].params : '') + ") {\n" + indentLines(item[key].code, indent + 1) + tabs(indent) + "},"; break;
+          str += tabs(indent) + key + ":function(" + (item[key].params ? item[key].params : '') + ") {\n" + indentLines(item[key].code, indent + 1) + tabs(indent) + "},"; break
         }
     }
-    str += "\n";
+    str += "\n"
   }
-  indent--;
-  str += tabs(indent) + "}";
-  return str;
+  indent--
+  str += tabs(indent) + "}"
+  return str
 }
 
 

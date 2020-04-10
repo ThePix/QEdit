@@ -20,6 +20,24 @@
 			},
 
 			{
+				"name": "scenery",
+				"type": "flag",
+				"default": false,
+				"display": "Scenery",
+				"tooltip": "Do not display in room description",
+				"displayIf": "o.jsObjType === 'item' && o.jsMobilityType !== 'Topic' && o.jsMobilityType !== 'Player'"
+			},
+
+			{
+				"name": "jsVisible",
+				"type": "flag",
+				"default": true,
+				"display": "Visible",
+				"tooltip": "The object is never displayed",
+				"displayIf": "o.jsObjType === 'item' && o.jsMobilityType !== 'Topic' && o.jsMobilityType !== 'Player'"
+			},
+
+			{
 				"name": "jsPronoun",
 				"type": "selectpronouns",
 				"default": "thirdperson",
