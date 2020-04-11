@@ -477,7 +477,7 @@ class QuestObject {
         }
 
         if (this.inherit.includes("plural")) {
-          this.jsIsPronoun = "plural";
+          this.jsPronoun = "plural";
           this.inherit = this._removeFromArray(this.inherit, "plural");
         }
       }
