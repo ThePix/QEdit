@@ -369,9 +369,15 @@ class QuestObject {
           this.jsPronoun = "male";
         }
 
-        else if (this.inherit.includes("topic")) {
-          this.jsMobilityType = "Topic";
-          this.jsFromStart = false;
+        else if (this.inherit.includes("topic") || this.inherit.includes("startingtopic")) {
+          this.jsMobilityType = "Topic"
+          if (this.inherit.includes("startingtopic")) {
+            this.jsFromStart = true
+          }
+          else {
+            this.jsFromStart = false
+          }
+          this.inherit = this._removeFromArray(this.inherit, "startingtopic");
           this.inherit = this._removeFromArray(this.inherit, "topic");
           if (this.exchange && this.talk) {
             const exchangecode = convertValue('msg("' + this.exchange + '")\n', 'script')
@@ -386,31 +392,13 @@ class QuestObject {
           }
           delete this.exchange
           delete this.talk
-        }
-
-        else if (this.inherit.includes("startingtopic")) {
-          this.jsMobilityType = "Topic";
-          this.jsFromStart = true;
-          this.inherit = this._removeFromArray(this.inherit, "startingtopic");
-          if (this.exchange && this.talk) {
-            const exchangecode = convertValue('msg("' + this.exchange + '")\n', 'script')
-            this.jsTopicScript = this.talk
-            this.jsTopicScript.code = exchangecode + this.jsTopicScript.code
-          }
-          else if (this.exchange) {
-            this.jsTopicScript = this.exchange
-          }
-          else if (this.talk) {
-            this.jsTopicScript = {type:'script', code:convertValue(this.talk, 'script')}
-          }
-          delete this.exchange
-          delete this.talk
+          if (this.nowshow) this.nowshow = this.nowshow.map(el => el.replace(/\s/g, "_"))
+          if (this.nowhide) this.nowhide = this.nowhide.map(el => el.replace(/\s/g, "_"))
         }
 
         else {
           this.jsMobilityType = "Immobile";
         }
-
 
         if (this.inherit.includes("surface")) {
           this.jsContainerType = "Surface";

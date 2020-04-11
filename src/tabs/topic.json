@@ -26,6 +26,13 @@
 				"tooltip": "List the topics to be shown after this one."
 			},
       {
+				"name": "nowhide",
+				"type": "stringlist",
+				"default": [],
+				"display": "Exclusive topics",
+				"tooltip": "Remove the topics after showing this one."
+			},
+      {
 				"name": "jsTopicScript",
 				"type": "scriptstring",
 				"default": "",
