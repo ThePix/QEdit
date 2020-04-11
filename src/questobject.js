@@ -451,12 +451,17 @@ class QuestObject {
         }
 
         if (this.inherit.includes("wearable")) {
-          this.jsIsWearable = true;
-          this.inherit = this._removeFromArray(this.inherit, "wearable");
-          this.jsMobilityType = "Takeable";
+          this.jsIsWearable = true
+          this.inherit = this._removeFromArray(this.inherit, "wearable")
+          this.jsMobilityType = "Takeable"
+          this.jsWear_layer = this.wear_layer
+          this.jsWear_slots = this.wear_slots
+          delete this.wear_layer
+          delete this.wear_slots
+          delete this.feature_wearable
         }
         else {
-          this.jsIsWearable = false;
+          this.jsIsWearable = false
         }
 
         if (this.inherit.includes("switchable")) {
@@ -713,7 +718,12 @@ class QuestObject {
     if (this.jsContainerType === "Surface") jsTemplates.push("SURFACE()")
     if (this.jsContainerType === "Openable") jsTemplates.push("OPENABLE()")
     if (this.jsIsLockable) jsTemplates.push("LOCKED_WITH()")
-    if (this.jsIsWearable) jsTemplates.push("WEARABLE()")
+    if (this.jsIsWearable) {
+      const layer = this.jsWear_layer ? this.jsWear_layer : 1
+      const slots = this.jsWear_slots ? beautifyArray(this.jsWear_slots) : '[]'
+      jsTemplates.push("WEARABLE(" + layer + ", " + slots + ")")
+
+    }
     if (this.jsIsEdible) jsTemplates.push("EDIBLE()")
     if (this.jsIsCountable) jsTemplates.push("COUNTABLE()")
     if (this.jsIsFurniture) jsTemplates.push("FURNITURE()")
@@ -984,7 +994,7 @@ const beautifyObjectHelper = function(item, indent) {
           str += tabs(indent) + key + ":/" + item[key].source + "/,"; break
         }
         else if (item[key] instanceof Array) {
-          str += tabs(indent) + key + ':[' + item[key].map(el => '"' + el + '"').join(', ') + '],'; break
+          str += tabs(indent) + key + ':' + beautifyArray(item[key]) + ','; break
         }
         else if (item[key].type === 'script') {
           str += tabs(indent) + key + ":undefined, // WARNING: This script has not been included as it is in ASLX, not JavaScript"; break
@@ -1004,6 +1014,10 @@ const beautifyObjectHelper = function(item, indent) {
 const indentLines = function(s, indent) {
   //console.log(s)
   return tabs(indent) + s.trim().replace(/\r?\n/g, '\n' + tabs(indent)) + "\n"
+}
+
+const beautifyArray = function(arr) {
+  return('[' + arr.map(el => '"' + el + '"').join(', ') + ']')
 }
 
 
