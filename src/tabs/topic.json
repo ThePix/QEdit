@@ -26,12 +26,11 @@
 				"tooltip": "List the topics to be shown after this one."
 			},
       {
-				"name": "script",
+				"name": "jsTopicScript",
 				"type": "scriptstring",
 				"default": "",
 				"display": "The response",
 				"tooltip": "Either a text to be show or a script to run.",
-				"displayIf": "o.jsObjType !== 'room' && o.jsObjType !== 'stub'",
 				"parameters": "",
 				"return": "boolean"
 			}

@@ -373,16 +373,38 @@ class QuestObject {
           this.jsMobilityType = "Topic";
           this.jsFromStart = false;
           this.inherit = this._removeFromArray(this.inherit, "topic");
-          this.script = this.exchange
+          if (this.exchange && this.talk) {
+            const exchangecode = convertValue('msg("' + this.exchange + '")\n', 'script')
+            this.jsTopicScript = this.talk
+            this.jsTopicScript.code = exchangecode + this.jsTopicScript.code
+          }
+          else if (this.exchange) {
+            this.jsTopicScript = this.exchange
+          }
+          else if (this.talk) {
+            this.jsTopicScript = this.talk
+          }
           delete this.exchange
+          delete this.talk
         }
 
         else if (this.inherit.includes("startingtopic")) {
           this.jsMobilityType = "Topic";
           this.jsFromStart = true;
           this.inherit = this._removeFromArray(this.inherit, "startingtopic");
-          this.script = this.exchange
+          if (this.exchange && this.talk) {
+            const exchangecode = convertValue('msg("' + this.exchange + '")\n', 'script')
+            this.jsTopicScript = this.talk
+            this.jsTopicScript.code = exchangecode + this.jsTopicScript.code
+          }
+          else if (this.exchange) {
+            this.jsTopicScript = this.exchange
+          }
+          else if (this.talk) {
+            this.jsTopicScript = {type:'script', code:convertValue(this.talk, 'script')}
+          }
           delete this.exchange
+          delete this.talk
         }
 
         else {
@@ -977,6 +999,7 @@ const beautifyObjectHelper = function(item, indent) {
     if (key === 'name') continue
     if (/^js[A-Z]/.test(key)) {
       if (key === 'jsVisible' && item[key] === false) str += tabs(indent) + 'isAtLoc:function() { return false; },\n'
+      if (key === 'jsTopicScript') str += tabs(indent) + 'script' + beautifyScript(item[key])
       continue
     }
     switch (typeof item[key]) {
@@ -1002,7 +1025,7 @@ const beautifyObjectHelper = function(item, indent) {
           str += tabs(indent) + key + ':' + beautifyArray(item[key]) + ','; break
         }
         else if (item[key].type === 'script') {
-          str += tabs(indent) + key + ":undefined, // WARNING: This script has not been included as it is in ASLX, not JavaScript"; break
+          str += tabs(indent) + key + beautifyScript(item[key]) + ','; break
         }
         else if (item[key].type === 'js') {
           str += tabs(indent) + key + ":function(" + (item[key].params ? item[key].params : '') + ") {\n" + indentLines(item[key].code, indent + 1) + tabs(indent) + "},"; break
@@ -1022,7 +1045,11 @@ const indentLines = function(s, indent) {
 }
 
 const beautifyArray = function(arr) {
-  return('[' + arr.map(el => '"' + el + '"').join(', ') + ']')
+  return ('[' + arr.map(el => '"' + el + '"').join(', ') + ']')
+}
+
+const beautifyScript = function(script) {
+  return (":undefined, // WARNING: This script has not been included as it is in ASLX, not JavaScript")
 }
 
 
