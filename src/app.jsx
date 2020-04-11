@@ -125,10 +125,10 @@ export default class App extends React.Component {
   //---------------------------
   //--      FILE  SYSTEM    ---
 
-  async newGame() {
+  newGame() {
     const response = dialog.showMessageBox(newOptions)
     if (response === 0) {
-      const objects = await this.fs.readFile(__dirname + '/../blank.asl6', {})
+      const objects = this.fs.readFile(__dirname + '/../blank.asl6', {})
       this.setState({
         objects:objects,
         currentObjectName: objects[0].name,
@@ -140,7 +140,7 @@ export default class App extends React.Component {
     }
   }
 
-  async openXml() {
+  openXml() {
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
@@ -155,7 +155,7 @@ export default class App extends React.Component {
     if (result) {
       const settings = this.createDefaultSettings();
       settings.jsFilename = result[0];
-      const objects = await this.fs.readFile(result[0], settings)
+      const objects = this.fs.readFile(result[0], settings)
       this.setState({
         objects: objects,
         currentObjectName: objects[0].name,
@@ -196,7 +196,7 @@ export default class App extends React.Component {
     }
   }
 
-  async saveXmlAs() {
+  saveXmlAs() {
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
@@ -208,7 +208,7 @@ export default class App extends React.Component {
     const filename = dialog.showSaveDialog(dialogOptions)
     console.log(filename)
     if (filename) {
-      const settingsIndex = await this.state.objects.findIndex(el => el.jsObjType === 'settings')
+      const settingsIndex = this.state.objects.findIndex(el => el.jsObjType === 'settings')
       this.state.objects[settingsIndex].jsFilename = filename
       this.setState({
         objects:this.state.objects,
