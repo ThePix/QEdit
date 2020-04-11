@@ -372,8 +372,18 @@
 			"type": "textarea",
 			"default": "",
 			"display": "Introduction",
-			"tooltip": "This text will appear when you game starts. Use it to introduce the game to the player, setting up the premise, hinting at the objective, or whatever."
-		}]
+			"tooltip": "This text will appear when your game starts. Use it to introduce the game to the player, setting up the premise, hinting at the objective, or whatever."
+		},
+		{
+			"name": "setup",
+			"type": "script",
+			"default": "",
+			"display": "Setup",
+			"tooltip": "This script will run when your game starts. Use it to setup the game.",
+			"parameters": "",
+			"return": "boolean"
+		}
+		]
 	},
 
 	{

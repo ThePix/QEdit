@@ -639,11 +639,16 @@ class QuestObject {
 
     const showmoney = gameObject.getElementsByTagName('showmoney')
     if (showmoney.length > 0) {
-      const value = showmoney.innerHTML;
+      const value = showmoney[0].innerHTML;
       if (value === 'true' || value === '' || value === undefined) {
         this.jsStatusList = this.jsStatusList || [];
         this.jsStatusList.push('money');
       }
+    }
+
+    const start = gameObject.getElementsByTagName('start')
+    if (start.length > 0) {
+      this.setup = {type:'script', code:convertValue(start[0].innerHTML, 'script')}
     }
   }
 
