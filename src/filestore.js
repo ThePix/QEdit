@@ -72,9 +72,13 @@ export class FileStore {
   getElementsOfType(xmlDoc, objects, version, settings, type) {
     const arr = xmlDoc.getElementsByTagName(type)
     for (let xml of arr) {
-      const obj = new QuestObject(xml, version, settings)
-      if (obj !== null) {
+      try {
+        const obj = new QuestObject(xml, version, settings)
         objects.push(obj)
+      } catch (e) {
+        if (e !== 'NullObject') {
+          console.error(e)
+        }
       }
     }
   }
