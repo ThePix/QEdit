@@ -38,6 +38,15 @@
 			},
 
 			{
+				"name": "properName",
+				"type": "flag",
+				"default": false,
+				"display": "Proper name",
+				"tooltip": "Prevents 'a' or 'the' getting prepended",
+				"displayIf": "o.jsObjType === 'room' || o.jsObjType === 'item'"
+			},
+
+			{
 				"name": "jsPronoun",
 				"type": "selectpronouns",
 				"default": "thirdperson",

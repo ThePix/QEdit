@@ -527,6 +527,11 @@ class QuestObject {
         this.jsVisible = this.visible
         delete this.visible
       }
+
+      if (this.usedefaultprefix !== undefined) {
+        this.properName = !this.usedefaultprefix
+        delete this.usedefaultprefix
+      }
     }
 
     if (this.jsConversionNotes.length === 0) delete this.jsConversionNotes
