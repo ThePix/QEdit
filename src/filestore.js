@@ -48,18 +48,9 @@ export class FileStore {
       console.log("XML Error: " + err.innerHTML)
     }
 
-    var arr = xmlDoc.getElementsByTagName("object");
-    for (let xml of arr) {
-      objects.push(new QuestObject(xml, version, settings))
-    }
-
-    arr = xmlDoc.getElementsByTagName("command")
-    for (let xml of arr) {
-      const command = new QuestObject(xml, version)
-      if (command !== null) {
-        objects.push(command)
-      }
-    }
+    this.getElementsOfType(xmlDoc, objects, version, settings, "object")
+    this.getElementsOfType(xmlDoc, objects, version, settings, "command")
+    this.getElementsOfType(xmlDoc, objects, version, settings, "function")
 
     // If we imported from Quest 5, object names will have been modified
     // so there is a chance of a new name collision
@@ -76,6 +67,16 @@ export class FileStore {
 
     console.log("Loaded " + objects.length + " objects (including setting)");
     return objects;
+  }
+
+  getElementsOfType(xmlDoc, objects, version, settings, type) {
+    const arr = xmlDoc.getElementsByTagName(type)
+    for (let xml of arr) {
+      const obj = new QuestObject(xml, version, settings)
+      if (obj !== null) {
+        objects.push(obj)
+      }
+    }
   }
 
 

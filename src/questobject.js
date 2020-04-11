@@ -59,7 +59,7 @@ class QuestObject {
     let currentObject = QuestObject.getCurrent(state)
     // If the current object is the settings, OR if the current object is a room and new rooms go top,
     // then loc is undefined, otherwise, do this:
-    if (currentObject.jsObjType === 'settings' || newObject.jsObjType === 'junction' || newObject.jsObjType === 'command') {
+    if (currentObject.jsObjType === 'settings' || newObject.jsObjType === 'junction' || newObject.jsObjType === 'command' || newObject.jsObjType === 'function') {
       currentObject = undefined
     }
     else {
@@ -104,6 +104,10 @@ class QuestObject {
     }
     if (newObject.jsObjType === 'command') {
       newObject.jsIsCommand = true
+    }
+
+    if (newObject.jsObjType === 'function') {
+      newObject.jsIsFunction = true
     }
 
     return newObject
@@ -296,15 +300,24 @@ class QuestObject {
         if (this.name === 'help') {
           return null
         }
-        this.jsObjType = 'command';
-        this.jsIsCommand = true;
+        this.jsObjType = 'command'
+        this.jsIsCommand = true
         if (this.pattern !== null) {
-          this.regex = new RegExp(this.pattern);
-          delete this.pattern;
+          this.regex = new RegExp(this.pattern)
+          delete this.pattern
+        }
+      }
+      else if (xml.tagName === 'function') {
+        this.jsObjType = 'function'
+        this.jsIsFunction = true
+        const parameters = xml.getAttribute('parameters')
+        if (parameters) {
+          this.parameters = parameters.split(',')
+          this.parameters = this.parameters.map(el => el.replace(/^\s+|\s+$/g, ''))
         }
       }
       else {
-        this.jsObjType = this.inherit.includes("editor_room") ? 'room' : 'item';
+        this.jsObjType = this.inherit.includes("editor_room") ? 'room' : 'item'
       }
 
       this.inherit = this._removeFromArray(this.inherit, "editor_room");
