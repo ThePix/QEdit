@@ -261,11 +261,15 @@ class QuestObject {
         }
         else if (['script', 'js', 'blockly'].includes(attType)) {
           //console.log("Code " + attType);
-          //console.log(value);
-          this[name] = xmlToDict(node, {type:attType})
+          if (attType === 'script' && node.innerHTML) {
+            this[name] = {type:attType, code:convertValue(node.innerHTML, attType)}
+          }
+          else {
+            this[name] = xmlToDict(node, {type:attType})
+          }
         }
         else if (name === 'exit') {
-          this[node.getAttribute('alias')] = Exit.createFromXml(node);
+          this[node.getAttribute('alias')] = Exit.createFromXml(node)
           //console.log("Exit");
         }
         else if (name === 'statusattributes') {
