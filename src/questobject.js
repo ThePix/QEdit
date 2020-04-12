@@ -215,8 +215,8 @@ class QuestObject {
   // For Quest 6 the different types of attributes have been tested
   translateObjectFromXml(xml, version, settings) {
 
-    const object = {};
-    this.jsConversionNotes = [];
+    const object = {}
+    this.jsConversionNotes = []
 
     this.name = xml.getAttribute('name');
     if (/ /.test(this.name)) {
@@ -238,9 +238,9 @@ class QuestObject {
     // Attributes
     for (let node of  xml.childNodes) {
       if (node.nodeType === 1 && node.tagName !== 'object') {
-        const attType = node.getAttribute('type');
-        const value = node.innerHTML;
-        const name = (node.tagName === "attr" ? node.getAttribute('name') : node.tagName);
+        const attType = node.getAttribute('type')
+        const value = node.innerHTML
+        const name = (node.tagName === "attr" ? node.getAttribute('name') : node.tagName)
 
         if (name === "inherit") {
           this.inherit = this.inherit || []
@@ -635,6 +635,7 @@ class QuestObject {
           this.jsStatusList.push(key);
         }
       }
+      gameObject.removeChild(statusattributes[0])
     }
 
     const showmoney = gameObject.getElementsByTagName('showmoney')
@@ -644,11 +645,22 @@ class QuestObject {
         this.jsStatusList = this.jsStatusList || [];
         this.jsStatusList.push('money');
       }
+      gameObject.removeChild(showmoney[0])
     }
 
     const start = gameObject.getElementsByTagName('start')
     if (start.length > 0) {
       this.setup = {type:'script', code:convertValue(start[0].innerHTML, 'script')}
+      gameObject.removeChild(start[0])
+    }
+
+    for (let node of gameObject.children) {
+      const attType = node.getAttribute('type')
+      if (attType === 'int' || attType === 'boolean' || attType === 'string' || attType === 'stringist' || attType === 'stringdictionary') {
+        const name = (node.tagName === "attr" ? node.getAttribute('name') : node.tagName);
+        this.jsConversionNotes = this.jsConversionNotes || []
+        this.jsConversionNotes.push("Attribute '" + name + "' set on game object has not been converted ")
+      }
     }
   }
 
@@ -668,6 +680,7 @@ class QuestObject {
     else {
       this[attName] = els[0].innerHTML;
     }
+    gameObject.removeChild(els[0])
   }
 
 
