@@ -2,25 +2,25 @@
   {
     "action":"tab",
     "tabName":"Switchable",
-    "displayIf":"o.jsIsSwitchable", 
+    "displayIf":"o.jsIsSwitchable",
     "tabControls":[
-      { 
-        "name":"switchedon", 
-        "type":"flag",   
-        "default":false, 
-        "display":"Start turned on?",  
+      {
+        "name":"switchedon",
+        "type":"flag",
+        "default":false,
+        "display":"Start turned on?",
         "tooltip":"As it says."
       }
     ]
   },
-  { 
+  {
     "action":"extend",
     "tabName":"Home",
     "name":"jsIsSwitchable",
     "type":"flag",
     "default":false,
-    "display":"Switchable?",  
+    "display":"Switchable?",
     "tooltip":"Can this item be turned on and off.",
-    "displayIf":"o.jsObjType !== 'room' && o.jsObjType !== 'stub'"
+    "displayIf":"o.jsObjType === 'item'"
   }
 ]

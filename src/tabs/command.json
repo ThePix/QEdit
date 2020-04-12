@@ -2,7 +2,7 @@
   {
     "action":"tab",
     "tabName":"Command",
-    "displayIf":"o.jsIsCommand",
+    "displayIf":"o.jsObjType === 'command'",
     "tabControls":[
       {
         "name":"regex",

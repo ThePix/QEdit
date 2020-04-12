@@ -2,8 +2,8 @@
   {
     "action":"tab",
     "tabName":"Function",
-    "displayIf":"o.jsIsFunction",
-    "tabControls":[      
+    "displayIf":"o.jsObjType === 'function'",
+    "tabControls":[
       {
         "name":"parameters",
         "type":"stringlist",

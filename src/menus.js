@@ -59,6 +59,7 @@ export class Menus {
           { type: 'separator' },
           { label: 'Add function', accelerator: 'Alt+CmdOrCtrl+F',},
           { label: 'Add command', accelerator: 'Alt+CmdOrCtrl+C',},
+          { label: 'Add template', accelerator: 'Alt+CmdOrCtrl+T',},
         ]
       },
       {

@@ -175,7 +175,7 @@ const InputComp = (props) => {
     );
   }
   else if (props.input.type === "otherobjects") {
-    const options = ["---"].concat(props.objects.filter(el => (el.jsObjType !== 'settings' && el !== props.object)).map((o, i) => o.name));
+    const options = ["---"].concat(props.objects.filter(el => (el.jsObjType !== 'settings' && el.jsObjType !== 'function' && el.jsObjType !== 'command' && el.jsObjType !== 'template' && el !== props.object)).map((o, i) => o.name));
     return (
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>

@@ -61,7 +61,7 @@ class QuestObject {
     let currentObject = QuestObject.getCurrent(state)
     // If the current object is the settings, OR if the current object is a room and new rooms go top,
     // then loc is undefined, otherwise, do this:
-    if (currentObject.jsObjType === 'settings' || newObject.jsObjType === 'junction' || newObject.jsObjType === 'command' || newObject.jsObjType === 'function') {
+    if (currentObject.jsObjType === 'settings' || newObject.jsObjType === 'command' || newObject.jsObjType === 'function' || newObject.jsObjType === 'template') {
       currentObject = undefined
     }
     else {
@@ -103,13 +103,6 @@ class QuestObject {
     if (currentObject) {
       newObject.loc = currentObject.name
       console.log("Set location to: " + currentObject.name);
-    }
-    if (newObject.jsObjType === 'command') {
-      newObject.jsIsCommand = true
-    }
-
-    if (newObject.jsObjType === 'function') {
-      newObject.jsIsFunction = true
     }
 
     return newObject
@@ -301,7 +294,6 @@ class QuestObject {
       if (xml.tagName === 'command') {
         if (this.name === 'help') return null
         this.jsObjType = 'command'
-        this.jsIsCommand = true
         if (this.pattern !== null) {
           this.regex = new RegExp(this.pattern)
           delete this.pattern
@@ -309,12 +301,14 @@ class QuestObject {
       }
       else if (xml.tagName === 'function') {
         this.jsObjType = 'function'
-        this.jsIsFunction = true
         const parameters = xml.getAttribute('parameters')
         if (parameters) {
           this.parameters = parameters.split(',')
           this.parameters = this.parameters.map(el => el.replace(/^\s+|\s+$/g, ''))
         }
+      }
+      else if (xml.tagName === 'type'){
+        this.jsObjType = 'template'
       }
       else {
         this.jsObjType = this.inherit.includes("editor_room") ? 'room' : 'item'

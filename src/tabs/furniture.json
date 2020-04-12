@@ -2,25 +2,25 @@
   {
     "action":"tab",
     "tabName":"Furniture",
-    "displayIf":"o.jsIsFurniture", 
+    "displayIf":"o.jsIsFurniture",
     "tabControls":[
-      { 
-        "name":"jsCanSitOn", 
-        "type":"flag",   
-        "default":false, 
+      {
+        "name":"jsCanSitOn",
+        "type":"flag",
+        "default":false,
         "display":"Can sit on?"
       }
-      
+
     ]
   },
-  { 
+  {
     "action":"extend",
     "tabName":"Home",
     "name":"jsIsFurniture",
     "type":"flag",
     "default":false,
-    "display":"Furniture?",  
+    "display":"Furniture?",
     "tooltip":"What it says.",
-    "displayIf":"o.jsObjType !== 'room' && o.jsObjType !== 'stub' && o.jsMobilityType === 'Takeable'"
+    "displayIf":"o.jsObjType === 'item' && o.jsMobilityType === 'Takeable'"
   }
 ]

@@ -1,0 +1,9 @@
+[
+  {
+    "action":"tab",
+    "tabName":"Template",
+    "displayIf":"o.jsObjType === 'template'",
+    "tabControls":[
+    ]
+  }
+]

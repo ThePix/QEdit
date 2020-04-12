@@ -2,25 +2,25 @@
   {
     "action":"tab",
     "tabName":"Merchandise",
-    "displayIf":"o.jsIsMerchandise", 
+    "displayIf":"o.jsIsMerchandise",
     "tabControls":[
-      { 
-        "name":"price", 
-        "type":"int",   
-        "default":0, 
-        "display":"Price",  
+      {
+        "name":"price",
+        "type":"int",
+        "default":0,
+        "display":"Price",
         "tooltip":"Base cost of this item."
       }
     ]
   },
-  { 
+  {
     "action":"extend",
     "tabName":"Home",
     "name":"jsIsMerchandise",
     "type":"flag",
     "default":false,
-    "display":"Merchandise?",  
+    "display":"Merchandise?",
     "tooltip":"Can be bought and sold",
-    "displayIf":"o.jsObjType !== 'room' && o.jsObjType !== 'stub' && o.jsMobilityType === 'Takeable'"
+    "displayIf":"o.jsObjType === 'item' && o.jsMobilityType === 'Takeable'"
   }
 ]

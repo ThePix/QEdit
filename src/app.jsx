@@ -39,7 +39,7 @@ const newOptions  = {
 
 export default class App extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     const menuMapping = {
       'New':           () => this.newGame(),
@@ -55,6 +55,7 @@ export default class App extends React.Component {
       'Add stub':      () => this.addObject("stub"),
       'Add function':  () => this.addObject("function"),
       'Add command':   () => this.addObject("command"),
+      'Add template':  () => this.addObject("template"),
       'Delete object': () => this.removeObject(),
       'Duplicate object': () => this.duplicateObject(),
 
@@ -66,7 +67,7 @@ export default class App extends React.Component {
     }
 
     if (process.platform !== 'darwin') {
-      menuMapping.Exit = () => app.quit();
+      menuMapping.Exit = () => app.quit()
     }
 
     for (let key in menuMapping) {

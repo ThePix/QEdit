@@ -51,6 +51,7 @@ export class FileStore {
     this.getElementsOfType(xmlDoc, objects, version, settings, "object")
     this.getElementsOfType(xmlDoc, objects, version, settings, "command")
     this.getElementsOfType(xmlDoc, objects, version, settings, "function")
+    this.getElementsOfType(xmlDoc, objects, version, settings, "type")
 
     // If we imported from Quest 5, object names will have been modified
     // so there is a chance of a new name collision
