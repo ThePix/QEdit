@@ -41,28 +41,27 @@ div.dark {
 
 
 
-
+/*
 #mainpane {
   margin-left: 240px; /* Same as the width of the sidebar */
-  margin-right: 80px; /* Same as the width of the sidebar */
-  padding: 0px 10px;
+/*  margin-right: 80px; /* Same as the width of the sidebar */
+/*  padding: 0px 10px;
   margin-bottom: 20px;
   margin-top: 48px;
 }
-
-
+*/
 
 
 #toolbar {
-  height: 42px;
+  height: 100%;
   width: 100%;
   background-color: #ccc;
-  position:fixed;
+/*  position:fixed;*/
   top:0px;
   left:0px;
-  z-index: 2; /* Stay on top */
+/*  z-index: 2; /* Stay on top */
   font-size: 11pt;
-  padding: 2px;
+/*  padding: 2px;*/
 }
 
 
@@ -71,18 +70,18 @@ div.dark #toolbar {
 }
 
 #statusbar {
-/*  margin-left: 0px;
-  margin-right: 0px;*/
-  height: 14px;
+  padding-left: 2px;
+/*  margin-right: 0px;*/
+  height: 100%;
   width: 100%;
   background-color: #ffe;
-  position:fixed;
+/*  position:fixed;*/
   bottom:0px;
   left:0px;
-  z-index: 2; /* Stay on top */
-  border: 1px solid black;
+/*  z-index: 2; /* Stay on top */
+/*  border: 1px solid black;*/
   font-size: 11pt;
-  padding: 2px;
+/*  padding: 2px;*/
 }
 
 
@@ -214,6 +213,8 @@ div.dark .tabContent {
 ul.sidepane {
   list-style-type: none;
   padding-left: 20px;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
 }
 
 /* Style the caret/arrow */
@@ -245,14 +246,14 @@ ul.sidepane {
 
 
 #sidepane {
-  height: calc(100% - 72px); /* Full-height: remove this if you want "auto" height */
-  width: 240px; /* Set the width of the sidebar */
-  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
-  z-index: 1; /* Stay on top */
-  top: 0; /* Stay at the top */
+  height: 100%;
+  width: 100%;
+/*  position: fixed; /* Fixed Sidebar (stay in place on scroll) */
+/*  z-index: 1; /* Stay on top */
+/*  top: 0; /* Stay at the top */
   background-color: #eef;
-  overflow-x: hidden; /* Disable horizontal scroll */
-  padding-top: 5px;
+/*  overflow-x: hidden; /* Disable horizontal scroll */
+/*  padding-top: 5px;
   margin-bottom: 20px;
   margin-top: 48px;
   font-size: 9pt;
@@ -297,4 +298,54 @@ div.dark #sidepane {
 
 .treeSelected {
   background-color: yellow;
+}
+
+.Resizer {
+  background: #000;
+  opacity: 0.2;
+  z-index: 1;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -moz-background-clip: padding;
+  -webkit-background-clip: padding;
+  background-clip: padding-box;
+}
+
+.Resizer:hover {
+  -webkit-transition: all 2s ease;
+  transition: all 2s ease;
+}
+
+.Resizer.horizontal {
+  height: 11px;
+  margin: -5px 0;
+  border-top: 5px solid rgba(255, 255, 255, 0);
+  border-bottom: 5px solid rgba(255, 255, 255, 0);
+  cursor: row-resize;
+  width: 100%;
+}
+
+.Resizer.horizontal:hover {
+  border-top: 5px solid rgba(0, 0, 0, 0.5);
+  border-bottom: 5px solid rgba(0, 0, 0, 0.5);
+}
+
+.Resizer.vertical {
+  width: 11px;
+  margin: 0 -5px;
+  border-left: 5px solid rgba(255, 255, 255, 0);
+  border-right: 5px solid rgba(255, 255, 255, 0);
+  cursor: col-resize;
+}
+
+.Resizer.vertical:hover {
+  border-left: 5px solid rgba(0, 0, 0, 0.5);
+  border-right: 5px solid rgba(0, 0, 0, 0.5);
+}
+.Resizer.disabled {
+  cursor: auto;
+}
+.Resizer.disabled:hover {
+  border-color: transparent;
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import SplitPane from 'react-split-pane';
 //import Blockly from 'blockly/blockly_compressed';
 
 const prompt = require('electron-prompt');
@@ -628,35 +629,41 @@ export default class App extends React.Component {
 
     const currentObject = QuestObject.getCurrent(this.state);
     return (<div id='main' className={this.state.options.darkMode ? 'dark' : 'light'}>
-      <MainPane
-        object={currentObject}
-        handleChange={this.handleChange.bind(this)}
-        removeObject={this.removeObject.bind(this)}
-        removefromlist={this.removefromlist.bind(this)}
-        removeConversionNotes={this.removeConversionNotes.bind(this)}
-        addtolist={this.addtolist.bind(this)}
-        handleIdChange={this.handleIdChange.bind(this)}
-        handleCBChange={this.handleCBChange.bind(this)}
-        handleIntChange={this.handleIntChange.bind(this)}
-        handleListChange={this.handleListChange.bind(this)}
-        updateExit={this.updateExit.bind(this)}
-        showObject={this.showObject.bind(this)}
-        selectTab={this.selectTab.bind(this)}
-        controls={this.controls}
-        objects={this.state.objects}
-        options={this.state.options}
-        warning={this.nameTest(this.state.currentObjectName)}
-      />
-      <SidePane
-        object={currentObject}
-        objects={this.state.objects}
-        showObject={this.showObject.bind(this)}
-        treeToggle={this.treeToggle.bind(this)}
-        addObject={this.addObject.bind(this)}
-        darkMode={this.state.options.darkMode}
-      />
-      <div id="toolbar">Buttons appear here...</div>
-      <div id="statusbar">Status:</div>
+      <SplitPane split="horizontal" allowResize={false} defaultSize={42}>
+        <div id="toolbar">Buttons appear here...</div>
+        <SplitPane split="horizontal" allowResize={false} defaultSize={18} primary="second">
+          <SplitPane split="vertical" defaultSize={200} minSize={50}>
+            <SidePane
+              object={currentObject}
+              objects={this.state.objects}
+              showObject={this.showObject.bind(this)}
+              treeToggle={this.treeToggle.bind(this)}
+              addObject={this.addObject.bind(this)}
+              darkMode={this.state.options.darkMode}
+            />
+            <MainPane
+              object={currentObject}
+              handleChange={this.handleChange.bind(this)}
+              removeObject={this.removeObject.bind(this)}
+              removefromlist={this.removefromlist.bind(this)}
+              removeConversionNotes={this.removeConversionNotes.bind(this)}
+              addtolist={this.addtolist.bind(this)}
+              handleIdChange={this.handleIdChange.bind(this)}
+              handleCBChange={this.handleCBChange.bind(this)}
+              handleIntChange={this.handleIntChange.bind(this)}
+              handleListChange={this.handleListChange.bind(this)}
+              updateExit={this.updateExit.bind(this)}
+              showObject={this.showObject.bind(this)}
+              selectTab={this.selectTab.bind(this)}
+              controls={this.controls}
+              objects={this.state.objects}
+              options={this.state.options}
+              warning={this.nameTest(this.state.currentObjectName)}
+            />
+          </SplitPane>
+          <div id="statusbar">Status:</div>
+        </SplitPane>
+      </SplitPane>
     </div>);
   }
 
