@@ -1,5 +1,10 @@
 import React from 'react';
 import SplitPane from 'react-split-pane';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faFolder, faFileAlt, faLocationArrow, faSlidersH, faSeedling, faCode, faTerminal, faClone } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faFolder, faFileAlt, faLocationArrow, faSlidersH, faSeedling, faCode, faTerminal, faClone);
+
 //import Blockly from 'blockly/blockly_compressed';
 
 const prompt = require('electron-prompt');
@@ -276,9 +281,7 @@ export default class App extends React.Component {
   };
 
   showObject(name) {
-    //console.log("showObject" + index);
     this.setState({
-      //objects: this.state.objects,
       currentObjectName: name,
     })
   };
@@ -526,8 +529,9 @@ export default class App extends React.Component {
 
   }
 
-  treeToggle(obj) {
-    this.setValue("jsCollapsed", !obj.jsCollapsed, {obj:obj, type:'treetoggle'});
+  treeToggle(objname, toggled) {
+    const obj = this.state.objects.find( ({ name }) => name === objname )
+    this.setValue("jsCollapsed", !toggled, {obj:obj, type:'treetoggle'})
   }
 
   setValue(name, value, options) {
@@ -541,29 +545,29 @@ export default class App extends React.Component {
 
     const newObjects = []  // cloning the state
     for (let i = 0; i < this.state.objects.length; i++) {
-      newObjects.push(new QuestObject(this.state.objects[i]));
+      newObjects.push(new QuestObject(this.state.objects[i]))
     }
 
     // Need to look in new list for old name, as the name may be changing
     const newObject = newObjects.find(el => {
-      return (el.name == obj.name);
+      return (el.name == obj.name)
     });
 
     if (/_exit_/.test(name)) {
-      const dir = /_exit_(.*)$/.exec(name)[1];
+      const dir = /_exit_(.*)$/.exec(name)[1]
       //console.log("dir=" + dir);
       //console.log("was=" + newObject[dir].name);
-      newObject[dir].name = value;
+      newObject[dir].name = value
       //console.log("now=" + newObject[dir].name);
     }
     else {
       // Do it!
       if (value === null) {
-        delete newObject[name];
+        delete newObject[name]
       }
       else {
         console.log("Set to " + value)
-        newObject[name] = value;
+        newObject[name] = value
       }
     }
 
@@ -578,8 +582,7 @@ export default class App extends React.Component {
 
     this.setState({
       objects:newObjects,
-      currentObjectName:name === "name" ? value: this.state.currentObjectName,
-      //options:this.state.option,
+      currentObjectName:name === "name" ? value: obj.name,
     });
   }
 
