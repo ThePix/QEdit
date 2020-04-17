@@ -41,15 +41,16 @@ div.dark {
 
 
 
-/*
+
 #mainpane {
-  margin-left: 240px; /* Same as the width of the sidebar */
+  padding: 2em;
+/*  margin-left: 240px; /* Same as the width of the sidebar */
 /*  margin-right: 80px; /* Same as the width of the sidebar */
 /*  padding: 0px 10px;
   margin-bottom: 20px;
-  margin-top: 48px;
+  margin-top: 48px;*/
 }
-*/
+
 
 
 #toolbar {
@@ -124,12 +125,10 @@ input[type=checkbox] {
 
 
 .stringlist {
-  height: 50px;
   -moz-box-sizing:border-box;
   -webkit-box-sizing:border-box;
   box-sizing:border-box;
   display:block;/*reset from inline*/
-  width:100px;
   height:150px;
   margin:0;/*remove defaults*/
   padding:4px;
@@ -178,7 +177,9 @@ input[type=checkbox] {
 }
 
 .tabContent {
-  border: black solid 1px;
+  border-bottom: #aaa solid 1px;
+  border-left: #aaa solid 1px;
+  border-right: #aaa solid 1px;
   background:#eee;
   margin-bottom:10px;
   border-radius: 0 0 5px 5px;

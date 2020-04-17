@@ -6,6 +6,8 @@ import React from 'react';
 import {ExitsComp} from './exitscomp';
 import {ScriptOrStringComp} from './scriptorstringcomp';
 
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+
 import {ScriptComp, SelectComp, TickComp} from './components';
 const [QuestObject] = require('./questobject')
 
@@ -14,27 +16,55 @@ const {lang} = require(QUEST_JS_PATH + "lang/lang-en.js")
 console.log("... done")
 
 
-
+var tabs = []
+var tabPanels = []
 
 export class MainPane extends React.Component {
   constructor(props) {
     super(props);
   }
 
+  updateTabs () {
+    const controls = []
 
+    for (let i = 0; i < this.props.controls.length; i++) {
+      if (this.props.object.displayIf(this.props.controls[i])) {
+        controls.push(this.props.controls[i])
+      }
+    }
+
+    tabs = controls.map((item, i) =>
+      <Tab key={item.tabName}>{item.tabName}</Tab>
+    )
+
+    tabPanels = controls.map((item, i) =>
+      <TabPanel key={item.tabName}>
+        <TabComp
+          object={this.props.object}
+          removefromlist={this.props.removefromlist}
+          addtolist={this.props.addtolist}
+          handleChange={this.props.handleChange}
+          handleIntChange={this.props.handleIntChange}
+          handleListChange={this.props.handleListChange}
+          handleCBChange={this.props.handleCBChange}
+          handleIdChange={this.props.handleIdChange}
+          removeConversionNotes={this.props.removeConversionNotes}
+          controls={item.tabControls}
+          objects={this.props.objects}
+          updateExit={this.props.updateExit}
+          showObject={this.props.showObject}
+          options={this.props.options}/>
+      </TabPanel>
+    )
+  }
 
   render() {
-
     if (this.props.object) {
-      const control = this.props.object.getCurrentTab(this.props.controls);
-      const tab = control.tabName;
       const pStyle = {
         color:this.props.object.uiColour(this.props.options.darkMode),
         padding:3,
-      };
-      //const pStyle = {padding:3};
+      }
       if (this.props.warning) pStyle.backgroundColor = 'yellow'
-      const controls = control.tabControls;
 
       // Will later need to check if this object has the current tab and set tab to zero if not
       const deleteLink = (this.props.object.jsObjType === 'settings' ? '' : <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a>)
@@ -44,59 +74,31 @@ export class MainPane extends React.Component {
         <b><i>Editing {this.props.object.jsObjType === 'room' ? "Location" : "Item"}:</i> <span style={{color:this.props.object.jsColour}}>{this.props.object.name}</span></b>
       )
 
+      this.updateTabs()
       return (<div id="mainpane">
         <p style={pStyle}>
           <b>{title}</b>
           {deleteLink}
         </p>
-
-          <Tabs object={this.props.object} controls={this.props.controls} tab={tab} selectTab={this.props.selectTab}/>
-
-          <TabComp
-            tab={tab}
-            object={this.props.object}
-            removefromlist={this.props.removefromlist}
-            addtolist={this.props.addtolist}
-            handleChange={this.props.handleChange}
-            handleIntChange={this.props.handleIntChange}
-            handleListChange={this.props.handleListChange}
-            handleCBChange={this.props.handleCBChange}
-            handleIdChange={this.props.handleIdChange}
-            removeConversionNotes={this.props.removeConversionNotes}
-            controls={controls}
-            objects={this.props.objects}
-            updateExit={this.props.updateExit}
-            showObject={this.props.showObject}
-            options={this.props.options}/>
-
-      </div>);
+        <Tabs>
+          <TabList>
+            {tabs}
+          </TabList>
+          {tabPanels}
+        </Tabs>
+      </div>)
     }
     else {
       //this.state = {};
       return (<div id="mainpane">
         <h2>Welcome!</h2>
-      </div>);
+      </div>)
     }
   }
 }
 
 
 
-
-const Tabs = (props) => {
-  const controls = [];
-  for (let i = 0; i < props.controls.length; i++) {
-    if (props.object.displayIf(props.controls[i])) {
-      controls.push(props.controls[i]);
-    }
-  }
-
-  return  <div>
-    {controls.map((item, i) =>
-        <a onClick={() => props.selectTab(item.tabName)} key={i} disabled={props.tab === item.tabName} className ="tabButton">{item.tabName}</a>
-    )}
-  </div>;
-}
 
 
 
@@ -255,7 +257,7 @@ const InputComp = (props) => {
         <td>
           <textarea
             className="form-control stringlist"
-            cols="400" rows="6"
+            cols="40" rows="6"
             id={props.input.name}
             name={props.input.name}
             data-usingdefault={usingDefault}
@@ -319,7 +321,7 @@ const InputComp = (props) => {
           id={props.input.name}
           name={props.input.name}
           type={props.input.type}
-          size="120"
+          size="60"
           title={props.input.tooltip}
           data-usingdefault={usingDefault}
           value={value}
