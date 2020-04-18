@@ -94,6 +94,19 @@ div.dark #statusbar {
 
 
 
+.ace_editor {
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  box-sizing:border-box;
+  display:block;/*reset from inline*/
+  width:100%;
+  height:200px;
+  margin:0;/*remove defaults*/
+  background:#EEF;
+  border:1px solid #333;
+  border-radius: 5px;
+}
+
 .textarea {
   -moz-box-sizing:border-box;
   -webkit-box-sizing:border-box;
