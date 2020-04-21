@@ -1,7 +1,8 @@
-import React from 'react';
-import SplitPane from 'react-split-pane';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faFolder, faFileAlt, faLocationArrow, faSlidersH, faSeedling, faCode, faTerminal, faClone } from '@fortawesome/free-solid-svg-icons';
+import React from 'react'
+import SplitPane from 'react-split-pane'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faFolder, faFileAlt, faLocationArrow, faSlidersH, faSeedling, faCode, faTerminal, faClone } from '@fortawesome/free-solid-svg-icons'
+
 
 library.add(faFolder, faFileAlt, faLocationArrow, faSlidersH, faSeedling, faCode, faTerminal, faClone);
 
@@ -13,6 +14,7 @@ const {Menu, dialog, app} = require('electron').remote;
 import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 import {FileStore} from './filestore';
+import {preferences, Preferences} from './preferences'
 //import {TabControls} from './tabcontrols';
 import {Menus} from './menus';
 const [TabControls] = require('./tabcontrols')
@@ -54,7 +56,7 @@ export default class App extends React.Component {
       'Save As...':    () => this.saveXmlAs(),
       'Export to JavaScript': () => this.saveJs(),
 
-      'Dark mode':  () => this.toggleOption('darkMode'),
+      'Preferences...': () => this.showPreferences(),
 
       'Add location':  () => this.addObject("room"),
       'Add item':      () => this.addObject("item"),
@@ -93,9 +95,6 @@ export default class App extends React.Component {
     this.state = {
       objects:this.fs.readFile(__dirname + '/../blank.asl6', settings),
       currentObjectName: false,
-      options:{
-        darkMode:false,
-      },
     };
     this.state.currentObjectName = this.state.objects[0].name;
 
@@ -128,6 +127,13 @@ export default class App extends React.Component {
     return obj;
   }
 
+  showPreferences() {
+    this.setState({showPreferences: true})
+  }
+
+  hidePreferences() {
+    this.setState({showPreferences: false})
+  }
 
   //---------------------------
   //--      FILE  SYSTEM    ---
@@ -194,7 +200,7 @@ export default class App extends React.Component {
     }
 
     if (filename) {
-      const result = this.fs.writeFile(this, this.state.objects, filename);
+      const result = this.fs.writeFile(this.state.objects, filename);
       console.log(result);
       this.message(result);
     }
@@ -632,6 +638,7 @@ export default class App extends React.Component {
 
     const currentObject = QuestObject.getCurrent(this.state);
     return (<div id='main' className={this.state.options.darkMode ? 'dark' : 'light'}>
+      <Preferences show={this.state.showPreferences} handleClose={this.hidePreferences.bind(this)} />
       <SplitPane split="horizontal" allowResize={false} defaultSize={42}>
         <div id="toolbar">Buttons appear here...</div>
         <SplitPane split="horizontal" allowResize={false} defaultSize={18} primary="second">
