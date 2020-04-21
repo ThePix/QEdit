@@ -14,7 +14,7 @@ const {Menu, dialog, app} = require('electron').remote;
 import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 import {FileStore} from './filestore';
-import {preferences, Preferences} from './preferences'
+const {preferences, Preferences} = require('./preferences')
 //import {TabControls} from './tabcontrols';
 import {Menus} from './menus';
 const [TabControls] = require('./tabcontrols')
@@ -637,7 +637,10 @@ export default class App extends React.Component {
     console.log(this.state)
 
     const currentObject = QuestObject.getCurrent(this.state);
-    return (<div id='main' className={this.state.options.darkMode ? 'dark' : 'light'}>
+//    return (<div id='main' className={preferences.get(darkMode) ? 'dark' : 'light'}>
+//                darkMode={this.state.options.darkMode} in sidepane
+
+    return (<div id='main' className='light'>
       <Preferences show={this.state.showPreferences} handleClose={this.hidePreferences.bind(this)} />
       <SplitPane split="horizontal" allowResize={false} defaultSize={42}>
         <div id="toolbar">Buttons appear here...</div>
@@ -649,7 +652,6 @@ export default class App extends React.Component {
               showObject={this.showObject.bind(this)}
               treeToggle={this.treeToggle.bind(this)}
               addObject={this.addObject.bind(this)}
-              darkMode={this.state.options.darkMode}
             />
             <MainPane
               object={currentObject}

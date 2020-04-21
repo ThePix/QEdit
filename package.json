@@ -34,7 +34,8 @@
         ]
       },
       "electronPackagerConfig": {
-        "packageManager": "npm"
+        "packageManager": "npm",
+        "icon": "src/images/icon"
       },
       "electronWinstallerConfig": {
         "name": "my_project"

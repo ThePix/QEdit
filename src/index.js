@@ -1,6 +1,7 @@
 import { app, BrowserWindow, dialog } from 'electron'
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer'
 import { enableLiveReload } from 'electron-compile'
+import path from 'path'
 
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -28,7 +29,8 @@ const createWindow = async () => {
       //nodeIntegrationInWorker: false,
       preload: './preload.js',
       contextIsolation: false,
-    }
+    },
+    icon: path.join(__dirname, '/images/icon.png')
   });
 
   // and load the index.html of the app.

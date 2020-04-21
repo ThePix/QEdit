@@ -61,7 +61,7 @@ export class MainPane extends React.Component {
   render() {
     if (this.props.object) {
       const pStyle = {
-        color:this.props.object.uiColour(this.props.options.darkMode),
+//        color:this.props.object.uiColour(this.props.options.darkMode),
         padding:3,
       }
       if (this.props.warning) pStyle.backgroundColor = 'yellow'
