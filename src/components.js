@@ -70,8 +70,8 @@ export class ResponsesComp extends React.Component {
 
   render() {
     let options;
-    if (this.props.objects !== undefined) {
-      options = ["---"].concat(this.props.objects.map((o, i) => o.name));
+    if (this.props.objects.getObjects() !== undefined) {
+      options = ["---"].concat(this.props.objects.getObjectNames())
     }
     else {
       options = this.props.options;

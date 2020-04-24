@@ -21,14 +21,15 @@ var tabPanels = []
 
 export class MainPane extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
+    props.objects.on('update_object', () => {this.forceUpdate()})
   }
 
   updateTabs () {
     const controls = []
 
     for (let i = 0; i < this.props.controls.length; i++) {
-      if (this.props.object.displayIf(this.props.controls[i])) {
+      if (this.props.objects.displayIf(this.props.controls[i])) {
         controls.push(this.props.controls[i])
       }
     }
@@ -40,38 +41,33 @@ export class MainPane extends React.Component {
     tabPanels = controls.map((item, i) =>
       <TabPanel key={item.tabName}>
         <TabComp
-          object={this.props.object}
-          removefromlist={this.props.removefromlist}
-          addtolist={this.props.addtolist}
+          objects={this.props.objects}
           handleChange={this.props.handleChange}
           handleIntChange={this.props.handleIntChange}
           handleListChange={this.props.handleListChange}
           handleCBChange={this.props.handleCBChange}
-          handleIdChange={this.props.handleIdChange}
-          removeConversionNotes={this.props.removeConversionNotes}
           controls={item.tabControls}
-          objects={this.props.objects}
-          updateExit={this.props.updateExit}
-          showObject={this.props.showObject}
           options={this.props.options}/>
       </TabPanel>
     )
   }
 
   render() {
-    if (this.props.object) {
+    const current = this.props.objects.getCurrentObject()
+    if (current) {
       const pStyle = {
 //        color:this.props.object.uiColour(this.props.options.darkMode),
         padding:3,
       }
-      if (this.props.warning) pStyle.backgroundColor = 'yellow'
+      // TODO: This takes forever with many objects, either do it async or only check when user is changing name
+      if (this.props.objects.isInvalidName()) pStyle.backgroundColor = 'yellow'
 
       // Will later need to check if this object has the current tab and set tab to zero if not
-      const deleteLink = (this.props.object.jsObjType === 'settings' ? '' : <a onClick={() => this.props.removeObject(this.props.object.name)} className="deleteLink">(delete)</a>)
+      const deleteLink = (current.jsObjType === 'settings' ? '' : <a onClick={() => this.props.objects.removeObject(current.name)} className="deleteLink">(delete)</a>)
 
-      const title = (this.props.object.jsObjType === 'settings' ?
+      const title = (current.jsObjType === 'settings' ?
         <b><i>Editing Settings</i></b> :
-        <b><i>Editing {this.props.object.jsObjType === 'room' ? "Location" : "Item"}:</i> <span style={{color:this.props.object.jsColour}}>{this.props.object.name}</span></b>
+        <b><i>Editing {current.jsObjType === 'room' ? "Location" : "Item"}:</i> <span style={{color:current.jsColour}}>{current.name}</span></b>
       )
 
       this.updateTabs()
@@ -104,10 +100,10 @@ export class MainPane extends React.Component {
 
 const TabComp = (props) => {
   const controls = props.controls//.filter(el => el.tab == props.tab);  // double equals not triple!
-  if (props.tab === "Exits") {
+  if (controls[0].name === "exits") {
     return (
       <div className="tabContent">
-      <ExitsComp handleChange={props.handleChange} objects={props.objects} object={props.object} updateExit={props.updateExit} showObject={props.showObject} options={props.options}/>
+      <ExitsComp handleChange={props.handleChange} objects={props.objects} options={props.options}/>
       </div>
     )
   }
@@ -116,18 +112,13 @@ const TabComp = (props) => {
       <div className="tabContent">
       <table><tbody>
         {controls.map((item, i) => <InputComp
-          removefromlist={props.removefromlist}
-          addtolist={props.addtolist}
           handleChange={props.handleChange}
           handleIntChange={props.handleIntChange}
           handleListChange={props.handleListChange}
           handleCBChange={props.handleCBChange}
-          handleIdChange={props.handleIdChange}
-          removeConversionNotes={props.removeConversionNotes}
           input={item}
           key={i}
-          objects={props.objects}
-          object={props.object}/>
+          objects={props.objects} />
       )}
       </tbody></table>
       </div>
@@ -140,9 +131,9 @@ const TabComp = (props) => {
 
 
 const InputComp = (props) => {
-  if (!props.object.displayIf(props.input)) return null;
+  if (!props.objects.displayIf(props.input)) return null;
 
-  let value = props.object[props.input.name]
+  let value = props.objects.getCurrentObject()[props.input.name]
   const usingDefault = (value === undefined)
   if (value === undefined) value = props.input.default
   if (props.input.type === "select") {
@@ -153,7 +144,7 @@ const InputComp = (props) => {
           <SelectComp name={props.input.name} options={props.input.options} tooltip={props.input.tooltip} usingDefault={usingDefault} handleChange={props.handleChange} value={value}/>
         </td>
       </tr>
-    );
+    )
   }
   else if (props.input.type === "selectpronouns") {
     return (
@@ -166,7 +157,7 @@ const InputComp = (props) => {
     );
   }
   else if (props.input.type === "objects") {
-    const options = ["---"].concat(props.objects.filter(el => el.jsObjType !== 'settings').map((o, i) => o.name));
+    const options = ["---"].concat(props.objects.getObjectOnlyNames())
     return (
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
@@ -177,7 +168,7 @@ const InputComp = (props) => {
     );
   }
   else if (props.input.type === "otherobjects") {
-    const options = ["---"].concat(props.objects.filter(el => (el.jsObjType !== 'settings' && el.jsObjType !== 'function' && el.jsObjType !== 'command' && el.jsObjType !== 'template' && el !== props.object)).map((o, i) => o.name));
+    const options = ["---"].concat(props.objects.getOtherObjectOnlyNames())
     return (
       <tr className="form-group">
         <td width="30%"><span className="fieldName">{props.input.display}</span></td>
@@ -201,7 +192,7 @@ const InputComp = (props) => {
         <td colSpan="2">
         <br/>
         These issues were identified when this game was converted from Quest 5. Click
-        <a onClick={() => props.removeConversionNotes()} className="stdLink"> here </a>
+        <a onClick={() => props.objects.removeConversionNotes()} className="stdLink"> here </a>
         when you are certain they are resolved to delete the whole list.
         <br/>
         <ul>
@@ -294,7 +285,7 @@ const InputComp = (props) => {
         /></td>
       </tr>
     )
-  }
+  }/*
   else if (props.input.type === "id") {
     return (
       <tr className="form-group">
@@ -311,7 +302,7 @@ const InputComp = (props) => {
         /></td>
       </tr>
     )
-  }
+  }*/
   else if (props.input.type === "longtext" || props.input.type === "longstring") {
     return (
       <tr className="form-group">
@@ -331,8 +322,6 @@ const InputComp = (props) => {
     )
   }
   else if (props.input.type === "int") {
-    console.log(props.object[props.input.name])
-    console.log(value)
     if (typeof value === 'string') value = parseInt(value)
     if (typeof value !== 'number') {
       console.log("Warning: Not an integer - " + props.input.name)

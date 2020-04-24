@@ -1,4 +1,4 @@
-import React, {PureComponent} from 'react'
+import React, {Component} from 'react'
 import {Treebeard, decorators, theme} from 'react-treebeard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -11,11 +11,12 @@ tree.base.color = 'black'
 tree.node.toggle.arrow.fill = 'black'
 tree.node.header.base.color = 'black'
 
-export class SidePane extends PureComponent {
+export class SidePane extends Component {
   constructor(props){
     super(props)
     this.state = {data}
     this.onToggle = this.onToggle.bind(this)
+//    props.objects.on('Update', () => {this.forceUpdate()})
   }
 
   onToggle(node, toggled){
@@ -31,10 +32,10 @@ export class SidePane extends PureComponent {
     }
 
     node.active = true
-    this.props.showObject(node.name)
+    this.props.objects.setCurrentObjectByName(node.name)
     if (toggle) {
         node.toggled = toggled
-        this.props.treeToggle(node.name, toggled)
+        this.props.objects.toggleCollaps(node.name, toggled)
     }
 
     this.setState(() => ({cursor: node, data: Object.assign({}, data)}))
@@ -70,14 +71,14 @@ export class SidePane extends PureComponent {
   pushObject(data, obj) {
     data.push({name:obj.name,
       toggled: (obj.jsCollapsed) ? false : true,
-      active: (this.props.object.name === obj.name) ? true : false,
+      active: (this.props.objects.getCurrentObject() === obj) ? true : false,
       type: obj.jsObjType,
     })
   }
 
   render() {
     data.length = 0
-    let objects = this.props.objects
+    let objects = this.props.objects.getObjects()
     let remainder
     let count
 

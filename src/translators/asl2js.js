@@ -25,15 +25,15 @@ const jsReplacements = [
   {asl:/\bnot /g, js:'!'},
   {asl:/ \<\> /g, js:' !== '},
   {asl:/do ?\(([a-zA-Z_]+), \^y\)/g, js:'$1.^n()'},
-  
+
   {asl:/if \(([a-zA-Z_]+)\.parent = ([a-zA-Z_]+)\)/g, js:'if ($1.isAtLoc("$2")\)'},
-  
+
   {asl:/([a-zA-Z_.]+) = \1 \+ /g, js:'$1 += '},
   {asl:/([a-zA-Z_.]+) = \1 \- /g, js:'$1 -= '},
-  
+
   //list add(game.forgetme, this)
-  
-  
+
+
   {asl:/GetDisplayAlias ?\(([a-zA-Z_.]+)\)/g, js:'$1.byname({})'},
   {asl:/([a-zA-Z_]+)\.alias/g, js:'$1.byname({})'},
 
@@ -114,14 +114,14 @@ const jsReplacements = [
   {asl:/OutputTextRawNoBr \(([0-9a-zA-Z_."]+)\)/g, js:'msg($)'},
 
   {asl:/Set(Alignment|BackgroundColour|BackgroundImage|BackgroundOpacity|FontName|FontSize|ForegroundColour|WebFontName)(.*)/g, js:'// Set$1$2'},
-  {asl:/TextFX_Typewriter\(([a-zA-Z_."]+), ([a-zA-Z_."]+)\)/g, js:'msg($1)  // Was Typewriter, time=$2'}, 
-  {asl:/TextFX_Unscramble\(([a-zA-Z_."]+), ([a-zA-Z_."]+), ([a-zA-Z_."]+)\)/g, js:'msg($1)  // Was Unscramble, time=$2, reveal=$3'}, 
+  {asl:/TextFX_Typewriter\(([a-zA-Z_."]+), ([a-zA-Z_."]+)\)/g, js:'msg($1)  // Was Typewriter, time=$2'},
+  {asl:/TextFX_Unscramble\(([a-zA-Z_."]+), ([a-zA-Z_."]+), ([a-zA-Z_."]+)\)/g, js:'msg($1)  // Was Unscramble, time=$2, reveal=$3'},
 
 
 ]
 
 
-class Translator {
+class ASL2JS {
   static aslToJs(asl) {
     const lines = []
     for (let s of asl.split('\n')) {
@@ -148,12 +148,12 @@ class Translator {
         s = s.replace(/\b=\b/, '===')
         // Also not at some point
       }
-      
+
       s = s.replace(/~~~~quote~~~~/g, '\\"')
       s = s.replace(/~~~~hat~~~~/g, '^')
       lines.push(s)
     }
-    
+
     return lines
   }
 }
@@ -166,4 +166,4 @@ class Translator {
 
 
 
-module.exports = [Translator]
+module.exports = [ASL2JS]

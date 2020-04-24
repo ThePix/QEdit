@@ -1,4 +1,4 @@
-const [Translator] = require('../src/translator.js')
+const [ASL2JS] = require('../src/translator/asl2js.js')
 
 const out = function(lines) {
   for (s of lines) console.log(s)
@@ -10,7 +10,7 @@ const out = function(lines) {
         // secondary attack does not depend on strength, etc. or transient bonuses
         attackroll = GetRandomInt (1, 20) - this.defence + game.pov.secondary_attack.attackbonus
         //game.pov.currectattack = game.pov.equipped
-        
+
         if (this.noncorporeal and GetElement(game.pov.equipped) = null) {
           if (game.pov.secondary_attack.nonweapon) {
             msg("You attack the " + GetDisplayAlias(this) + ", and pass straight through it!")
@@ -56,4 +56,4 @@ const out = function(lines) {
 //console.log(asl)
 //console.log(asl.length)
 
-out(Translator.aslToJs(asl))
+out(ASL2JS.aslToJs(asl))
