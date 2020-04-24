@@ -1,18 +1,14 @@
+import React from 'react'
+import {ExitsComp} from './exitscomp'
+import {ScriptOrStringComp} from './scriptorstringcomp'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import {ScriptComp, SelectComp, TickComp} from './components'
+import * as Constants from './constants'
+
 const useWithDoor = function() {};
-const DSPY_SCENERY = 5;
-const QUEST_JS_PATH = '../questjs/'
-
-import React from 'react';
-import {ExitsComp} from './exitscomp';
-import {ScriptOrStringComp} from './scriptorstringcomp';
-
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-
-import {ScriptComp, SelectComp, TickComp} from './components';
-const [QuestObject] = require('./questobject')
 
 console.log("About to...3")
-const {lang} = require(QUEST_JS_PATH + "lang/lang-en.js")
+const {lang} = require(Constants.QUEST_JS_PATH + "lang/lang-en.js")
 console.log("... done")
 
 
@@ -22,7 +18,7 @@ var tabPanels = []
 export class MainPane extends React.Component {
   constructor(props) {
     super(props)
-    props.objects.on('update_object', () => {this.forceUpdate()})
+    props.objects.on(Constants.UPDATE_OBJECT_EVENT, () => {this.forceUpdate()})
   }
 
   updateTabs () {
@@ -63,11 +59,11 @@ export class MainPane extends React.Component {
       if (this.props.objects.isInvalidName()) pStyle.backgroundColor = 'yellow'
 
       // Will later need to check if this object has the current tab and set tab to zero if not
-      const deleteLink = (current.jsObjType === 'settings' ? '' : <a onClick={() => this.props.objects.removeObject(current.name)} className="deleteLink">(delete)</a>)
+      const deleteLink = (current.jsObjType === Constants.SETTINGS_TYPE ? '' : <a onClick={() => this.props.objects.removeObject(current.name)} className="deleteLink">(delete)</a>)
 
-      const title = (current.jsObjType === 'settings' ?
+      const title = (current.jsObjType === Constants.SETTINGS_TYPE ?
         <b><i>Editing Settings</i></b> :
-        <b><i>Editing {current.jsObjType === 'room' ? "Location" : "Item"}:</i> <span style={{color:current.jsColour}}>{current.name}</span></b>
+        <b><i>Editing {current.jsObjType === Constants.ROOM_TYPE ? "Location" : "Item"}:</i> <span style={{color:current.jsColour}}>{current.name}</span></b>
       )
 
       this.updateTabs()

@@ -1,37 +1,39 @@
 import TabControls from '../tabcontrols'
-const STRICT = "\"use strict\""
+import * as Constants from '../constants'
+
 
 export default class JSON2JS {
     // Converts items to JavaScript code
     // Unit tested
   static parseData(objects) {
-    let str = STRICT
+    let str = Constants.JSSTRICT
     // TODO: this is just for one object
     for (var i = 0; i < objects.length; i++) {
-      if (objects[i].jsObjType !== 'room' && objects[i].jsObjType !== 'item') continue
+      if (objects[i].jsObjType !== Constants.ROOM_TYPE
+        && objects[i].jsObjType !== Constants.ITEM_TYPE) continue
 
-      str += "\n\n\n"
-      str += "create" + (objects[i].jsObjType === 'room' ? "Room" : "Item") + "(\"" + objects[i].name + "\", "
+      str += Constants.ITEMSPACING
+      str += "create" + (objects[i].jsObjType === Constants.ROOM_TYPE ? Constants.JSROOM : Constants.JSITEM) + "(\"" + objects[i].name + "\", "
 
       const jsTemplates = []
-      if (objects[i].jsMobilityType === "Takeable") jsTemplates.push("TAKEABLE()")
-      if (objects[i].jsMobilityType === "Player") jsTemplates.push("PLAYER()")
-      if (objects[i].jsMobilityType === "NPC") jsTemplates.push("NPC()")
-      if (objects[i].jsContainerType === "Container") jsTemplates.push("CONTAINER()")
-      if (objects[i].jsContainerType === "Surface") jsTemplates.push("SURFACE()")
-      if (objects[i].jsContainerType === "Openable") jsTemplates.push("OPENABLE()")
-      if (objects[i].jsIsLockable) jsTemplates.push("LOCKED_WITH()")
+      if (objects[i].jsMobilityType === Constants.MOBILITY_TAKABLE) jsTemplates.push(Constants.JSTAKABLE)
+      if (objects[i].jsMobilityType === Constants.MOBILITY_PLAYER) jsTemplates.push(Constants.JSPLAYER)
+      if (objects[i].jsMobilityType === Constants.MOBILITY_NPC) jsTemplates.push(Constants.JSNPC)
+      if (objects[i].jsContainerType === Constants.CONTAINER_CONTAINER) jsTemplates.push(Constants.JSCONTAINER)
+      if (objects[i].jsContainerType === Constants.CONTAINER_SURFACE) jsTemplates.push(Constants.JSSURFACE)
+      if (objects[i].jsContainerType === Constants.CONTAINER_OPENABLE) jsTemplates.push(Constants.JSOPENABLE)
+      if (objects[i].jsIsLockable) jsTemplates.push(Constants.JSLOCKED)
       if (objects[i].jsIsWearable) {
         const layer = objects[i].jsWear_layer ? objects[i].jsWear_layer : 1
         const slots = objects[i].jsWear_slots ? beautifyArray(objects[i].jsWear_slots) : '[]'
-        jsTemplates.push("WEARABLE(" + layer + ", " + slots + ")")
+        jsTemplates.push(Constants.JSWERABLE + "(" + layer + ", " + slots + ")")
 
       }
-      if (objects[i].jsIsEdible) jsTemplates.push("EDIBLE()")
-      if (objects[i].jsIsCountable) jsTemplates.push("COUNTABLE()")
-      if (objects[i].jsIsFurniture) jsTemplates.push("FURNITURE()")
-      if (objects[i].jsIsSwitchable) jsTemplates.push("SWITCHABLE()")
-      if (objects[i].jsIsComponent) jsTemplates.push("COMPONENT()")
+      if (objects[i].jsIsEdible) jsTemplates.push(Constants.JSEDIBLE)
+      if (objects[i].jsIsCountable) jsTemplates.push(Constants.JSCOUNTABLE)
+      if (objects[i].jsIsFurniture) jsTemplates.push(Constants.JSFURNITURE)
+      if (objects[i].jsIsSwitchable) jsTemplates.push(Constants.JSSWITCHABLE)
+      if (objects[i].jsIsComponent) jsTemplates.push(Constants.JSCOMPONENT)
       if (jsTemplates.length > 0) str += jsTemplates.join(', ') + ", "
 
       str += beautifyObject(objects[i], 0)
@@ -45,9 +47,9 @@ export default class JSON2JS {
   static parseSettings(objects) {
     let str = STRICT
     for (var i = 0; i < objects.length; i++) {
-      if (objects[i].jsObjType !== 'settings') continue
+      if (objects[i].jsObjType !== Constants.SETTINGS_TYPE) continue
 
-      str += "\n\n\n"
+      str += Constants.ITEMSPACING
 
       const libs = new TabControls().libraries;
       for (let lib of libs) {

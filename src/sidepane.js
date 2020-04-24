@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Treebeard, decorators, theme} from 'react-treebeard'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import * as Constants from './constants'
 
 const data = []
 
@@ -109,26 +110,26 @@ const Header = ({style, node}) => {
   const iconStyle = {marginRight: '5px'}
   let iconType = 'file-alt'
   switch(node.type) {
-    case 'settings':
-      iconType = 'sliders-h'
+    case Constants.SETTINGS_TYPE:
+      iconType = Constants.ICON_SETTINGS
       break
-    case 'room':
-      iconType = 'location-arrow'
+    case Constants.ROOM_TYPE:
+      iconType = Constants.ICON_ROOM
       break
-    case 'item':
-      iconType = 'seedling'
+    case Constants.ITEM_TYPE:
+      iconType = Constants.ICON_ITEM
       break
-    case 'stub':
-      iconType = 'folder'
+    case Constants.STUB_TYPE:
+      iconType = Constants.ICON_STUB
       break
-    case 'function':
-      iconType = 'code'
+    case Constants.FUNCTION_TYPE:
+      iconType = Constants.ICON_FUNCTION
       break
-    case 'command':
-      iconType = 'terminal'
+    case Constants.COMMAND_TYPE:
+      iconType = Constants.ICON_COMMAND
       break
-    case 'template':
-      iconType = 'clone'
+    case Constants.TEMPLATE_TYPE:
+      iconType = Constants.ICON_TEMPLATE
       break
   }
 

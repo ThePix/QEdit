@@ -1,12 +1,10 @@
 import React from 'react';
 import {ScriptComp, SelectComp} from './components';
-
-const QUEST_JS_PATH = '../questjs/'
+import * as Constants from './constants'
 
 console.log("About to...2")
-const {lang} = require(QUEST_JS_PATH + "lang/lang-en.js")
+const {lang} = require(Constants.QUEST_JS_PATH + "lang/lang-en.js")
 //const useWithDoor = function() {};
-const DSPY_SCENERY = 5;
 
 
 
@@ -139,19 +137,19 @@ const ExitDetails = (props) => {
         <br/>
         <input type="radio"
                value="default"
-               checked={ex.data.useType === "default"}
+               checked={ex.data.useType === Constants.USETYPE_DEFAULT}
                onChange={onChange} />Default action
         <input type="radio"
                value="msg"
-               checked={ex.data.useType === "msg"}
+               checked={ex.data.useType === Constants.USETYPE_MSG}
                onChange={onChange}/>Message script
         <input type="radio"
                value="custom"
-               checked={ex.data.useType === "custom"}
+               checked={ex.data.useType === Constants.USETYPE_CUSTOM}
                onChange={onChange}/>Custom script
         <input type="radio"
                value="useWithDoor"
-               checked={ex.data.useType === "useWithDoor"}
+               checked={ex.data.useType === Constants.USETYPE_DOOR}
                onChange={onChange}/>Standard door script
         <br/>
         <br/>

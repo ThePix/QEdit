@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 export class TickComp extends React.Component {
   constructor(props) {
     super(props);
@@ -26,8 +25,6 @@ export class TickComp extends React.Component {
     )
   }
 }
-
-
 
 
 

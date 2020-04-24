@@ -1,0 +1,12 @@
+export const TEXT_OPTION = 'Text'
+export const TEXT_MODE = 'text'
+export const TEXT_TYPE = 'string'
+export const JS_OPTION = 'JavaScript'
+export const JS_MODE = 'javascript'
+export const JS_TYPE = 'js'
+export const ASL_OPTION = 'ASL'
+export const ASL_MODE = 'text'
+export const ASL_TYPE = 'script'
+export const DEFUALT_OPTION = TEXT_OPTION
+export const DEFUALT_MODE = TEXT_MODE
+export const DEFUALT_TYPE = TEXT_TYPE

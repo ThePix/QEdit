@@ -1,23 +1,7 @@
 import { EventEmitter } from 'events'
 import FileStore from './filestore'
 import TabControls from './tabcontrols'
-
-
-const SETTINGS_TYPE = 'settings'
-const ROOM_TYPE = 'room'
-const ITEM_TYPE = 'item'
-const STUB_TYPE = 'stub'
-const NEW_PREFIX = '__new__'
-const MOBILITY_IMMOBILE = 'Immobile'
-const DEFAULTFILE = __dirname + '/../blank.asl6'
-
-const ALT_COLOURS = {
-  blue:'lightblue',
-  black:'white',
-}
-
-const UPDATE_OBJECTS_EVENT ='update_objects'
-const UPDATE_OBJECT_EVENT = 'update_object'
+import * as Constants from './constants'
 
 export default class QuestObjects extends EventEmitter {
   constructor (controls, preferences) {
@@ -32,7 +16,7 @@ export default class QuestObjects extends EventEmitter {
   }
 
   load(filename) {
-    filename = filename || DEFAULTFILE
+    filename = filename || Constants.DEFAULTFILE
     this.setFilename(filename)
     const objects = FileStore.readASLFile(filename)
     this.setObjects(objects)
@@ -47,22 +31,22 @@ export default class QuestObjects extends EventEmitter {
 
   setObjects(objects) {
     this.questObjects = objects
-    this.emit(UPDATE_OBJECTS_EVENT)
+    this.emit(Constants.UPDATE_OBJECTS_EVENT)
   }
 
   getSettings() {
-    return this.getObjects().find(el => el.jsObjType === SETTINGS_TYPE)
+    return this.getObjects().find(el => el.jsObjType === Constants.SETTINGS_TYPE)
   }
 
   setSettings(settings) {
     var oldSettings = this.getSettings()
     if (!oldSettings) {
-      this.addObject(SETTINGS_TYPE)
+      this.addObject(Constants.SETTINGS_TYPE)
       oldSettings = this.getSettings()
     }
     this.addDefaults(settings)
     oldSettings = settings
-    this.emit(UPDATE_OBJECT_EVENT)
+    this.emit(Constants.UPDATE_OBJECT_EVENT)
   }
 
   getFilename() {
@@ -70,9 +54,9 @@ export default class QuestObjects extends EventEmitter {
   }
 
   setFilename(filename) {
-    if (filename === DEFAULTFILE) this.filename = undefined
+    if (filename === Constants.DEFAULTFILE) this.filename = undefined
     else this.filename = filename
-    this.emit(UPDATE_OBJECTS_EVENT)
+    this.emit(Constants.UPDATE_OBJECTS_EVENT)
   }
 
   getObjectByName(name) {
@@ -82,7 +66,7 @@ export default class QuestObjects extends EventEmitter {
   getFirstLocationAbove(name) {
     name = name || this.getCurrentObject().name
     const object = getObjectByName(name)
-    if(object.jsObjType === ROOM_TYPE) return name
+    if(object.jsObjType === Constants.ROOM_TYPE) return name
     else if(object.loc) return getFirstLocationAbove(object.loc)
     else return undefined
   }
@@ -97,32 +81,32 @@ export default class QuestObjects extends EventEmitter {
 
   addObject(type) {
     const newObject = {
-      name: NEW_PREFIX + type,
+      name: Constants.NEW_PREFIX + type,
       jsObjType: type,
-      jsMobilityType: MOBILITY_IMMOBILE,
+      jsMobilityType: Constants.MOBILITY_IMMOBILE,
     }
 
-    if (type === SETTINGS_TYPE) newObject.name = 'Settings'
+    if (type === Constants.SETTINGS_TYPE) newObject.name = 'Settings'
 
     this.uniqueNameFor(newObject)
 
     switch (type) {
-      case ROOM_TYPE:
-        switch (preferences.get('jsNewRoomWhere')) {
-          case 'Location':
+      case Constants.ROOM_TYPE:
+        switch (preferences.get(Constants.NEWROOMWHERE)) {
+          case Constants.WHERE_LOCATION:
             newObject.loc = this.getFirstLocationAbove()
             break
-          case 'Zone':
+          case Constants.WHERE_ZONE:
             newObject.loc = this.getFirstZoneAbove()
             break
         }
         break
-      case ITEM_TYPE:
-        switch (preferences.get('jsNewItemWhere')) {
-          case 'Location':
+      case Constants.ITEM_TYPE:
+        switch (preferences.get(Constants.NEWITEMWHERE)) {
+          case Constants.WHERE_LOCATION:
             newObject.loc = this.getFirstLocationAbove()
             break
-          case 'Zone':
+          case Constants.WHERE_ZONE:
             newObject.loc = this.getFirstZoneAbove()
             break
         }
@@ -137,7 +121,7 @@ export default class QuestObjects extends EventEmitter {
 
     object = this.getObjectByName(name)
 
-    if (object.jsObjType === SETTINGS_TYPE) {
+    if (object.jsObjType === Constants.SETTINGS_TYPE) {
       window.alert("Cannot delete the 'Settings' object.")
       return
     }
@@ -167,8 +151,8 @@ export default class QuestObjects extends EventEmitter {
   setCurrentObject(obj) {
     if (obj) {
       this.currentObject = obj
-      this.emit(UPDATE_OBJECT_EVENT)
-      this.emit(UPDATE_OBJECTS_EVENT)
+      this.emit(Constants.UPDATE_OBJECT_EVENT)
+      this.emit(Constants.UPDATE_OBJECTS_EVENT)
     }
   }
 
@@ -184,14 +168,14 @@ export default class QuestObjects extends EventEmitter {
     if (window.confirm('Delete the conversion notes for "' + name + '"?')) {
       var obj = this.getObjectByName(name)
       if (obj) delete obj.jsConversionNotes
-      this.emit(UPDATE_OBJECT_EVENT)
+      this.emit(Constants.UPDATE_OBJECT_EVENT)
     }
   }
 
   toggleCollaps(name, toggle) {
     var obj = this.getObjectByName(name)
     if (obj) obj.jsCollapsed = toggle
-    this.emit(UPDATE_OBJECTS_EVENT)
+    this.emit(Constants.UPDATE_OBJECTS_EVENT)
   }
 
   setValue(name, value) {
@@ -210,7 +194,7 @@ export default class QuestObjects extends EventEmitter {
       if (value === null) delete current[name]
       else current[name] = value
 //    }
-    this.emit(UPDATE_OBJECT_EVENT)
+    this.emit(Constants.UPDATE_OBJECT_EVENT)
   }
 
   static getById(state, id) {
@@ -251,29 +235,29 @@ export default class QuestObjects extends EventEmitter {
   }
 
   getObjectOnlyNames() {
-    if (this.preferences.get('jsShowRoomsOnly')) {
+    if (this.preferences.get(Constants.SHOWROOMSONLY)) {
       return this.questObjects.filter(
-        el => el.jsObjType === SETTINGS_ROOM).map((o, i) => o.name)
+        el => el.jsObjType === Constants.ROOM_TYPE).map((o, i) => o.name)
     }
     return this.questObjects.filter(
-      el => el.jsObjType !== SETTINGS_TYPE).map((o, i) => o.name)
+      el => el.jsObjType !== Constants.SETTINGS_TYPE).map((o, i) => o.name)
   }
 
   getOtherObjectOnlyNames() {
     return this.questObjects.filter(
-      el => ((el.jsObjType === ROOM_TYPE ||
-        el.jsObjType === ITEM_TYPE ||
-        el.jsObjType === STUB_TYPE) &&
+      el => ((el.jsObjType === Constants.ROOM_TYPE ||
+        el.jsObjType === Constants.ITEM_TYPE ||
+        el.jsObjType === Constants.STUB_TYPE) &&
         el !== this.getCurrentObject())
       ).map((o, i) => o.name)
   }
 
   createExit(exitname, name, data) {
     data = data || {}
-    if (!data.useType) data.useType = 'default'
+    if (!data.useType) data.useType = Constants.USETYPE_DEFAULT
 
     this.setValue(exitname, {
-      type:'exit',
+      type: Constants.EXIT_TYPE,
       name: name,
       data: data
     })
@@ -282,7 +266,7 @@ export default class QuestObjects extends EventEmitter {
   deleteExit(name) {
     if (window.confirm('Delete the exit "' + name + '"?')) {
       delete this.getCurrentObject()[name]
-      this.emit(UPDATE_OBJECT_EVENT)
+      this.emit(Constants.UPDATE_OBJECT_EVENT)
     }
   }
 
@@ -332,7 +316,7 @@ export default class QuestObjects extends EventEmitter {
         break
     }
     */
-    this.emit(UPDATE_OBJECT_EVENT)
+    this.emit(Constants.UPDATE_OBJECT_EVENT)
   }
 
   //---------------------------------------------------------------------

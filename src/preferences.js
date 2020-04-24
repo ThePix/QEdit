@@ -1,10 +1,11 @@
 import React, {Component} from 'react'
 import Store from 'electron-store'
+import * as Constants from './constants'
 
 const defaultPreferences = {
   jsShowRoomsOnly: false,
-  jsNewRoomWhere: 'Top',
-  jsNewItemWhere: 'Location',
+  jsNewRoomWhere: Constants.WHERE_TOP,
+  jsNewItemWhere: Constants.WHERE_LOCATION,
   jsAutosaveInterval: 1,
   darkMode: false
 }
@@ -45,36 +46,30 @@ export default class Preferences extends Component {
         <section className="modal-main">
           <form action="" id="preferences form">
             <p>
-              <label htmlFor="jsShowRoomsOnly">Show rooms only
-              <input type="checkbox" id="jsShowRoomsOnly" value={this.get('jsShowRoomsOnly')} onChange={this.onChange.bind(this)}></input>
-              <img src={(this.get('jsShowRoomsOnly')) ? 'images/tick.png' : 'images/cross.png'}></img>
+              <label htmlFor={Constants.SHOWROOMSONLY}>Show rooms only
+              <input type="checkbox" id={Constants.SHOWROOMSONLY} value={this.get(Constants.SHOWROOMSONLY)} onChange={this.onChange.bind(this)}></input>
+              <img src={(this.get(Constants.SHOWROOMSONLY)) ? 'images/tick.png' : 'images/cross.png'}></img>
               </label>
             </p>
-            <p><label htmlFor="jsNewRoomWhere">New room where? </label> <span>
-              <select id="jsNewRoomWhere" value={this.get('jsNewRoomWhere')} onChange={this.onChange.bind(this)}>
-                <option value="Top">Top</option>
-                <option value="Zone">Zone</option>
-                <option value="Location">Location</option>
-                <option value="Anywhere">Anywhere</option>
+            <p><label htmlFor={Constants.NEWROOMWHERE}>New room where? </label> <span>
+              <select id={Constants.NEWROOMWHERE} value={this.get(Constants.NEWROOMWHERE)} onChange={this.onChange.bind(this)}>
+              {Constants.WHEREOPTIONS.map((item, i) =>  <option value={item} key={i}>{item}</option>)}
               </select></span>
             </p>
-            <p><label htmlFor="jsNewItemWhere">New item where? </label> <span>
-              <select id="jsNewItemWhere" value={this.get('jsNewItemWhere')} onChange={this.onChange.bind(this)}>
-                <option value="Top">Top</option>
-                <option value="Zone">Zone</option>
-                <option value="Location">Location</option>
-                <option value="Anywhere">Anywhere</option>
+            <p><label htmlFor={Constants.NEWITEMWHERE}>New item where? </label> <span>
+              <select id={Constants.NEWITEMWHERE} value={this.get(Constants.NEWITEMWHERE)} onChange={this.onChange.bind(this)}>
+              {Constants.WHEREOPTIONS.map((item, i) =>  <option value={item} key={i}>{item}</option>)}
               </select></span>
             </p>
-            <p><label htmlFor="jsAutosaveInterval">Autosave interval </label>
+            <p><label htmlFor={Constants.AUTOSAVEINTERVAL}>Autosave interval </label>
               <span>
-              <input type="text" id="jsAutosaveInterval" value={this.get('jsAutosaveInterval')} onChange={this.onChange.bind(this)}></input>
+              <input type="text" id={Constants.AUTOSAVEINTERVAL} value={this.get(Constants.AUTOSAVEINTERVAL)} onChange={this.onChange.bind(this)}></input>
               </span>
             </p>
-            <p><label htmlFor="darkMode">Dark mode </label>
+            <p><label htmlFor={Constants.DARKMODE}>Dark mode </label>
               <span>
-              <input type="checkbox" id="darkMode" value={this.get('darkMode')} onChange={this.onChange.bind(this)}></input>
-              <img src={this.get('jsShowRoomsOnly') ? 'images/tick.png' : 'images/cross.png'}></img>
+              <input type="checkbox" id={Constants.DARKMODE} value={this.get(Constants.DARKMODE)} onChange={this.onChange.bind(this)}></input>
+              <img src={this.get(Constants.DARKMODE) ? 'images/tick.png' : 'images/cross.png'}></img>
               </span>
             </p>
           </form>

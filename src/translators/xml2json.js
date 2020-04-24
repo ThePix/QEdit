@@ -1,3 +1,5 @@
+import * as Constants from '../constants'
+
 export default class XML2JSON {
   // Separated out so it can be unit tested more easily
   static parse(str) {
@@ -17,10 +19,10 @@ export default class XML2JSON {
       console.log("XML Error: " + err.innerHTML)
     }
 
-    _getElementsOfType(xmlDoc, objects, version, settings, "object")
-    _getElementsOfType(xmlDoc, objects, version, settings, "command")
-    _getElementsOfType(xmlDoc, objects, version, settings, "function")
-    _getElementsOfType(xmlDoc, objects, version, settings, "type")
+    _getElementsOfType(xmlDoc, objects, version, settings, Constants.XMLOBJECT)
+    _getElementsOfType(xmlDoc, objects, version, settings, Constants.XMLCOMMAND)
+    _getElementsOfType(xmlDoc, objects, version, settings, Constants.XMLFUNCTION)
+    _getElementsOfType(xmlDoc, objects, version, settings, Constants.XMLTYPE)
 
     // If we imported from Quest 5, object names will have been modified
     // so there is a chance of a new name collision
@@ -53,7 +55,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
     const gameObject = xmlDoc.getElementsByTagName("game")[0]
     const settings = {
       name: 'Settings',
-      jsObjType:'settings',
+      jsObjType: Constants.SETTINGS_TYPE,
       title:gameObject.getAttribute('name'),
     }
 
@@ -172,7 +174,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
     // Parent -> loc
     if (xml.parentNode.nodeType === 1) {
       //console.log("Parent is: " + xml.parentNode.tagName)
-      if (xml.parentNode.tagName === 'object') {
+      if (xml.parentNode.tagName === Constants.XMLOBJECT) {
         object.loc = xml.parentNode.getAttribute('name')
         //console.log("Added parent: " + xml.parentNode.getAttribute('name'))
       }
@@ -180,7 +182,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
 
     // Attributes
     for (let node of  xml.childNodes) {
-      if (node.nodeType === 1 && node.tagName !== 'object') {
+      if (node.nodeType === 1 && node.tagName !== Constants.XMLOBJECT) {
         const attType = node.getAttribute('type')
         const value = node.innerHTML
         const name = (node.tagName === "attr" ? node.getAttribute('name') : node.tagName)
@@ -241,27 +243,27 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
     // elements, which correspond approximately to templates
     if (version < 600) {
       object.inherit = object.inherit|| []
-      if (xml.tagName === 'command') {
+      if (xml.tagName === Constants.XMLCOMMAND) {
         if (object.name === 'help') return null
-        object.jsObjType = 'command'
+        object.jsObjType = Constants.COMMAND_TYPE
         if (object.pattern !== null) {
           object.regex = new RegExp(object.pattern)
           delete object.pattern
         }
       }
-      else if (xml.tagName === 'function') {
-        object.jsObjType = 'function'
+      else if (xml.tagName === Constants.XMLFUNCTION) {
+        object.jsObjType = Constants.FUNCTION_TYPE
         const parameters = xml.getAttribute('parameters')
         if (parameters) {
           object.parameters = parameters.split(',')
           object.parameters = object.parameters.map(el => el.replace(/^\s+|\s+$/g, ''))
         }
       }
-      else if (xml.tagName === 'type'){
-        object.jsObjType = 'template'
+      else if (xml.tagName === Constants.XMLTYPE){
+        object.jsObjType = Constants.TEMPLATE_TYPE
       }
       else {
-        object.jsObjType = object.inherit.includes("editor_room") ? 'room' : 'item'
+        object.jsObjType = object.inherit.includes("editor_room") ? Constants.ROOM_TYPE : Constants.ITEM_TYPE
       }
 
       object.inherit = _removeFromArray(object.inherit, "editor_room")
@@ -271,13 +273,13 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
       object.inherit = _removeFromArray(object.inherit, "talkingchar")
       object.jsPronoun = "thirdperson"
 
-      if (object.jsObjType !== 'room') {
+      if (object.jsObjType !== Constants.ROOM_TYPE) {
         if (object.take) {
-          object.jsMobilityType = "Takeable"
+          object.jsMobilityType = Constants.MOBILITY_TAKABLE
         }
 
         else if (object.inherit.includes("editor_player") || object.feature_player) {
-          object.jsMobilityType = "Player"
+          object.jsMobilityType = Constants.MOBILITY_PLAYER
           object.inherit = _removeFromArray(object.inherit, "editor_player")
           object.jsPronoun = "secondperson"
           delete object.feature_player
@@ -295,7 +297,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
         }
 
         else if (object.inherit.includes("namedfemale")) {
-          object.jsMobilityType = "NPC"
+          object.jsMobilityType = Constants.MOBILITY_NPC
           object.jsFemale = true
           object.properName = true
           object.inherit = _removeFromArray(object.inherit, "namedfemale")
@@ -303,7 +305,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
         }
 
         else if (object.inherit.includes("namedmale")) {
-          object.jsMobilityType = "NPC"
+          object.jsMobilityType = Constants.MOBILITY_NPC
           object.jsFemale = false
           object.properName = true
           object.inherit = _removeFromArray(object.inherit, "namedmale")
@@ -311,7 +313,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
         }
 
         else if (object.inherit.includes("female")) {
-          object.jsMobilityType = "NPC"
+          object.jsMobilityType = Constants.MOBILITY_NPC
           object.jsFemale = true
           object.properName = false
           object.inherit = _removeFromArray(object.inherit, "female")
@@ -319,7 +321,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
         }
 
         else if (object.inherit.includes("male")) {
-          object.jsMobilityType = "NPC"
+          object.jsMobilityType = Constants.MOBILITY_NPC
           object.jsFemale = false
           object.properName = false
           object.inherit = _removeFromArray(object.inherit, "male")
@@ -327,7 +329,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
         }
 
         else if (object.inherit.includes("topic") || object.inherit.includes("startingtopic")) {
-          object.jsMobilityType = "Topic"
+          object.jsMobilityType = Constants.MOBILITY_TOPIC
           if (object.inherit.includes("startingtopic")) {
             object.jsFromStart = true
           }
@@ -354,16 +356,16 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
         }
 
         else {
-          object.jsMobilityType = "Immobile"
+          object.jsMobilityType = Constants.MOBILITY_IMMOBILE
         }
 
         if (object.inherit.includes("surface")) {
-          object.jsContainerType = "Surface"
+          object.jsContainerType = Constants.CONTAINER_SURFACE
           object.inherit = _removeFromArray(object.inherit, "surface")
         }
 
         else if (object.inherit.includes("container_open")) {
-          object.jsContainerType = "Container"
+          object.jsContainerType = Constants.CONTAINER_CONTAINER
           object.closed = false
           if (object.isopen !== undefined) {
             if (!object.isopen) {
@@ -376,7 +378,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
         }
 
         else if (object.inherit.includes("container_closed")) {
-          object.jsContainerType = "Container"
+          object.jsContainerType = Constants.CONTAINER_CONTAINER
           object.closed = true
           if (object.isopen !== undefined) {
             if (object.isopen) {
@@ -389,7 +391,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
         }
 
         else if (object.inherit.includes("container_limited")) {
-          object.jsContainerType = "Container"
+          object.jsContainerType = Constants.CONTAINER_CONTAINER
           object.closed = false
           if (object.isopen !== undefined) {
             if (!object.isopen) {
@@ -403,7 +405,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
         }
 
         else if (object.inherit.includes("openable")) {
-          object.jsContainerType = "Openable"
+          object.jsContainerType = Constants.CONTAINER_OPENABLE
           object.inherit = _removeFromArray(object.inherit, "openable")
           object.closed = true
           if (object.isopen !== undefined) {
@@ -414,13 +416,13 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
           delete object.isopen
         }
         else {
-          object.jsContainerType = "No"
+          delete object.jsContainerType
         }
 
         if (object.inherit.includes("wearable")) {
           object.jsIsWearable = true
           object.inherit = _removeFromArray(object.inherit, "wearable")
-          object.jsMobilityType = "Takeable"
+          object.jsMobilityType = Constants.MOBILITY_TAKABLE
           object.jsWear_layer = object.wear_layer
           object.jsWear_slots = object.wear_slots
           delete object.wear_layer
@@ -442,7 +444,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
         if (object.inherit.includes("edible")) {
           object.jsIsEdible = true
           object.inherit = _removeFromArray(object.inherit, "edible")
-          object.jsMobilityType = "Takeable"
+          object.jsMobilityType = Constants.MOBILITY_TAKABLE
         }
         else {
           object.jsIsEdible = false

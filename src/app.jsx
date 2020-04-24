@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import SplitPane from 'react-split-pane'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFolder, faFileAlt, faLocationArrow, faSlidersH, faSeedling, faCode, faTerminal, faClone } from '@fortawesome/free-solid-svg-icons'
+import * as Constants from './constants'
 
 
 library.add(faFolder, faFileAlt, faLocationArrow, faSlidersH, faSeedling, faCode, faTerminal, faClone);
@@ -61,12 +62,12 @@ export default class App extends Component {
 
       'Preferences...': () => this.preferences.showPreferences(),
 
-      'Add location':  () => this.questObjects.addObject("room"),
-      'Add item':      () => this.questObjects.addObject("item"),
-      'Add stub':      () => this.questObjects.addObject("stub"),
-      'Add function':  () => this.questObjects.addObject("function"),
-      'Add command':   () => this.questObjects.addObject("command"),
-      'Add template':  () => this.questObjects.addObject("template"),
+      'Add location':  () => this.questObjects.addObject(Constants.ROOM_TYPE),
+      'Add item':      () => this.questObjects.addObject(Constants.ITEM_TYPE),
+      'Add stub':      () => this.questObjects.addObject(Constants.STUB_TYPE),
+      'Add function':  () => this.questObjects.addObject(Constants.FUNCTION_TYPE),
+      'Add command':   () => this.questObjects.addObject(Constants.COMMAND_TYPE),
+      'Add template':  () => this.questObjects.addObject(Constants.TEMPLATE_TYPE),
       'Delete object': () => this.questObjects.removeObject(),
       'Duplicate object': () => this.questObjects.duplicateObject(),
 
@@ -132,7 +133,7 @@ export default class App extends Component {
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
-        { name: "Quest files", extensions: ["asl6", "aslx"] },
+        { name: "Quest files", extensions: Constants.FILEEXTENSIONS },
         { name: "All Files", extensions: ["*"] },
       ],
       properties: ["openFile"],
@@ -154,7 +155,7 @@ export default class App extends Component {
     this.autosaveCount++
     if (this.autosaveCount > 9) this.autosaveCount = 0
     var autosavePath = app.getPath('userData') + '/autosaves/'
-    var autosaveFile = 'autosave' + this.autosaveCount + '.asl6'
+    var autosaveFile = 'autosave' + this.autosaveCount + Constants.EXTENSION_ASL6
     this.saveGame(autosavePath + autosaveFile)
     if (this.preferences.jsAutosaveInterval !== 0) {
       setTimeout(this.autosave.bind(this), this.preferences.jsAutosaveInterval * 60000)
@@ -178,7 +179,7 @@ export default class App extends Component {
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
-        { name: "Quest files", extensions: ["asl6", "aslx"] },
+        { name: "Quest files", extensions: Constants.FILEEXTENSIONS },
         { name: "All Files", extensions: ["*"] },
       ],
       title: 'Save file',

@@ -3,8 +3,7 @@ import path from 'path'
 import mkdirp from 'mkdirp'
 import XML2JSON from './translators/xml2json'
 import JSON2JS from './translators/json2js'
-
-const QUEST_JS_PATH = '../questjs/'
+import * as Constants from './constants'
 
 /*
 
@@ -30,8 +29,8 @@ export default class FileStore {
   }
 
   static async writeASLFile (objects, filename) {
-    if (filename.endsWith('.aslx')) {
-      filename = filename.replace('.aslx', '.asl6')
+    if (filename.endsWith(Constants.EXTENSION_ASLX)) {
+      filename = filename.replace(Constants.EXTENSION_ASLX, Constants.EXTENSION_ASL6)
       if (fs.existsSync(filename)) {
         return "A file already exists with the .asl6 extension. You should rename, move or delete that so this file can safely be saved with the new extension."
       }
@@ -44,7 +43,7 @@ export default class FileStore {
   }
 
   static writeJSFile(objects, filename) {
-    const outputPath = filename.replace(/\\/g, '/').replace('.asl6', '/').replace('.aslx', '/')
+    const outputPath = filename.replace(/\\/g, '/').replace(Constants.EXTENSION_ASL6, '/').replace(Constants.EXTENSION_ASLX, '/')
     console.log('Export to JavaScript files')
     if (!fs.existsSync(outputPath)) {
       console.log('Folders need creating')
