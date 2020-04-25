@@ -24,9 +24,9 @@ export class MainPane extends React.Component {
   updateTabs () {
     const controls = []
 
-    for (let i = 0; i < this.props.controls.length; i++) {
-      if (this.props.objects.displayIf(this.props.controls[i])) {
-        controls.push(this.props.controls[i])
+    for (let i = 0; i < this.props.objects.controls.length; i++) {
+      if (this.props.objects.displayIf(this.props.objects.controls[i])) {
+        controls.push(this.props.objects.controls[i])
       }
     }
 

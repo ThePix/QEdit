@@ -16,9 +16,7 @@ import {SidePane} from './sidepane';
 import {MainPane} from './mainpane';
 import FileStore from './filestore';
 import Preferences from './preferences'
-//import {TabControls} from './tabcontrols';
 import {Menus} from './menus';
-import TabControls from './tabcontrols'
 import QuestObjects from './questobjects'
 
 // Next four lines disable warning from React-hot-loader
@@ -49,9 +47,8 @@ export default class App extends Component {
     this.searchTerm = ''
     this.searchBackwards = false
     this.searchCaseSensitive = true
-    this.controls = new TabControls().controls;
     this.preferences = new Preferences()
-    this.questObjects = new QuestObjects(this.controls, this.preferences)
+    this.questObjects = new QuestObjects(this.preferences)
 
     const menuMapping = {
       'New':           () => this.newGame(),
@@ -410,7 +407,6 @@ export default class App extends Component {
               handleCBChange={this.handleCBChange.bind(this)}
               handleIntChange={this.handleIntChange.bind(this)}
               handleListChange={this.handleListChange.bind(this)}
-              controls={this.controls}
             />
           </SplitPane>
           <div id="statusbar">Status:</div>

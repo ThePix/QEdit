@@ -6,7 +6,7 @@ import * as Constants from './constants'
 export default class QuestObjects extends EventEmitter {
   constructor (controls, preferences) {
     super(controls, preferences)
-    this.controls = controls
+    this.controls = new TabControls().controls
     this.preferences = preferences
     this.clear()
   }
