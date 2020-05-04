@@ -2,6 +2,7 @@
   {
     "action":"tab",
     "tabName":"Template",
+    "icon": "file",
     "displayIf":"o.jsObjType === 'template'",
     "tabControls":[
     ]

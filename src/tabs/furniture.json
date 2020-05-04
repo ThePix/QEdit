@@ -2,6 +2,7 @@
   {
     "action":"tab",
     "tabName":"Furniture",
+    "icon":"bed",
     "displayIf":"o.jsIsFurniture",
     "tabControls":[
       {

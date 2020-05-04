@@ -7,7 +7,6 @@ export default class JSON2JS {
     // Unit tested
   static parseData(objects) {
     let str = Constants.JSSTRICT
-    // TODO: this is just for one object
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== Constants.ROOM_TYPE
         && objects[i].jsObjType !== Constants.ITEM_TYPE) continue

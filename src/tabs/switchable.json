@@ -2,6 +2,7 @@
   {
     "action":"tab",
     "tabName":"Switchable",
+    "icon": "btn-on",
     "displayIf":"o.jsIsSwitchable",
     "tabControls":[
       {

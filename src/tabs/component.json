@@ -2,12 +2,13 @@
   {
     "action":"tab",
     "tabName":"Component",
+    "icon":"sitemap",
     "displayIf":"o.jsIsComponent",
     "tabControls":[
       {
         "name":"loc",
         "type":"objects",
-        "default":"---",
+        "default":"",
         "display":"Location",
         "tooltip":"The item that this is a component of."
       }

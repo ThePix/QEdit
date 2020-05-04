@@ -553,6 +553,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
     return removeCDATA(s)
   }
 
+// TODO: This does not match the correct exit format
   function createExitFromXml(node) {
     const data = xmlToDict(node)
     const name = node.getAttribute('to') || (' ' + data.to).slice(1) //Clone this

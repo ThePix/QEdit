@@ -2,6 +2,7 @@
   {
     "action":"tab",
     "tabName":"Container",
+    "icon":"archive",
     "displayIf":"o.jsContainerType && o.jsContainerType !== 'No'",
     "tabControls":[
       {

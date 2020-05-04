@@ -2,6 +2,7 @@
   {
     "action":"tab",
     "tabName":"Wearable",
+    "icon": "universal-access",
     "displayIf":"o.jsIsWearable",
     "tabControls":[
       {

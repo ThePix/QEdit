@@ -1,5 +1,7 @@
-import React, {Component} from 'react'
+import React from 'react'
 import Store from 'electron-store'
+import { Modal, Form, FormGroup, ControlLabel, Toggle, SelectPicker, InputNumber
+ } from 'rsuite'
 import * as Constants from './constants'
 
 const defaultPreferences = {
@@ -11,71 +13,79 @@ const defaultPreferences = {
 }
 const preferences = new Store({defaults:defaultPreferences})
 
-export default class Preferences extends Component {
-  constructor() {
-    super()
-    this.state = {showPreferences: false}
-  }
-  showPreferences() {
-    this.setState({showPreferences: true})
-  }
-
-  hidePreferences() {
-    this.setState({showPreferences: false})
-  }
-
-  onChange(newValue) {
-      this.set(newValue.target.id, newValue.target.value)
-      // TODO: Check if this is needed.
-      this.forceUpdate()
-  }
-
-  get(key) {
+export default class Preferences extends React.Component {
+  static get(key) {
     return preferences.get(key)
   }
 
-  set(key, value) {
+  static set(key, value) {
     preferences.set(key, value)
   }
 
   render() {
-    const showHideClassName = this.state.showPreferences ? "modal display-block" : "modal display-none";
-    // TODO: fix bug, where checkbox doesn't updaet image
+    const data = Constants.WHEREOPTIONS.map((el, i) =>
+      {return({value: el, label: el})})
     return (
-      <div className={showHideClassName}>
-        <section className="modal-main">
-          <form action="" id="preferences form">
-            <p>
-              <label htmlFor={Constants.SHOWROOMSONLY}>Show rooms only
-              <input type="checkbox" id={Constants.SHOWROOMSONLY} value={this.get(Constants.SHOWROOMSONLY)} onChange={this.onChange.bind(this)}></input>
-              <img src={(this.get(Constants.SHOWROOMSONLY)) ? 'images/tick.png' : 'images/cross.png'}></img>
-              </label>
-            </p>
-            <p><label htmlFor={Constants.NEWROOMWHERE}>New room where? </label> <span>
-              <select id={Constants.NEWROOMWHERE} value={this.get(Constants.NEWROOMWHERE)} onChange={this.onChange.bind(this)}>
-              {Constants.WHEREOPTIONS.map((item, i) =>  <option value={item} key={i}>{item}</option>)}
-              </select></span>
-            </p>
-            <p><label htmlFor={Constants.NEWITEMWHERE}>New item where? </label> <span>
-              <select id={Constants.NEWITEMWHERE} value={this.get(Constants.NEWITEMWHERE)} onChange={this.onChange.bind(this)}>
-              {Constants.WHEREOPTIONS.map((item, i) =>  <option value={item} key={i}>{item}</option>)}
-              </select></span>
-            </p>
-            <p><label htmlFor={Constants.AUTOSAVEINTERVAL}>Autosave interval </label>
-              <span>
-              <input type="text" id={Constants.AUTOSAVEINTERVAL} value={this.get(Constants.AUTOSAVEINTERVAL)} onChange={this.onChange.bind(this)}></input>
-              </span>
-            </p>
-            <p><label htmlFor={Constants.DARKMODE}>Dark mode </label>
-              <span>
-              <input type="checkbox" id={Constants.DARKMODE} value={this.get(Constants.DARKMODE)} onChange={this.onChange.bind(this)}></input>
-              <img src={this.get(Constants.DARKMODE) ? 'images/tick.png' : 'images/cross.png'}></img>
-              </span>
-            </p>
-          </form>
-          <button onClick={this.hidePreferences.handleClose}>close</button>
-        </section>
-      </div>
+      <Modal show={this.props.show} onHide={() => {this.props.close()}}>
+        <Modal.Header>
+          <Modal.Title>Preferences</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form layout='horizontal'>
+            <FormGroup>
+              <ControlLabel>Show rooms only:</ControlLabel>
+              <Toggle
+                key={Constants.SHOWROOMSONLY}
+                defaultChecked={Preferences.get(Constants.SHOWROOMSONLY)}
+                onChange={(value) => Preferences.set(Constants.SHOWROOMSONLY, value)}
+                style={{marginTop:5}}
+              />
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>New room where?</ControlLabel>
+              <SelectPicker
+                key={Constants.NEWROOMWHERE}
+                style={Constants.INPUTCOMPONENT_STYLE}
+                data={data}
+                defaultValue={Preferences.get(Constants.NEWROOMWHERE)}
+                onChange={(value) => Preferences.set(Constants.NEWROOMWHERE, value)}
+                cleanable={false}
+              />
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>New item where?</ControlLabel>
+              <SelectPicker
+                key={Constants.NEWITEMWHERE}
+                style={Constants.INPUTCOMPONENT_STYLE}
+                data={data}
+                defaultValue={Preferences.get(Constants.NEWITEMWHERE)}
+                onChange={(value) => Preferences.set(Constants.NEWITEMWHERE, value)}
+                cleanable={false}
+              />
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>Autosave interval:</ControlLabel>
+              <InputNumber
+                key={Constants.AUTOSAVEINTERVAL}
+                stule={Constants.INPUTCOMPONENT_STYLE}
+                defaultValue={Preferences.get(Constants.AUTOSAVEINTERVAL)}
+                min={1}
+                max={100}
+                onChange={(value) => Preferences.set(Constants.AUTOSAVEINTERVAL, value)}
+              />
+            </FormGroup>
+            <FormGroup>
+              <ControlLabel>Dark mode:</ControlLabel>
+              <Toggle
+                key={Constants.DARKMODE}
+                defaultChecked={Preferences.get(Constants.DARKMODE)}
+                onChange={(value) => Preferences.set(Constants.DARKMODE, value)}
+                style={{marginTop:5}}
+              />
+            </FormGroup>
+          </Form>
+        </Modal.Body>
+      </Modal>
     )
   }
 }

@@ -2,6 +2,7 @@
   {
     "action":"tab",
     "tabName":"Merchandise",
+    "icon":"money",
     "displayIf":"o.jsIsMerchandise",
     "tabControls":[
       {

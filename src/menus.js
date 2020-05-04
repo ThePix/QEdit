@@ -1,7 +1,8 @@
 
 const { app } = require('electron').remote;
+import * as Constants from './constants'
 
-export class Menus {
+export default class Menus {
   getMenus() {
     const template = [
       {
@@ -77,7 +78,7 @@ export class Menus {
           {
             label: 'Help',
             click () {
-              require('electron').shell.openExternal('https://github.com/ThePix/QEdit/wiki');
+              require('electron').shell.openExternal(Constants.WIKI_URL)
             }
           },
         ]
