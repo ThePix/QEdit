@@ -44,7 +44,7 @@ export class SelectComp extends React.Component {
       console.log(this.props);
       return null;
     }
-    
+
     return (
       <select
         className="form-control"
@@ -76,7 +76,7 @@ export class ResponsesComp extends React.Component {
     else {
       options = this.props.options;
     }
-    return (  
+    return (
       <select
           className="form-control"
           id={this.props.name}
@@ -104,7 +104,7 @@ export class ScriptComp extends React.Component {
     this.id = props.input.name
     this.handleChange=this.props.handleChange;
   }
-  
+
   handleScriptChange(e) {
     //console.log("s----------------------------");
     //console.log(e);
@@ -137,7 +137,7 @@ export class ScriptComp extends React.Component {
       try {
         console.log(this.text);
         //eval(this.text);
-        
+
         let result = function(str, params){
           console.log("-------------------");
           console.log(params);
@@ -151,7 +151,7 @@ export class ScriptComp extends React.Component {
           console.log(preamble + str);
           return eval(preamble + str);
         }.call(RunEnviro, this.text, this.params);
-        
+
         //eval(this.props.value);
         console.log('Code is good');
       }
@@ -164,7 +164,7 @@ export class ScriptComp extends React.Component {
       }
     }
     const style = {backgroundColor:isValid ? "white" : "yellow"};
-    return (  
+    return (
       <div style={style}>
         <span className="fieldName">Parameters (separated with commas)</span>
         <input
@@ -231,4 +231,3 @@ const tabs = function(n) {
 const RunEnviro = {}
 
 const msg = function(s){}
-

@@ -7,27 +7,29 @@
     style-src 'unsafe-inline' 'self' https://fonts.googleapis.com https://ajax.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
     script-src 'unsafe-eval' 'unsafe-inline' 'self' https://ajax.googleapis.com https://html5shiv.googlecode.com;
-    img-src 'self' https://ajax.googleapis.com;"
+    worker-src blob: https://ajax.googleapis.com;
+    img-src 'self' data: https://ajax.googleapis.com;"
   >
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style/style.css">
+  <link rel="stylesheet" href="style/react-tabs.css">
 </head>
-<body style="overflow: hidden;" >
+<body style="overflow: hidden; margin: auto;" >
   <div id="App"></div>
 </body>
 
 <script type="text/jsx">
-import React from 'react';
-import ReactDOM from 'react-dom';
-import {AppContainer} from 'react-hot-loader';
+  import React from 'react'
+  import ReactDOM from 'react-dom'
+  import {AppContainer} from 'react-hot-loader'
 
-const render = () => {
-  const App = require('./app').default;
-  ReactDOM.render(<AppContainer><App /></AppContainer>, document.getElementById('App'));
-}
+  const render = () => {
+    const App = require('./app').default
+    ReactDOM.render(<AppContainer><App /></AppContainer>, document.getElementById('App'))
+  }
 
-render();
-if (module.hot) {
-  module.hot.accept(render);
-}
+  render()
+  if (module.hot) {
+    module.hot.accept(render)
+  }
 </script>
 </html>
