@@ -5,12 +5,12 @@ const {lang} = require("./lang-en.js");
 // custom files may want to have _ at the start so they are added later
 class TabControls {
   constructor() {
-    const files = fs.readdirSync('src/tabs')
+    const files = fs.readdirSync(__dirname + '/tabs')
     this.controls = [];
     this.libraries = []
-    
+
     for (let filename of files) {
-      const json = require('./tabs/' + filename);
+      const json = require(__dirname + '/tabs/' + filename);
       for (let data of json) {
         if (data.action === "tab") {
           this.controls.push(data);
@@ -39,7 +39,7 @@ class TabControls {
         }
       }
     }
-    
+
   }
 }
 

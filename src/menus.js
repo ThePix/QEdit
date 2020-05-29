@@ -1,4 +1,6 @@
 
+const { app } = require('electron').remote;
+
 export class Menus {
   getMenus() {
     const template = [
@@ -22,7 +24,7 @@ export class Menus {
           { type: 'separator' },
           { role: 'cut' },
           { role: 'copy' },
-          { role: 'paste' },
+          { label: 'Paste', role: 'paste' },
         ]
       },
       {
@@ -36,13 +38,10 @@ export class Menus {
           { role: 'zoomin' },
           { role: 'zoomout' },
           { type: 'separator' },
-          { role: 'togglefullscreen' },
-          { 
-            label: 'Dark mode',
-            type: 'checkbox',
-          },
+          { label: 'Toggle Full Screen', role: 'togglefullscreen' },
+          { label: 'Dark mode', type: 'checkbox', checked : false },
           //{ type: 'separator' },
-          //{ 
+          //{
           //  label: 'Preview in browser',
           //  click () { require('electron').shell.openExternal("file://" + FILENAME) }
           //}
@@ -98,10 +97,10 @@ export class Menus {
           { type: 'separator' },
           { role: 'quit' }
         ]
-      })
+      });
 
       // Edit menu
-      template[1].submenu.push(
+      template[2].submenu.push(
         { type: 'separator' },
         {
           label: 'Speech',
@@ -110,18 +109,20 @@ export class Menus {
             { role: 'stopspeaking' }
           ]
         }
-      )
+      );
 
       // Window menu
-      template[3].submenu = [
-        { role: 'close' },
-        { role: 'minimize' },
-        { role: 'zoom' },
-        { type: 'separator' },
-        { role: 'front' }
-      ]
+      template.splice(-1, 0, {
+        label: 'Window',
+        submenu: [
+          { role: 'close' },
+          { role: 'minimize' },
+          { role: 'zoom' },
+          { type: 'separator' },
+          { role: 'front' }
+        ]}
+      );
     }
     return template;
   }
 }
-
