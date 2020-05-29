@@ -2,28 +2,28 @@
   {
     "action":"tab",
     "tabName":"Container",
-    "displayIf":"o.jsContainerType && o.jsContainerType !== 'No'", 
+    "displayIf":"o.jsContainerType && o.jsContainerType !== 'No'",
     "tabControls":[
       {
-        "name":"openable",   
-        "type":"flag", 
-        "default":true, 
+        "name":"openable",
+        "type":"flag",
+        "default":true,
         "display":"Openable?",
         "tooltip":"Can this item be opened and closed?",
         "displayIf":"o.jsContainerType === 'Container'"
       },
-      { 
+      {
         "name":"closed",
         "type":"flag",
-        "default":true, 
+        "default":true,
         "display":"Start closed?",
         "tooltip":"Is the item closed at the start of the game?",
         "displayIf":"(o.jsContainerType === 'Container' && o.openable) || o.jsContainerType === 'Openable'"
       },
-      { 
-        "name":"transparent", 
-        "type":"flag", 
-        "default":false, 
+      {
+        "name":"transparent",
+        "type":"flag",
+        "default":false,
         "display":"Transparent?",
         "tooltip":"Can the contents of the container be seen even when it is closed?",
         "displayIf":"o.jsContainerType === 'Container'"
@@ -31,7 +31,7 @@
       {
         "name":"jsIsLockable",
         "type":"flag",
-        "default":false, 
+        "default":false,
         "display":"Can this be locked?",
         "tooltip":"What it says.",
         "displayIf":"o.jsObjType !== 'room' && o.jsObjType !== 'stub' && (o.jsContainerType === 'Container' || o.jsContainerType === 'Openable')"
@@ -42,13 +42,13 @@
   {
     "action":"extend",
     "tabName":"Home",
-    "name":"jsContainerType", 
-    "type":"select",   
-    "default":"No", 
-    "display":"Container/openable",  
+    "name":"jsContainerType",
+    "type":"select",
+    "default":"No",
+    "display":"Container/openable",
     "options":["No", "Container", "Surface", "Openable", "Vessel"],
     "tooltip":"A container might be a box or chest that perhaps can be opened or locked. A surface can have things put on it; a table or shelf. A door or gate is openable, but you cannot put things inside it. A vessel will hold liquids.",
-    "displayIf":"o.jsObjType !== 'room' && o.jsObjType !== 'stub' && (o.jsMobilityType === 'Immobile' || o.jsMobilityType === 'Takeable')"
+    "displayIf":"o.jsObjType === 'item' && (o.jsMobilityType === 'Immobile' || o.jsMobilityType === 'Takeable')"
   }
-        
+
 ]

@@ -256,7 +256,7 @@
 				"type": "flag",
 				"default": true,
 				"display": "Disable TALK TO",
-				"tooltip": "Untick to alloqw players to TALK TO a character to see dynamic lists of topics."
+				"tooltip": "Untick to allow players to TALK TO a character to see dynamic lists of topics."
 			},
 			{
 				"name": "noTalkTo",
@@ -372,8 +372,18 @@
 			"type": "textarea",
 			"default": "",
 			"display": "Introduction",
-			"tooltip": "This text will appear when you game starts. Use it to introduce the game to the player, setting up the premise, hinting at the objective, or whatever."
-		}]
+			"tooltip": "This text will appear when your game starts. Use it to introduce the game to the player, setting up the premise, hinting at the objective, or whatever."
+		},
+		{
+			"name": "setup",
+			"type": "script",
+			"default": "",
+			"display": "Setup",
+			"tooltip": "This script will run when your game starts. Use it to setup the game.",
+			"parameters": "",
+			"return": "boolean"
+		}
+		]
 	},
 
 	{
@@ -636,6 +646,14 @@
 				"display": "Divider file",
 				"displayIf": "o.panes !== 'None' && o.jsdivider",
 				"tooltip": "File name for an image to be inserted between each component."
+			},
+			{
+				"name": "jsStatusList",
+				"type": "stringlist",
+				"default": [],
+				"display": "Status attributes",
+				"displayIf": "o.jsStatusPaneFlag",
+				"tooltip": "List all your status attributes for the player."
 			},
 			{
 				"type": "title",

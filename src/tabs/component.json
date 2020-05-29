@@ -2,25 +2,25 @@
   {
     "action":"tab",
     "tabName":"Component",
-    "displayIf":"o.jsIsComponent", 
+    "displayIf":"o.jsIsComponent",
     "tabControls":[
       {
         "name":"loc",
         "type":"objects",
-        "default":"---", 
+        "default":"---",
         "display":"Location",
         "tooltip":"The item that this is a component of."
       }
     ]
   },
-  { 
+  {
     "action":"extend",
     "tabName":"Home",
     "name":"jsIsComponent",
     "type":"flag",
     "default":false,
-    "display":"Component?",  
+    "display":"Component?",
     "tooltip":"What it says.",
-    "displayIf":"o.jsObjType !== 'room' && o.jsObjType !== 'stub'"
+    "displayIf":"o.jsObjType === 'item'"
   }
 ]

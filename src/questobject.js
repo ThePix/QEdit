@@ -16,12 +16,14 @@ const ALT_COLOURS = {
 }
 
 class QuestObject {
-  constructor (data, version) {
+  constructor (data, version, settings) {
     //this.id = nextId
     //nextId++
     if (data.getAttribute) {
       // Is this an XML element? We could test if the class is Element, but then the unit tests fails
-      this.translateObjectFromXml(data, version);
+      if(this.translateObjectFromXml(data, version, settings) === null) {
+        throw('NullObject')
+      }
     }
     else {
       for (let key in data) {
@@ -47,7 +49,7 @@ class QuestObject {
   }
 
   static create(state, objectType) {
-    const newObject = new QuestObject({
+    var newObject = new QuestObject({
       name:"_new_" + objectType,
       jsObjType:objectType,
       jsMobilityType:'Immobile',
@@ -59,7 +61,7 @@ class QuestObject {
     let currentObject = QuestObject.getCurrent(state)
     // If the current object is the settings, OR if the current object is a room and new rooms go top,
     // then loc is undefined, otherwise, do this:
-    if (currentObject.jsObjType === 'settings' || newObject.jsObjType === 'junction' || newObject.jsObjType === 'command') {
+    if (currentObject.jsObjType === 'settings' || newObject.jsObjType === 'command' || newObject.jsObjType === 'function' || newObject.jsObjType === 'template') {
       currentObject = undefined
     }
     else {
@@ -102,6 +104,7 @@ class QuestObject {
       newObject.loc = currentObject.name
       console.log("Set location to: " + currentObject.name);
     }
+
     return newObject
   }
 
@@ -203,16 +206,16 @@ class QuestObject {
   // which could be Quest 5 or 6
   // This has been unit tested with Quest 5 XML for an NPM, a wearable and a room
   // For Quest 6 the different types of attributes have been tested
-  translateObjectFromXml(xml, version) {
+  translateObjectFromXml(xml, version, settings) {
 
-    const object = {};
-    this.jsConversionNotes = [];
+    const object = {}
+    this.jsConversionNotes = []
 
     this.name = xml.getAttribute('name');
     if (/ /.test(this.name)) {
       this.jsConversionNotes.push("Object name had spaces removed; update any references (locations have been updates automatically); check no naming collision.");
       this.jsOldName = this.name;
-      this.name = this.name.replace(/ /, "_");
+      this.name = this.name.replace(/\s/g, "_");
     }
 
 
@@ -228,15 +231,16 @@ class QuestObject {
     // Attributes
     for (let node of  xml.childNodes) {
       if (node.nodeType === 1 && node.tagName !== 'object') {
-        const attType = node.getAttribute('type');
-        const value = node.innerHTML;
-        const name = (node.tagName === "attr" ? node.getAttribute('name') : node.tagName);
+        const attType = node.getAttribute('type')
+        const value = node.innerHTML
+        const name = (node.tagName === "attr" ? node.getAttribute('name') : node.tagName)
 
         if (name === "inherit") {
-          this.inherit = node.getAttribute('name');
+          this.inherit = this.inherit || []
+          this.inherit.push(node.getAttribute('name'))
         }
         else if (attType === 'boolean') {
-          this[name] = value === 'true' || value === '';
+          this[name] = value === 'true' || value === ''
           //console.log("Boolean");
         }
         else if (attType === 'int') {
@@ -248,7 +252,7 @@ class QuestObject {
           //console.log("RegExp");
         }
         else if (attType === 'stringlist') {
-          const els = node.getElementsByTagName('value');
+          const els = node.getElementsByTagName('value')
           const arr = [];
           for (let k = 0; k < els.length; k++) arr.push(els[k].innerHTML);
           this[name] = arr;
@@ -256,12 +260,22 @@ class QuestObject {
         }
         else if (['script', 'js', 'blockly'].includes(attType)) {
           //console.log("Code " + attType);
-          //console.log(value);
-          this[name] = xmlToDict(node, {type:attType})
+          if (attType === 'script' && node.innerHTML) {
+            this[name] = {type:attType, code:convertValue(node.innerHTML, attType)}
+          }
+          else {
+            this[name] = xmlToDict(node, {type:attType})
+          }
         }
         else if (name === 'exit') {
-          this[node.getAttribute('alias')] = Exit.createFromXml(node);
+          this[node.getAttribute('alias')] = Exit.createFromXml(node)
           //console.log("Exit");
+        }
+        else if (name === 'statusattributes') {
+          this.statusattributes = node
+        }
+        else if ((value === '' || value === undefined) && node.attributes.length === 0) {
+          this[name] = true;
         }
         else if (attType === 'string' || attType === '' || attType === null || attType === 'object') {
           this[name] = removeBR(removeCDATA(value));
@@ -276,15 +290,35 @@ class QuestObject {
     // If this is a conversion from Quest 5 we need to handle the "inherit"
     // elements, which correspond approximately to templates
     if (version < 600) {
-      let inherits = this._getDirectChildAttributes(xml, "inherit", 'name');
-      //console.log(inherits);
+      this.inherit = this.inherit|| []
+      if (xml.tagName === 'command') {
+        if (this.name === 'help') return null
+        this.jsObjType = 'command'
+        if (this.pattern !== null) {
+          this.regex = new RegExp(this.pattern)
+          delete this.pattern
+        }
+      }
+      else if (xml.tagName === 'function') {
+        this.jsObjType = 'function'
+        const parameters = xml.getAttribute('parameters')
+        if (parameters) {
+          this.parameters = parameters.split(',')
+          this.parameters = this.parameters.map(el => el.replace(/^\s+|\s+$/g, ''))
+        }
+      }
+      else if (xml.tagName === 'type'){
+        this.jsObjType = 'template'
+      }
+      else {
+        this.jsObjType = this.inherit.includes("editor_room") ? 'room' : 'item'
+      }
 
-      this.jsObjType = inherits.includes("editor_room") ? 'room' : 'item'
-      inherits = this._removeFromArray(inherits, "editor_room");
-      inherits = this._removeFromArray(inherits, "editor_object");
+      this.inherit = this._removeFromArray(this.inherit, "editor_room");
+      this.inherit = this._removeFromArray(this.inherit, "editor_object");
 
       // I think we can safely remove these as the defaults handle it
-      inherits = this._removeFromArray(inherits, "talkingchar");
+      this.inherit = this._removeFromArray(this.inherit, "talkingchar");
       this.jsPronoun = "thirdperson";
 
       if (this.jsObjType !== 'room') {
@@ -292,122 +326,181 @@ class QuestObject {
           this.jsMobilityType = "Takeable";
         }
 
-        else if (inherits.includes("editor_player")) {
-          this.jsMobilityType = "Player";
-          inherits = this._removeFromArray(inherits, "editor_player");
-          this.jsPronoun = "secondperson";
+        else if (this.inherit.includes("editor_player") || this.feature_player) {
+          this.jsMobilityType = "Player"
+          this.inherit = this._removeFromArray(this.inherit, "editor_player")
+          this.jsPronoun = "secondperson"
+          delete this.feature_player
+          if (this.statusattributes !== undefined && settings !== undefined) {
+            settings.jsStatusList = settings.jsStatusList || [];
+            const items = this.statusattributes.getElementsByTagName('item');
+            for (let item of items) {
+              var key = item.getElementsByTagName('key')[0].innerHTML;
+        //       var value = item.getElementsByTagName('value')[0].innerHTML;
+              if (!settings.jsStatusList.includes(key)) {
+                settings.jsStatusList.push(key);
+              }
+            }
+          }
         }
 
-        else if (inherits.includes("namedfemale")) {
+        else if (this.inherit.includes("namedfemale")) {
           this.jsMobilityType = "NPC";
           this.jsFemale = true;
           this.properName = true;
-          inherits = this._removeFromArray(inherits, "namedfemale");
+          this.inherit = this._removeFromArray(this.inherit, "namedfemale");
           this.jsPronoun = "female";
         }
 
-        else if (inherits.includes("namedmale")) {
+        else if (this.inherit.includes("namedmale")) {
           this.jsMobilityType = "NPC";
           this.jsFemale = false;
           this.properName = true;
-          inherits = this._removeFromArray(inherits, "namedmale");
+          this.inherit = this._removeFromArray(this.inherit, "namedmale");
           this.jsPronoun = "male";
         }
 
-        else if (inherits.includes("female")) {
+        else if (this.inherit.includes("female")) {
           this.jsMobilityType = "NPC";
           this.jsFemale = true;
           this.properName = false;
-          inherits = this._removeFromArray(inherits, "female");
+          this.inherit = this._removeFromArray(this.inherit, "female");
           this.jsPronoun = "female";
         }
 
-        else if (inherits.includes("male")) {
+        else if (this.inherit.includes("male")) {
           this.jsMobilityType = "NPC";
           this.jsFemale = false;
           this.properName = false;
-          inherits = this._removeFromArray(inherits, "male");
+          this.inherit = this._removeFromArray(this.inherit, "male");
           this.jsPronoun = "male";
         }
 
-        else if (inherits.includes("topic")) {
-          this.jsMobilityType = "Topic";
-          this.jsFromStart = false;
-          inherits = this._removeFromArray(inherits, "topic");
-        }
-
-        else if (inherits.includes("startingtopic")) {
-          this.jsMobilityType = "Topic";
-          this.jsFromStart = true;
-          inherits = this._removeFromArray(inherits, "startingtopic");
+        else if (this.inherit.includes("topic") || this.inherit.includes("startingtopic")) {
+          this.jsMobilityType = "Topic"
+          if (this.inherit.includes("startingtopic")) {
+            this.jsFromStart = true
+          }
+          else {
+            this.jsFromStart = false
+          }
+          this.inherit = this._removeFromArray(this.inherit, "startingtopic");
+          this.inherit = this._removeFromArray(this.inherit, "topic");
+          if (this.exchange && this.talk) {
+            const exchangecode = convertValue('msg("' + this.exchange + '")\n', 'script')
+            this.jsTopicScript = this.talk
+            this.jsTopicScript.code = exchangecode + this.jsTopicScript.code
+          }
+          else if (this.exchange) {
+            this.jsTopicScript = this.exchange
+          }
+          else if (this.talk) {
+            this.jsTopicScript = this.talk
+          }
+          delete this.exchange
+          delete this.talk
+          if (this.nowshow) this.nowshow = this.nowshow.map(el => el.replace(/\s/g, "_"))
+          if (this.nowhide) this.nowhide = this.nowhide.map(el => el.replace(/\s/g, "_"))
         }
 
         else {
           this.jsMobilityType = "Immobile";
         }
 
-
-        if (inherits.includes("surface")) {
+        if (this.inherit.includes("surface")) {
           this.jsContainerType = "Surface";
-          inherits = this._removeFromArray(inherits, "surface");
+          this.inherit = this._removeFromArray(this.inherit, "surface");
         }
 
-        else if (inherits.includes("container_open")) {
-          this.jsContainerType = "Container";
-          this.jsContainerClosed = false;
-          inherits = this._removeFromArray(inherits, "container_open");
+        else if (this.inherit.includes("container_open")) {
+          this.jsContainerType = "Container"
+          this.closed = false
+          if (this.isopen !== undefined) {
+            if (!this.isopen) {
+              this.closed = true
+            }
+          }
+          delete this.isopen
+          this.openable = true
+          this.inherit = this._removeFromArray(this.inherit, "container_open")
         }
 
-        else if (inherits.includes("container_closed")) {
-          this.jsContainerType = "Container";
-          this.jsContainerClosed = true;
-          inherits = this._removeFromArray(inherits, "container_closed");
+        else if (this.inherit.includes("container_closed")) {
+          this.jsContainerType = "Container"
+          this.closed = true
+          if (this.isopen !== undefined) {
+            if (this.isopen) {
+              this.closed = false
+            }
+          }
+          delete this.isopen
+          this.openable = true
+          this.inherit = this._removeFromArray(this.inherit, "container_closed")
         }
 
-        else if (inherits.includes("container_limited")) {
-          this.jsContainerType = "Container";
-          this.jsContainerClosed = false;
-          inherits = this._removeFromArray(inherits, "container_limited");
-          this.jsConversionNotes.push("Currently editor may not translate limited container properly");
+        else if (this.inherit.includes("container_limited")) {
+          this.jsContainerType = "Container"
+          this.closed = false
+          if (this.isopen !== undefined) {
+            if (!this.isopen) {
+              this.closed = true
+            }
+          }
+          delete this.isopen
+          this.openable = true
+          this.inherit = this._removeFromArray(this.inherit, "container_limited")
+          this.jsConversionNotes.push("Currently editor may not translate limited container properly")
         }
 
-        else if (inherits.includes("openable")) {
+        else if (this.inherit.includes("openable")) {
           this.jsContainerType = "Openable";
-          inherits = this._removeFromArray(inherits, "openable");
+          this.inherit = this._removeFromArray(this.inherit, "openable");
+          this.closed = true
+          if (this.isopen !== undefined) {
+            if (this.isopen) {
+              this.closed = false
+            }
+          }
+          delete this.isopen
         }
         else {
           this.jsContainerType = "No";
         }
 
-        if (inherits.includes("wearable")) {
-          this.jsIsWearable = true;
-          inherits = this._removeFromArray(inherits, "wearable");
-          this.jsMobilityType = "Takeable";
+        if (this.inherit.includes("wearable")) {
+          this.jsIsWearable = true
+          this.inherit = this._removeFromArray(this.inherit, "wearable")
+          this.jsMobilityType = "Takeable"
+          this.jsWear_layer = this.wear_layer
+          this.jsWear_slots = this.wear_slots
+          delete this.wear_layer
+          delete this.wear_slots
+          delete this.feature_wearable
         }
         else {
-          this.jsIsWearable = false;
+          this.jsIsWearable = false
         }
 
-        if (inherits.includes("switchable")) {
+        if (this.inherit.includes("switchable")) {
           this.jsIsSwitchable = true;
-          inherits = this._removeFromArray(inherits, "switchable");
+          this.inherit = this._removeFromArray(this.inherit, "switchable");
         }
         else {
           this.jsIsSwitchable = false;
         }
 
-        if (inherits.includes("edible")) {
+        if (this.inherit.includes("edible")) {
           this.jsIsEdible = true;
-          inherits = this._removeFromArray(inherits, "edible");
+          this.inherit = this._removeFromArray(this.inherit, "edible");
           this.jsMobilityType = "Takeable";
         }
         else {
           this.jsIsEdible = false;
         }
 
-        if (inherits.includes("plural")) {
-          this.jsIsPronoun = "plural";
-          inherits = this._removeFromArray(inherits, "plural");
+        if (this.inherit.includes("plural")) {
+          this.jsPronoun = "plural";
+          this.inherit = this._removeFromArray(this.inherit, "plural");
         }
       }
       if (this.look) {
@@ -421,25 +514,45 @@ class QuestObject {
       }
       if (this.description) {
         if (this.desc) {
-          this.jsConversionNotes.push("Cannot convert 'description' to 'desc' as object already has an 'desc' attribute");
+          this.jsConversionNotes.push("Cannot convert 'description' to 'desc' as object already has an 'desc' attribute")
         }
         else {
-          this.desc = this.description;
-          delete this.description;
+          this.desc = this.description
+          delete this.description
         }
       }
       if (this.displayverbs || this.inventoryverbs) {
-        this.jsConversionNotes.push("This object has custom inventory/display verbs set. These are handled very differently in Quest 6, so cannot be converted. You should modify the 'getVerbs' function yourself.");
-        delete this.inventoryverbs;
-        delete this.displayverbs;
+        this.jsConversionNotes.push("This object has custom inventory/display verbs set. These are handled very differently in Quest 6, so cannot be converted. You should modify the 'getVerbs' function yourself.")
+        delete this.inventoryverbs
+        delete this.displayverbs
       }
-      if (inherits.length > 0) this.jsConversionNotes.push("Failed to do anything with these inherited types: " + inherits);
+      if (this.inherit.length > 0) {
+        this.jsConversionNotes.push("Failed to do anything with these inherited types: " + this.inherit)
+      }
+      else {
+        delete this.inherit
+      }
+      delete this.statusattributes
+      delete this.feature_container
+
+      if (this.activeconversations) {
+        settings.jsnoTalkTo = false
+        delete this.activeconversations
+      }
+
+      if (this.visible !== undefined) {
+        this.jsVisible = this.visible
+        delete this.visible
+      }
+
+      if (this.usedefaultprefix !== undefined) {
+        this.properName = !this.usedefaultprefix
+        delete this.usedefaultprefix
+      }
     }
 
-    if (this.jsConversionNotes.length === 0) delete this.jsConversionNotes;
-
-    //console.log(this);
-    return this;
+    if (this.jsConversionNotes.length === 0) delete this.jsConversionNotes
+    return this
   }
 
   _getDirectChildAttributes(element, tag, attr) {
@@ -449,16 +562,18 @@ class QuestObject {
   }
 
   _removeFromArray(arr, el) {
-    const index = arr.indexOf(el);
-    if (index > -1) {
-      arr.splice(index, 1);
+    if (arr !== undefined) {
+      const index = arr.indexOf(el);
+      if (index > -1) {
+        arr.splice(index, 1);
+      }
     }
     return arr;
   }
 
 
 
-
+  // Import setting from version < 600
   importSettings(xmlDoc) {
     const gameObject = xmlDoc.getElementsByTagName("game")[0];
 
@@ -484,6 +599,8 @@ class QuestObject {
     this._importSetting(gameObject, "backgroundimage", "jsStyleMain_background_image");
 
     this._importSetting(gameObject, "moneyformat", "moneyFormat");
+    this._importSetting(gameObject, 'feature_asktell', 'jsnoAskTell', 'invert-boolean');
+    this._importSetting(gameObject, 'feature_devmode', 'debug', 'boolean');
 
     this._importSetting(gameObject, "clearscreenonroomenter", "clearScreenOnRoomEnter", "boolean");
     this._importSetting(gameObject, "autodescription_youarein", "jsRoomTitlePos", "int");
@@ -500,6 +617,45 @@ class QuestObject {
       this.jsStyleMain_font_family = gameObject.getElementsByTagName("defaultwebfont")[0].innerHTML;
       this.jsGoogleFonts = [this.jsStyleMain_font_family]
     }
+
+    const statusattributes = gameObject.getElementsByTagName('statusattributes');
+    if (statusattributes.length > 0) {
+      this.jsStatusList = this.jsStatusList || [];
+      const items = statusattributes[0].getElementsByTagName('item');
+      for (let item of items) {
+        var key = item.getElementsByTagName('key')[0].innerHTML;
+//        var value = item.getElementsByTagName('value')[0].innerHTML;
+        if (!this.jsStatusList.includes(key)) {
+          this.jsStatusList.push(key);
+        }
+      }
+      gameObject.removeChild(statusattributes[0])
+    }
+
+    const showmoney = gameObject.getElementsByTagName('showmoney')
+    if (showmoney.length > 0) {
+      const value = showmoney[0].innerHTML;
+      if (value === 'true' || value === '' || value === undefined) {
+        this.jsStatusList = this.jsStatusList || [];
+        this.jsStatusList.push('money');
+      }
+      gameObject.removeChild(showmoney[0])
+    }
+
+    const start = gameObject.getElementsByTagName('start')
+    if (start.length > 0) {
+      this.setup = {type:'script', code:convertValue(start[0].innerHTML, 'script')}
+      gameObject.removeChild(start[0])
+    }
+
+    for (let node of gameObject.children) {
+      const attType = node.getAttribute('type')
+      if (attType === 'int' || attType === 'boolean' || attType === 'string' || attType === 'stringist' || attType === 'stringdictionary') {
+        const name = (node.tagName === "attr" ? node.getAttribute('name') : node.tagName);
+        this.jsConversionNotes = this.jsConversionNotes || []
+        this.jsConversionNotes.push("Attribute '" + name + "' set on game object has not been converted ")
+      }
+    }
   }
 
   // Used in importSettings only
@@ -512,9 +668,13 @@ class QuestObject {
     else if (type === "boolean") {
       this[attName] = els[0].innerHTML === "true" || els[0].innerHTML === "";
     }
+    else if (type === 'invert-boolean') {
+      this[attName] = els[0].innerHTML === 'false';
+    }
     else {
       this[attName] = els[0].innerHTML;
     }
+    gameObject.removeChild(els[0])
   }
 
 
@@ -584,31 +744,37 @@ class QuestObject {
   // Converts one item to JavaScript code
   // Unit tested
   toJs() {
-    if (this.jsObjType === 'stub' || this.jsObjType === 'settings') return '';
+    if (this.jsObjType !== 'room' && this.jsObjType !== 'item') return ''
 
-    let str = "\n\n\n";
+    let str = "\n\n\n"
 
-    str += "create" + (this.jsObjType === 'room' ? "Room" : "Item") + "(\"" + this.name + "\", ";
+    str += "create" + (this.jsObjType === 'room' ? "Room" : "Item") + "(\"" + this.name + "\", "
 
-    const jsTemplates = [];
-    if (this.jsMobilityType === "Takeable") jsTemplates.push("TAKEABLE()");
-    if (this.jsMobilityType === "Player") jsTemplates.push("PLAYER()");
-    if (this.jsMobilityType === "NPC") jsTemplates.push("NPC()");
-    if (this.jsContainerType === "Container") jsTemplates.push("CONTAINER()");
-    if (this.jsContainerType === "Surface") jsTemplates.push("SURFACE()");
-    if (this.jsContainerType === "Openable") jsTemplates.push("OPENABLE()");
-    if (this.jsIsLockable) jsTemplates.push("LOCKED_WITH()");
-    if (this.jsIsWearable) jsTemplates.push("WEARABLE()");
-    if (this.jsIsEdible) jsTemplates.push("EDIBLE()");
-    if (this.jsIsCountable) jsTemplates.push("COUNTABLE()");
-    if (this.jsIsFurniture) jsTemplates.push("FURNITURE()");
-    if (this.jsIsSwitchable) jsTemplates.push("SWITCHABLE()");
-    if (this.jsIsComponent) jsTemplates.push("COMPONENT()");
-    if (jsTemplates.length > 0) str += jsTemplates.join(', ') + ", ";
+    const jsTemplates = []
+    if (this.jsMobilityType === "Takeable") jsTemplates.push("TAKEABLE()")
+    if (this.jsMobilityType === "Player") jsTemplates.push("PLAYER()")
+    if (this.jsMobilityType === "NPC") jsTemplates.push("NPC()")
+    if (this.jsContainerType === "Container") jsTemplates.push("CONTAINER()")
+    if (this.jsContainerType === "Surface") jsTemplates.push("SURFACE()")
+    if (this.jsContainerType === "Openable") jsTemplates.push("OPENABLE()")
+    if (this.jsIsLockable) jsTemplates.push("LOCKED_WITH()")
+    if (this.jsIsWearable) {
+      const layer = this.jsWear_layer ? this.jsWear_layer : 1
+      const slots = this.jsWear_slots ? beautifyArray(this.jsWear_slots) : '[]'
+      jsTemplates.push("WEARABLE(" + layer + ", " + slots + ")")
 
-    str += this.beautifyObject(0);
-    str += ")";
-    return str;
+    }
+    if (this.jsIsEdible) jsTemplates.push("EDIBLE()")
+    if (this.jsIsCountable) jsTemplates.push("COUNTABLE()")
+    if (this.jsIsFurniture) jsTemplates.push("FURNITURE()")
+    if (this.jsIsSwitchable) jsTemplates.push("SWITCHABLE()")
+    if (this.jsIsComponent) jsTemplates.push("COMPONENT()")
+    if (jsTemplates.length > 0) str += jsTemplates.join(', ') + ", "
+
+    str += this.beautifyObject(0)
+
+    str += ")"
+    return str
   }
 
 
@@ -688,6 +854,10 @@ class QuestObject {
     str += "]\n"
 
     for (let key in this) {
+      if (typeof key === 'undefined' || key === 'undefined') {
+        continue
+      }
+
       if (/^js[A-Z]/.test(key) || key === 'name') continue;
 
       // Some settings are either false or a string, and in the editor set in two places
@@ -704,7 +874,7 @@ class QuestObject {
         case "boolean": str += (this[key] ? "true" : "false"); break;
         case "string":  str += "\"" + this[key] + "\""; break;
         case "number": str += this[key]; break;
-        default: str += '[' + this.key.map(el => '"' + el + '"').join(', ') + ']'
+        default: str += '[' + this[key].map(el => '"' + el + '"').join(', ') + ']'
       }
       str += "\n";
     }
@@ -739,6 +909,8 @@ class QuestObject {
   // Converts one item to code.js settings
   // This will be functions and commands
   toCode() {
+    if (this.jsObjType !== 'command') return '';
+
     //TODO!!!
     return '';
   }
@@ -834,50 +1006,63 @@ const tabs = function(n) {
 
 
 const beautifyObjectHelper = function(item, indent) {
-  let str = tabs(indent) + "{\n";
-  indent++;
+  let str = tabs(indent) + "{\n"
+  indent++
   for (let key in item) {
-    if (/^js[A-Z]/.test(key) || key === 'name') continue;
+    if (key === 'name') continue
+    if (/^js[A-Z]/.test(key)) {
+      if (key === 'jsVisible' && item[key] === false) str += tabs(indent) + 'isAtLoc:function() { return false; },\n'
+      if (key === 'jsTopicScript') str += tabs(indent) + 'script' + beautifyScript(item[key])
+      continue
+    }
     switch (typeof item[key]) {
-      case "boolean": str += tabs(indent) + key + ":" + (item[key] ? "true" : "false") + ","; break;
+      case "boolean": str += tabs(indent) + key + ":" + (item[key] ? "true" : "false") + ","; break
       case "string":
         if (/^function\(/.test(item[key])) {
           str += tabs(indent) + key + ":" + item[key] + ","
         }
         else {
-          str += tabs(indent) + key + ":\"" + item[key] + "\",";
+          str += tabs(indent) + key + ":\"" + item[key] + "\","
         }
-        break;
+        break
       //case "function": str += tabs(indent) + key + ":" + this.beautifyFunction(item[key].toString(), indent); break;
-      case "number": str += tabs(indent) + key + ":" + item[key] + ","; break;
+      case "number": str += tabs(indent) + key + ":" + item[key] + ","; break
       case "object":
         if (item[key] instanceof Exit) {
-          str += item[key].beautify(key, indent); break;
+          str += item[key].beautify(key, indent); break
         }
         else if (item[key] instanceof RegExp) {
-          str += tabs(indent) + key + ":/" + item[key].source + "/,"; break;
+          str += tabs(indent) + key + ":/" + item[key].source + "/,"; break
         }
         else if (item[key] instanceof Array) {
-          str += tabs(indent) + key + ':[' + item[key].map(el => '"' + el + '"').join(', ') + '],'; break;
+          str += tabs(indent) + key + ':' + beautifyArray(item[key]) + ','; break
         }
         else if (item[key].type === 'script') {
-          str += tabs(indent) + key + ":undefined, // WARNING: This script has not been included as it is in ASLX, not JavaScript"; break;
+          str += tabs(indent) + key + beautifyScript(item[key]) + ','; break
         }
         else if (item[key].type === 'js') {
-          str += tabs(indent) + key + ":function(" + (item[key].params ? item[key].params : '') + ") {\n" + indentLines(item[key].code, indent + 1) + tabs(indent) + "},"; break;
+          str += tabs(indent) + key + ":function(" + (item[key].params ? item[key].params : '') + ") {\n" + indentLines(item[key].code, indent + 1) + tabs(indent) + "},"; break
         }
     }
-    str += "\n";
+    str += "\n"
   }
-  indent--;
-  str += tabs(indent) + "}";
-  return str;
+  indent--
+  str += tabs(indent) + "}"
+  return str
 }
 
 
 const indentLines = function(s, indent) {
   //console.log(s)
   return tabs(indent) + s.trim().replace(/\r?\n/g, '\n' + tabs(indent)) + "\n"
+}
+
+const beautifyArray = function(arr) {
+  return ('[' + arr.map(el => '"' + el + '"').join(', ') + ']')
+}
+
+const beautifyScript = function(script) {
+  return (":undefined, // WARNING: This script has not been included as it is in ASLX, not JavaScript")
 }
 
 

@@ -2,20 +2,13 @@
   {
     "action":"tab",
     "tabName":"Function",
-    "displayIf":"o.jsIsFunction", 
+    "displayIf":"o.jsObjType === 'function'",
     "tabControls":[
-      { 
-        "name":"name", 
-        "type":"id",
-        "display":"Name",  
-        "tooltip":"Name your function."
-      },
-      
-      { 
-        "name":"parameters", 
-        "type":"stringlist",   
-        "default":[], 
-        "display":"Parameters",  
+      {
+        "name":"parameters",
+        "type":"stringlist",
+        "default":[],
+        "display":"Parameters",
         "tooltip":"Name the parameters."
       }
     ]

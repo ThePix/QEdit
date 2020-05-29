@@ -1,0 +1,16 @@
+[
+  {
+    "action":"tab",
+    "tabName":"Command",
+    "displayIf":"o.jsObjType === 'command'",
+    "tabControls":[
+      {
+        "name":"regex",
+        "type":"regex",
+        "default":"",
+        "display":"Pattern",
+        "tooltip":"A regex to match against."
+      }
+    ]
+  }
+]

@@ -38,9 +38,9 @@ export class FileStore {
     const objects = [];
 
     if (version < 600) {
-      const obj = new QuestObject(settings);
-      obj.importSettings(xmlDoc);
-      objects.push(obj);
+      var settings = new QuestObject(settings)
+      settings.importSettings(xmlDoc)
+      objects.push(settings)
     }
 
     const errs = xmlDoc.getElementsByTagName("parsererror");
@@ -48,10 +48,10 @@ export class FileStore {
       console.log("XML Error: " + err.innerHTML)
     }
 
-    const arr = xmlDoc.getElementsByTagName("object");
-    for (let xml of arr) {
-      objects.push(new QuestObject(xml, version));
-    }
+    this.getElementsOfType(xmlDoc, objects, version, settings, "object")
+    this.getElementsOfType(xmlDoc, objects, version, settings, "command")
+    this.getElementsOfType(xmlDoc, objects, version, settings, "function")
+    this.getElementsOfType(xmlDoc, objects, version, settings, "type")
 
     // If we imported from Quest 5, object names will have been modified
     // so there is a chance of a new name collision
@@ -68,6 +68,20 @@ export class FileStore {
 
     console.log("Loaded " + objects.length + " objects (including setting)");
     return objects;
+  }
+
+  getElementsOfType(xmlDoc, objects, version, settings, type) {
+    const arr = xmlDoc.getElementsByTagName(type)
+    for (let xml of arr) {
+      try {
+        const obj = new QuestObject(xml, version, settings)
+        objects.push(obj)
+      } catch (e) {
+        if (e !== 'NullObject') {
+          console.error(e)
+        }
+      }
+    }
   }
 
 
@@ -104,7 +118,7 @@ export class FileStore {
   }
 
   writeFileJS(objects, filename) {
-    const outputPath = filename.replace(/\\/g, '/').replace('.asl6', '/')
+    const outputPath = filename.replace(/\\/g, '/').replace('.asl6', '/').replace('.aslx', '/')
     console.log('Export to JavaScript files')
     if (!fs.existsSync(outputPath)) {
       console.log('Folders need creating')

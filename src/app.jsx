@@ -39,7 +39,7 @@ const newOptions  = {
 
 export default class App extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     const menuMapping = {
       'New':           () => this.newGame(),
@@ -55,6 +55,7 @@ export default class App extends React.Component {
       'Add stub':      () => this.addObject("stub"),
       'Add function':  () => this.addObject("function"),
       'Add command':   () => this.addObject("command"),
+      'Add template':  () => this.addObject("template"),
       'Delete object': () => this.removeObject(),
       'Duplicate object': () => this.duplicateObject(),
 
@@ -66,7 +67,7 @@ export default class App extends React.Component {
     }
 
     if (process.platform !== 'darwin') {
-      menuMapping.Exit = () => app.quit();
+      menuMapping.Exit = () => app.quit()
     }
 
     for (let key in menuMapping) {
@@ -150,7 +151,6 @@ export default class App extends React.Component {
       properties: ["openFile"],
       title: 'Open file',
     };
-//    const { dialog } = require('electron').remote
     const result = dialog.showOpenDialog(dialogOptions)
     console.log(result);
     if (result) {
@@ -206,7 +206,6 @@ export default class App extends React.Component {
       ],
       title: 'Save file',
     };
-//    const { dialog } = require('electron').remote
     const filename = dialog.showSaveDialog(dialogOptions)
     console.log(filename)
     if (filename) {
@@ -223,7 +222,7 @@ export default class App extends React.Component {
   }
 
   saveJs(filename) {
-    saveXml(filename) // make sure this is saved to asl6 first
+    this.saveXml(filename) // make sure this is saved to asl6 first
     const settings = QuestObject.getSettings(this.state)
     if (!settings.jsFilename) {
       console.log('Save your game before exporting');

@@ -2,33 +2,33 @@
   {
     "action":"tab",
     "tabName":"Wearable",
-    "displayIf":"o.jsIsWearable", 
+    "displayIf":"o.jsIsWearable",
     "tabControls":[
-      { 
-        "name":"wear_layer", 
-        "type":"int",   
-        "default":1, 
-        "display":"Layer",  
+      {
+        "name":"jsWear_layer",
+        "type":"int",
+        "default":1,
+        "display":"Layer",
         "tooltip":"Clothing must be assigned to a layer, for example, 1 for underwear, 2 for outer wear, 3 for jewellery, 4 for over coat."
       },
-      
-      { 
-        "name":"slots", 
-        "type":"text",   
-        "default":"", 
-        "display":"Body slots",  
+
+      {
+        "name":"jsWear_slots",
+        "type":"stringlist",
+        "default":[],
+        "display":"Body slots",
         "tooltip":"Each body slot this item covers should be listed, separated by semi-colons."
       }
     ]
   },
-  { 
+  {
     "action":"extend",
     "tabName":"Home",
     "name":"jsIsWearable",
     "type":"flag",
     "default":false,
-    "display":"Wearable?",  
+    "display":"Wearable?",
     "tooltip":"What it says.",
-    "displayIf":"o.jsObjType !== 'room' && o.jsObjType !== 'stub' && o.jsMobilityType === 'Takeable'"
+    "displayIf":"o.jsObjType === 'item' && o.jsMobilityType === 'Takeable'"
   }
 ]
