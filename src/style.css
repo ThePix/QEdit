@@ -137,7 +137,7 @@ input[type=checkbox] {
   background:#FFF;
   background-image:url('images/stringlist-bg.png');
   background-size: cover;
-  background-repeat: no-repeat;  
+  background-repeat: no-repeat;
   border:1px solid #333;
 }
 
@@ -218,18 +218,18 @@ ul.sidepane {
 
 /* Style the caret/arrow */
 .caret {
-  cursor: pointer; 
+  cursor: pointer;
   user-select: none; /* Prevent text selection */
 }
 
 .deleteLink {
-  cursor: pointer; 
+  cursor: pointer;
   color:grey;
-  font-size:10px;  
+  font-size:10px;
 }
 
 .stdLink {
-  cursor: pointer; 
+  cursor: pointer;
   color:blue;
 }
 
@@ -245,7 +245,7 @@ ul.sidepane {
 
 
 #sidepane {
-  height: calc(100% - 24px); /* Full-height: remove this if you want "auto" height */
+  height: calc(100% - 72px); /* Full-height: remove this if you want "auto" height */
   width: 240px; /* Set the width of the sidebar */
   position: fixed; /* Fixed Sidebar (stay in place on scroll) */
   z-index: 1; /* Stay on top */
@@ -270,7 +270,7 @@ div.dark #sidepane {
 
 .tree {
   color:blue;
-  cursor: pointer; 
+  cursor: pointer;
   font-size:11px;
   padding-left: 5px;
   padding-right: 5px;
@@ -297,4 +297,4 @@ div.dark #sidepane {
 
 .treeSelected {
   background-color: yellow;
-}  
+}

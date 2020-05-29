@@ -25,21 +25,12 @@ const useWithDoor = function() {};
 const DSPY_SCENERY = 5;
 const template = new Menus().getMenus();
 
-let quitConfirmed = false
-const quitOptions  = {
-  buttons: ["Yes", "No"],
-  message: "Do you really want to quit?",
-  detail:'Any unsaved work will be lost.',
-  type:'warning',
-}
 const newOptions  = {
   buttons: ["Yes", "No"],
   message: "Do you really want to start a new game?",
   detail:'Any unsaved work will be lost.',
   type:'warning',
 }
-
-
 
 
 
@@ -56,7 +47,6 @@ export default class App extends React.Component {
       'Save':          () => this.saveXml(),
       'Save As...':    () => this.saveXmlAs(),
       'Export to JavaScript': () => this.saveJs(),
-      'Exit':          () => this.exitApp(),
 
       'Dark mode':  () => this.toggleOption('darkMode'),
 
@@ -75,9 +65,14 @@ export default class App extends React.Component {
 
     }
 
+    if (process.platform !== 'darwin') {
+      menuMapping.Exit = () => app.quit();
+    }
+
     for (let key in menuMapping) {
       this.findMenuItem(template, key).click = menuMapping[key]
     }
+
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
 
@@ -96,22 +91,6 @@ export default class App extends React.Component {
       },
     };
     this.state.currentObjectName = this.state.objects[0].name;
-
-    window.addEventListener("beforeunload", function(e) {
-      console.log("beforeunload")
-      console.log(quitConfirmed)
-      //e.defaultPrevented = true;
-      if (!quitConfirmed) {
-        const response = dialog.showMessageBox(quitOptions)
-        console.log(response)
-        if (response === 1) {
-          console.log('here')
-          e.returnValue = "\o/";
-        }
-      }
-      console.log(e)
-      console.log(quitConfirmed)
-    });
 
     const _this = this
     window.addEventListener('load', function(e) {
@@ -146,19 +125,10 @@ export default class App extends React.Component {
   //---------------------------
   //--      FILE  SYSTEM    ---
 
-  exitApp() {
-    const response = dialog.showMessageBox(quitOptions)
-    if (response === 0) {
-      quitConfirmed = true
-      app.quit(0)
-    }
-    return false
-  }
-
   newGame() {
     const response = dialog.showMessageBox(newOptions)
     if (response === 0) {
-      const objects = this.fs.readFile("blank.asl6", {})
+      const objects = this.fs.readFile(__dirname + '/../blank.asl6', {})
       this.setState({
         objects:objects,
         currentObjectName: objects[0].name,
@@ -174,19 +144,21 @@ export default class App extends React.Component {
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
-        { name: "All Files", extensions: ["*"] },
         { name: "Quest files", extensions: ["asl6", "aslx"] },
+        { name: "All Files", extensions: ["*"] },
       ],
       properties: ["openFile"],
       title: 'Open file',
     };
-    const { dialog } = require('electron').remote
+//    const { dialog } = require('electron').remote
     const result = dialog.showOpenDialog(dialogOptions)
+    console.log(result);
     if (result) {
       const settings = this.createDefaultSettings();
       settings.jsFilename = result[0];
+      const objects = this.fs.readFile(result[0], settings)
       this.setState({
-        objects:this.fs.readFile(result[0], settings),
+        objects: objects,
         currentObjectName: objects[0].name,
       });
       this.message("Opened: " + result[0]);
@@ -196,18 +168,18 @@ export default class App extends React.Component {
     }
   }
 
-
   autosaveXml() {
     if (this.autosaveCount === undefined) this.autosaveCount = -1
     this.autosaveCount++
     if (this.autosaveCount > 9) this.autosaveCount = 0
-    this.saveXml("autosaves/autosave" + this.autosaveCount + ".asl6")
+    var autosavePath = app.getPath('userData') + '/' + app.getName() + '/autosaves/'
+    var autosaveFile = 'autosave' + this.autosaveCount + '.asl6'
+    this.saveXml(autosavePath + autosaveFile)
     const settings = QuestObject.getSettings(this.state)
     if (settings.jsAutosaveInterval !== 0) {
       setTimeout(this.autosaveXml.bind(this), settings.jsAutosaveInterval * 60000)
     }
   }
-
 
   saveXml(filename) {
     if (!filename) {
@@ -225,21 +197,16 @@ export default class App extends React.Component {
     }
   }
 
-
-
-
-
   saveXmlAs() {
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
-        { name: "All Files", extensions: ["*"] },
         { name: "Quest files", extensions: ["asl6", "aslx"] },
+        { name: "All Files", extensions: ["*"] },
       ],
-      properties: ["openFile"],
-      title: 'Open file',
+      title: 'Save file',
     };
-    const { dialog } = require('electron').remote
+//    const { dialog } = require('electron').remote
     const filename = dialog.showSaveDialog(dialogOptions)
     console.log(filename)
     if (filename) {

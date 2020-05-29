@@ -95,9 +95,13 @@ export class Menus {
           { role: 'hideothers' },
           { role: 'unhide' },
           { type: 'separator' },
-          { role: 'quit' }
+          { label: 'Quit', role: 'quit' }
         ]
       });
+
+      // File menu
+      template[1].submenu.pop()
+      template[1].submenu.pop()
 
       // Edit menu
       template[2].submenu.push(
