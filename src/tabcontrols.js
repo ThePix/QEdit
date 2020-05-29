@@ -3,7 +3,7 @@ const {lang} = require("./lang-en.js");
 
 // Assumes files are provided in alphabetical order, so aaa.js is first
 // custom files may want to have _ at the start so they are added later
-class TabControls {
+export default class TabControls {
   constructor() {
     const files = fs.readdirSync(__dirname + '/tabs')
     this.controls = [];
@@ -42,6 +42,3 @@ class TabControls {
 
   }
 }
-
-
-module.exports = [TabControls]

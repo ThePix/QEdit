@@ -1,19 +1,12 @@
 [{
 		"tabName": "Home",
 		"action": "tab",
+		"icon": "home",
 		"displayIf": "o.jsObjType !== 'settings'",
 		"tabControls": [{
-				"name": "name",
-				"type": "id",
-				"default": "unnamed",
-				"display": "Name",
-				"tooltip": "The object's name; this is how it is identified in code. It can only contain letters, digits and underscores; it cannot start with a number."
-			},
-
-			{
 				"name": "loc",
 				"type": "otherobjects",
-				"default": "---",
+				"default": "",
 				"display": "Location",
     		"displayIf": "o.jsObjType === 'item' || o.jsObjType === 'room' || o.jsObjType === 'stub'",
 				"tooltip": "Where the object is at the start of the game, the location or container. Should usually be blank for locations (as they are not inside anything)."
@@ -131,6 +124,7 @@
 	{
 		"tabName": "Text",
 		"action": "tab",
+		"icon": "file-text",
 		"displayIf": "o.jsObjType !== 'settings' && o.jsObjType !== 'command'",
 		"tabControls": [{
 				"name": "desc",
@@ -165,6 +159,7 @@
 	{
 		"tabName": "Exits",
 		"action": "tab",
+		"icon": "sign-out",
 		"displayIf": "o.jsObjType === 'room'",
 		"tabControls": [{
 			"name": "exits",
@@ -177,6 +172,7 @@
 	{
 		"tabName": "Conversion",
 		"action": "tab",
+		"icon": "sticky-note",
 		"displayIf": "o.jsConversionNotes && o.jsConversionNotes.length > 0",
 		"tabControls": [{
 			"name": "jsConversionNotes",

@@ -1,6 +1,7 @@
 [{
 		"action": "tab",
 		"tabName": "Meta-Data",
+		"icon":"database",
 		"displayIf": "o.jsObjType === 'settings'",
 		"tabControls": [
       {
@@ -53,14 +54,6 @@
 				"tooltip": "Tick this to see more advanced options across various tabs."
 			},
 			{
-				"name": "jsFilename",
-				"type": "readonly",
-				"default": "",
-				"display": "Filename",
-				"displayIf": "o.jsAdvanced",
-				"tooltip": "Sorry, this cannot be changed; do 'Save as...'"
-			},
-			{
 				"name": "files",
 				"type": "stringlist",
 				"default": ["code", "data"],
@@ -71,47 +64,10 @@
 		]
 	},
 
-	{
-		"action": "tab",
-		"tabName": "Editor",
-		"displayIf": "o.jsObjType === 'settings' && o.jsAdvanced",
-		"tabControls": [
-			{
-				"name": "jsShowRoomsOnly",
-				"type": "flag",
-				"default": false,
-				"display": "Locations only for exits",
-				"tooltip": "By default, you can only select a location as the destination of an exit; untick to also allow items."
-			},
-			{
-				"name": "jsNewRoomWhere",
-				"type": "select",
-        "options":["Top", "Zone", "Location", "Anywhere"],
-				"default": "Top",
-				"display": "Create locations",
-				"tooltip": "By default, new locations are created at the top level of the hierarchy."
-			},
-			{
-				"name": "jsNewItemWhere",
-				"type": "select",
-        "options":["Top", "Zone", "Location", "Anywhere"],
-				"default": "Location",
-				"display": "Create items",
-				"tooltip": "By default, new items are created in the selected location."
-			},
-			{
-				"name": "jsAutosaveInterval",
-				"type": "int",
-				"default": 1,
-				"display": "Autosave interval",
-				"tooltip": "Your game will be saved every so often. Set the number of minutes between saves here."
-			}
-		]
-	},
-
-	{
+		{
 		"action": "tab",
 		"tabName": "Gameplay",
+		"icon": "gamepad",
 		"displayIf": "o.jsObjType === 'settings'",
 		"tabControls": [
 			{
@@ -366,6 +322,7 @@
 	{
 		"action": "tab",
 		"tabName": "Start-up",
+		"icon": "play",
 		"displayIf": "o.jsObjType === 'settings'",
 		"tabControls": [{
 			"name": "intro",
@@ -389,6 +346,7 @@
 	{
 		"action": "tab",
 		"tabName": "Main Pane",
+		"icon": "list-alt",
 		"displayIf": "o.jsObjType === 'settings'",
 		"tabControls": [{
 				"name": "textInput",
@@ -550,6 +508,7 @@
 	{
 		"action": "tab",
 		"tabName": "Side Pane",
+		"icon": "columns",
 		"displayIf": "o.jsObjType === 'settings'",
 		"tabControls": [{
 				"name": "panes",

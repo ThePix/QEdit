@@ -2,6 +2,7 @@
   {
     "action":"tab",
     "tabName":"Function",
+    "icon":"terminal",
     "displayIf":"o.jsObjType === 'function'",
     "tabControls":[
       {

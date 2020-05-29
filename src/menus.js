@@ -1,7 +1,8 @@
 
 const { app } = require('electron').remote;
+import * as Constants from './constants'
 
-export class Menus {
+export default class Menus {
   getMenus() {
     const template = [
       {
@@ -25,6 +26,7 @@ export class Menus {
           { role: 'cut' },
           { role: 'copy' },
           { label: 'Paste', role: 'paste' },
+          { label: 'Preferences...', accelerator: 'CmdOrCtrl+,' },
         ]
       },
       {
@@ -39,7 +41,6 @@ export class Menus {
           { role: 'zoomout' },
           { type: 'separator' },
           { label: 'Toggle Full Screen', role: 'togglefullscreen' },
-          { label: 'Dark mode', type: 'checkbox', checked : false },
           //{ type: 'separator' },
           //{
           //  label: 'Preview in browser',
@@ -77,7 +78,7 @@ export class Menus {
           {
             label: 'Help',
             click () {
-              require('electron').shell.openExternal('https://github.com/ThePix/QEdit/wiki');
+              require('electron').shell.openExternal(Constants.WIKI_URL)
             }
           },
         ]
@@ -89,6 +90,8 @@ export class Menus {
         label: app.getName(),
         submenu: [
           { role: 'about' },
+          { type: 'separator' },
+          { label: 'Preferences...', accelerator: 'CmdOrCtrl+,',},
           { type: 'separator' },
           { role: 'services' },
           { type: 'separator' },
@@ -105,6 +108,7 @@ export class Menus {
       template[1].submenu.pop()
 
       // Edit menu
+      template[2].submenu.pop()
       template[2].submenu.push(
         { type: 'separator' },
         {

@@ -1,22 +1,19 @@
-import React from 'react';
-import SplitPane from 'react-split-pane';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faFolder, faFileAlt, faLocationArrow, faSlidersH, faSeedling, faCode, faTerminal, faClone } from '@fortawesome/free-solid-svg-icons';
-
-library.add(faFolder, faFileAlt, faLocationArrow, faSlidersH, faSeedling, faCode, faTerminal, faClone);
+import React from 'react'
+import { Container, Content } from 'rsuite'
+import * as Constants from './constants'
+import SidePane from './sidepane'
+import MainPane from './mainpane'
+import FileStore from './filestore'
+import Preferences from './preferences'
+import Menus from './menus'
+import QuestObjects from './questobjects'
+import Toolbar from './toolbar'
 
 //import Blockly from 'blockly/blockly_compressed';
 
-const prompt = require('electron-prompt');
-const {Menu, dialog, app} = require('electron').remote;
+const prompt = require('electron-prompt')
+const {Menu, dialog, app} = require('electron').remote
 
-import {SidePane} from './sidepane';
-import {MainPane} from './mainpane';
-import {FileStore} from './filestore';
-//import {TabControls} from './tabcontrols';
-import {Menus} from './menus';
-const [TabControls] = require('./tabcontrols')
-const [QuestObject] = require('./questobject')
 
 // Next four lines disable warning from React-hot-loader
 import { hot, setConfig } from 'react-hot-loader'
@@ -27,8 +24,6 @@ setConfig({
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
 
-const useWithDoor = function() {};
-const DSPY_SCENERY = 5;
 const template = new Menus().getMenus();
 
 const newOptions  = {
@@ -38,38 +33,41 @@ const newOptions  = {
   type:'warning',
 }
 
-
-
-
-
-
 export default class App extends React.Component {
   constructor(props) {
     super(props)
 
+    this.state = {
+      showPreferences: false
+    }
+
+    this.searchTerm = ''
+    this.searchBackwards = false
+    this.searchCaseSensitive = true
+    this.questObjects = new QuestObjects()
+
     const menuMapping = {
       'New':           () => this.newGame(),
-      'Open...':       () => this.openXml(),
-      'Save':          () => this.saveXml(),
-      'Save As...':    () => this.saveXmlAs(),
-      'Export to JavaScript': () => this.saveJs(),
+      'Open...':       () => this.openGame(),
+      'Save':          () => this.saveGame(),
+      'Save As...':    () => this.saveGameAs(),
+      'Export to JavaScript': () => this.exportGame(),
 
-      'Dark mode':  () => this.toggleOption('darkMode'),
+      'Preferences...': () => this.openPreferences(),
 
-      'Add location':  () => this.addObject("room"),
-      'Add item':      () => this.addObject("item"),
-      'Add stub':      () => this.addObject("stub"),
-      'Add function':  () => this.addObject("function"),
-      'Add command':   () => this.addObject("command"),
-      'Add template':  () => this.addObject("template"),
-      'Delete object': () => this.removeObject(),
-      'Duplicate object': () => this.duplicateObject(),
+      'Add location':  () => this.questObjects.addObject(Constants.ROOM_TYPE),
+      'Add item':      () => this.questObjects.addObject(Constants.ITEM_TYPE),
+      'Add stub':      () => this.questObjects.addObject(Constants.STUB_TYPE),
+      'Add function':  () => this.questObjects.addObject(Constants.FUNCTION_TYPE),
+      'Add command':   () => this.questObjects.addObject(Constants.COMMAND_TYPE),
+      'Add template':  () => this.questObjects.addObject(Constants.TEMPLATE_TYPE),
+      'Delete object': () => this.questObjects.removeObject(),
+      'Duplicate object': () => this.questObjects.duplicateObject(),
 
       'Find': () => this.find(),
       'Find next': () => this.findNext(),
       'Search backwards': () => this.searchBackwards = !this.searchBackwards,
       'Search case sensitive': () => this.searchCaseSensitive = !this.searchCaseSensitive,
-
     }
 
     if (process.platform !== 'darwin') {
@@ -83,28 +81,18 @@ export default class App extends React.Component {
     const menu = Menu.buildFromTemplate(template)
     Menu.setApplicationMenu(menu)
 
-    this.searchTerm = ''
-    this.searchBackwards = false
-    this.searchCaseSensitive = true
-    this.fs = new FileStore();
-
-    this.controls = new TabControls().controls;
-    const settings = this.createDefaultSettings();
-    this.state = {
-      objects:this.fs.readFile(__dirname + '/../blank.asl6', settings),
-      currentObjectName: false,
-      options:{
-        darkMode:false,
-      },
-    };
-    this.state.currentObjectName = this.state.objects[0].name;
 
     const _this = this
     window.addEventListener('load', function(e) {
       _this.message("All good to go...")
-      setTimeout(_this.autosaveXml.bind(_this), 300000)
+      setTimeout(_this.autosave.bind(_this), 300000)
     })
 
+    this.closePreferences = this.closePreferences.bind(this)
+    this.newGame = this.newGame.bind(this)
+    this.openGame = this.openGame.bind(this)
+    this.saveGame = this.saveGame.bind(this)
+    this.find = this.find.bind(this)
   }
 
   // Used to set upo the menus during set up
@@ -116,18 +104,9 @@ export default class App extends React.Component {
     }
   }
 
-
   message(s) {
-    document.getElementById('statusbar').innerHTML = "Status: <i>" + s + "</i>";
+//    document.getElementById('statusbar').innerHTML = "Status: <i>" + s + "</i>";
   }
-
-
-  createDefaultSettings(settings) {
-    const obj = new QuestObject({ name:"Settings", jsObjType:'settings' });
-    obj.addDefaults(this.controls);
-    return obj;
-  }
-
 
   //---------------------------
   //--      FILE  SYSTEM    ---
@@ -135,38 +114,27 @@ export default class App extends React.Component {
   newGame() {
     const response = dialog.showMessageBox(newOptions)
     if (response === 0) {
-      const objects = this.fs.readFile(__dirname + '/../blank.asl6', {})
-      this.setState({
-        objects:objects,
-        currentObjectName: objects[0].name,
-      })
-      this.message("New game");
+      this.questObjects.clear()
+      this.message("New game")
     }
     else {
-      this.message("New game cancelled");
+      this.message("New game cancelled")
     }
   }
 
-  openXml() {
+  openGame() {
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
-        { name: "Quest files", extensions: ["asl6", "aslx"] },
+        { name: "Quest files", extensions: Constants.FILEEXTENSIONS },
         { name: "All Files", extensions: ["*"] },
       ],
       properties: ["openFile"],
       title: 'Open file',
-    };
+    }
     const result = dialog.showOpenDialog(dialogOptions)
-    console.log(result);
     if (result) {
-      const settings = this.createDefaultSettings();
-      settings.jsFilename = result[0];
-      const objects = this.fs.readFile(result[0], settings)
-      this.setState({
-        objects: objects,
-        currentObjectName: objects[0].name,
-      });
+      this.questObjects.load(result[0])
       this.message("Opened: " + result[0]);
     }
     else {
@@ -174,167 +142,65 @@ export default class App extends React.Component {
     }
   }
 
-  autosaveXml() {
+  autosave() {
     if (this.autosaveCount === undefined) this.autosaveCount = -1
     this.autosaveCount++
     if (this.autosaveCount > 9) this.autosaveCount = 0
-    var autosavePath = app.getPath('userData') + '/' + app.getName() + '/autosaves/'
-    var autosaveFile = 'autosave' + this.autosaveCount + '.asl6'
-    this.saveXml(autosavePath + autosaveFile)
-    const settings = QuestObject.getSettings(this.state)
-    if (settings.jsAutosaveInterval !== 0) {
-      setTimeout(this.autosaveXml.bind(this), settings.jsAutosaveInterval * 60000)
+    var autosavePath = app.getPath('userData') + '/autosaves/'
+    var autosaveFile = 'autosave' + this.autosaveCount + '.' + Constants.EXTENSION_ASL6
+    this.saveGame(autosavePath + autosaveFile)
+    const interval = Preferences.get(Constants.AUTOSAVEINTERVAL)
+    if (interval !== 0) {
+      setTimeout(this.autosave.bind(this), interval * 60000)
     }
   }
 
-  saveXml(filename) {
-    if (!filename) {
-      const settings = QuestObject.getSettings(this.state)
-      filename = settings.jsFilename
-    }
+  saveGame(filename) {
+    filename = filename || this.questObjects.getFilename()
 
     if (filename) {
-      const result = this.fs.writeFile(this, this.state.objects, filename);
-      console.log(result);
-      this.message(result);
+      const result = FileStore.writeASLFile(this.questObjects.getObjects(), filename)
+      console.log(result)
+      this.message(result)
     }
     else {
-      this.saveXmlAs()
+      this.saveGameAs()
     }
   }
 
-  saveXmlAs() {
+  saveGameAs() {
     const dialogOptions = {
       //defaultPath: "c:/",
       filters: [
-        { name: "Quest files", extensions: ["asl6", "aslx"] },
+        { name: "Quest files", extensions: Constants.FILEEXTENSIONS },
         { name: "All Files", extensions: ["*"] },
       ],
       title: 'Save file',
-    };
+    }
     const filename = dialog.showSaveDialog(dialogOptions)
     console.log(filename)
     if (filename) {
-      const settingsIndex = this.state.objects.findIndex(el => el.jsObjType === 'settings')
-      this.state.objects[settingsIndex].jsFilename = filename
-      this.setState({
-        objects:this.state.objects,
-      });
-      this.saveXml(filename)
+      this.questObjects.setFilename(filename)
+      this.saveGame(filename)
     }
     else {
-      this.message("Save as file cancelled");
+      this.message("Save as file cancelled")
     }
   }
 
-  saveJs(filename) {
-    this.saveXml(filename) // make sure this is saved to asl6 first
-    const settings = QuestObject.getSettings(this.state)
-    if (!settings.jsFilename) {
-      console.log('Save your game before exporting');
-      this.message('Save your game before exporting');
+  exportGame(filename) {
+    this.saveGame(filename) // make sure this is saved to asl6 first
+    filename = this.questObjects.getFilename()
+    if (!filename) {
+      console.log('Save your game before exporting')
+      this.message('Save your game before exporting')
       return
     }
 
-    const result = this.fs.writeFileJS(this.state.objects, settings.jsFilename);
-    console.log(result);
-    this.message(result);
+    const result = FileStore.writeJSFile(this.questObjects.getObjects(), filename)
+    console.log(result)
+    this.message(result)
   }
-
-
-
-
-  //---------------------------
-  //--      OBJECT  SYSTEM    ---
-
-
-  removeObject(name) {
-    if (name === undefined) {
-      name = this.state.currentObjectName;
-    }
-    if (name === false) return;
-
-    // may want to do this different, if setting has another name, say for another language
-    console.log(name);
-    if (name === "Settings") {
-      window.alert("Cannot delete the 'Settings' object.");
-      return;
-    }
-    console.log("name");
-
-    if (window.confirm('Delete the object "' + name + '"?')) {
-      let s = this.state.currentObjectName === name ? this.state.objects[0].name : this.state.currentObjectName;
-      this.setState({
-        objects: this.state.objects.filter((o, i) => {
-          return name !== o.name;
-        }),
-        currentObjectName: s,
-      });
-    }
-  };
-
-  removeConversionNotes(name) {
-    console.log("In removeConversionNotes")
-    if (window.confirm('Delete the conversion notes for this object?')) {
-      this.setValue("jsConversionNotes", null);
-    }
-  };
-
-  showObject(name) {
-    this.setState({
-      currentObjectName: name,
-    })
-  };
-
-
-  addObject(objectType) {
-    const newObject = QuestObject.create(this.state, objectType)
-    console.log(newObject);
-
-    this.setState({
-      objects: this.state.objects.concat([newObject]),
-      currentObjectName: newObject.name,
-    })
-  };
-
-  duplicateObject(name) {
-    if (name === undefined) name = this.state.currentObjectName
-    if (name === false) return;
-
-    const currentObject = this.state.objects.find(el => {
-      return (el.name == name);
-    });
-
-    const newObject = new QuestObject(JSON.parse(JSON.stringify(currentObject))); // cloning the state
-    newObject.name = this.nextName(name);
-
-    this.setState({
-      objects: this.state.objects.concat([newObject]),
-      currentObjectName: newObject.name,
-    })
-  };
-
-
-
-
-
-  selectTab(s) {
-    const currentObject = QuestObject.getCurrent(this.state);
-    currentObject.jsTabName = s;
-    this.setState({
-      objects: this.state.objects,
-    })
-  };
-
-
-  toggleOption(name) {
-    console.log("Toggling " + name)
-    this.state.options[name] = !this.state.options[name];
-    this.setState({
-      options: this.state.options
-    })
-  };
-
 
   find() {
     // https://www.npmjs.com/package/electron-prompt
@@ -371,7 +237,7 @@ export default class App extends React.Component {
     }
   }
 
-
+// TODO: This needs to be moved? To questobjects
   searchForObject() {
     const currentIndex = this.state.objects.findIndex(el => el.name === this.state.currentObjectName)
     console.log(currentIndex)
@@ -396,278 +262,44 @@ export default class App extends React.Component {
       }
       const name = this.state.objects[index].name
       if (regex.test(name)) {
-        this.showObject(name)
+        this.questObjects.setCurrentObject(name)
         this.message("Search: Found " + name)
         return
       }
     }
-  };
-
-  // remove on item from an attribute that is an array of strings
-  removefromlist(item, att, name) {
-    console.log("About to remove " + item + " from " + att);
-
-    if (name === undefined) name = this.state.currentObjectName;
-    if (name === false) return;
-
-    const newObjects = JSON.parse(JSON.stringify(this.state.objects)); // cloning the state
-    const currentObject = newObjects.find(el => el.name == name);
-    console.log("currentObject is " + currentObject.name);
-
-    currentObject[att] = currentObject[att].filter(el => el !== item);
-
-    this.setState({
-      objects:newObjects,
-      currentObjectName:this.state.currentObjectName,
-    });
   }
 
-  // remove on item from an attribute that is an array of strings
-  addtolist(item, att, name) {
-    console.log("About to add " + item + " to " + att);
-    if (name === undefined) name = this.state.currentObjectName;
-    if (name === false) return;
-
-    const newObjects = JSON.parse(JSON.stringify(this.state.objects)); // cloning the state
-    const currentObject = newObjects.find(el => el.name == name);
-    console.log("currentObject is " + currentObject.name);
-
-    currentObject[att].push(item);
-
-    this.setState({
-      objects:newObjects,
-      currentObjectName:this.state.currentObjectName,
-    });
-  };
-
-
-  setDefaults(o) {
-    //return;
-    for (let i = 0; i < this.controls.length; i++) {
-      const cons = this.controls[i].tabControls
-      for (let j = 0; j < cons.length; j++) {
-        if (o[cons[j].name] === undefined && cons[j].default !== undefined) {
-          o[cons[j].name] = cons[j].default;
-        }
-      }
-    }
+  openPreferences() {
+    this.setState({showPreferences: true})
   }
 
-  findControl(name) {
-    for (let i = 0; i < this.controls.length; i++) {
-      const cons = this.controls[i].tabControls
-      for (let j = 0; j < cons.length; j++) {
-        if (cons[j].name === name) {
-          return cons[j];
-        }
-      }
-    }
-    return null;
-  }
-
-  nextName(s) {
-    if (/\d$/.test(s)) {
-      const res = /(\d+)$/.exec(s);
-      const n = parseInt(res[1]) + 1;
-      return s.replace(res[1], "" + n);
-    }
-    else {
-      return s + "1";
-    }
-  }
-
-  nameTest(s) {
-    let count = 0;
-    for (let i = 0; i < this.state.objects.length; i++) {
-      if (this.state.objects[i].name === s) count++;
-    }
-    return count !== 1;
-  }
-
-
-
-
-
-
-  handleChange(e) {
-    console.log(e.target.dataset)
-    this.setValue(e.target.id, e.target.value, {type:e.target.dataset.type, default:e.target.dataset.default});
-  }
-
-  // id needs its own handler so it gets tested properly for uniqueness
-  handleIdChange(e) {
-    console.log("------------------")
-    if (!/^[a-zA-Z_][\w]*$/.test(e.target.value)) return
-
-
-    this.setValue(e.target.id, e.target.value, {id:true, type:'id'});
-  }
-
-  // numbers need their own handler so they get converted to numbers
-  handleIntChange(e) {
-    const value = parseInt(e.target.value)
-    if (e.target.min && value < e.target.min) return
-    if (e.target.max && value > e.target.max) return
-    this.setValue(e.target.id, value, {type:'int'});
-  }
-
-  // numbers need their own handler so they get converted to numbers
-  handleListChange(e) {
-    console.log(e.target.value);
-    console.log(typeof e.target.value);
-    this.setValue(e.target.id, e.target.value.split(/\r?\n/), {id:true, type:'stringlist'});
-  }
-
-  // Checkboxes need their own handler as they use the "checked" property...
-  handleCBChange(e) {
-    console.log(e.target.dataset.default);
-
-    if (e.target.dataset.default !== 'nodefault') {
-      this.setValue(e.target.id, e.target.dataset.default, {type:'flag'});
-    }
-    this.setValue(e.target.id, e.target.checked, {type:'flag'});
-
-  }
-
-  treeToggle(objname, toggled) {
-    const obj = this.state.objects.find( ({ name }) => name === objname )
-    this.setValue("jsCollapsed", !toggled, {obj:obj, type:'treetoggle'})
-  }
-
-  setValue(name, value, options) {
-    if (!options) options = {}
-    //console.log("----------------------------");
-    //console.log(name);
-    //console.log(value);
-    //console.log(obj);
-    const obj = options.obj ? options.obj : QuestObject.getCurrent(this.state)
-    const oldValue = obj[name]
-
-    const newObjects = []  // cloning the state
-    for (let i = 0; i < this.state.objects.length; i++) {
-      newObjects.push(new QuestObject(this.state.objects[i]))
-    }
-
-    // Need to look in new list for old name, as the name may be changing
-    const newObject = newObjects.find(el => {
-      return (el.name == obj.name)
-    });
-
-    if (/_exit_/.test(name)) {
-      const dir = /_exit_(.*)$/.exec(name)[1]
-      //console.log("dir=" + dir);
-      //console.log("was=" + newObject[dir].name);
-      newObject[dir].name = value
-      //console.log("now=" + newObject[dir].name);
-    }
-    else {
-      // Do it!
-      if (value === null) {
-        delete newObject[name]
-      }
-      else {
-        console.log("Set to " + value)
-        newObject[name] = value
-      }
-    }
-
-    // For ID need to change anything set to this
-    if (options.id) {
-      for (let o of newObjects) {
-        for (let key in o) {
-          if (o[key] === oldValue) o[key] = value
-        }
-      }
-    }
-
-    this.setState({
-      objects:newObjects,
-      currentObjectName:name === "name" ? value: obj.name,
-    });
-  }
-
-  updateExit(name, action, data) {
-    console.log("X----------------------------");
-    console.log(name);
-    if (typeof name !== "string") {
-      const target = name.target;
-      console.log(target.id);
-      console.log(target.value);
-      const l = target.id.split("_");
-      name = l[1];
-      action = l[0];
-      data = target.value;
-    }
-
-    console.log(name);
-    console.log(action);
-    console.log(data);
-    const objName = this.state.currentObjectName;
-    console.log(objName);
-
-    // clone the state
-    const newObjects = JSON.parse(JSON.stringify(this.state.objects));
-    const newObject = newObjects.find(el => {
-      return (el.name == objName);
-    });
-
-    switch (action) {
-      case "delete": if (window.confirm('Delete the exit "' + name + '"?')) newObject[name] = undefined; break;
-      case "create": newObject[name] = new Exit(objName); break;
-      case "useType": newObject[name].data.useType = data; break;
-      case "doorName": newObject[name].data.doorName = data; break;
-      case "doorObject": newObject[name].data.door = data; break;
-      case "msgScript": newObject[name].data.msg = data; break;
-      case "useScript": newObject[name].data.use = data; break;
-    }
-
-    this.setState({
-      objects:newObjects,
-      currentObjectName:name === "name" ? value: this.state.currentObjectName,
-    });
+  closePreferences() {
+    this.setState({showPreferences: false})
   }
 
   render() {
     console.log(this.state)
-
-    const currentObject = QuestObject.getCurrent(this.state);
-    return (<div id='main' className={this.state.options.darkMode ? 'dark' : 'light'}>
-      <SplitPane split="horizontal" allowResize={false} defaultSize={42}>
-        <div id="toolbar">Buttons appear here...</div>
-        <SplitPane split="horizontal" allowResize={false} defaultSize={18} primary="second">
-          <SplitPane split="vertical" defaultSize={200} minSize={50}>
-            <SidePane
-              object={currentObject}
-              objects={this.state.objects}
-              showObject={this.showObject.bind(this)}
-              treeToggle={this.treeToggle.bind(this)}
-              addObject={this.addObject.bind(this)}
-              darkMode={this.state.options.darkMode}
-            />
-            <MainPane
-              object={currentObject}
-              handleChange={this.handleChange.bind(this)}
-              removeObject={this.removeObject.bind(this)}
-              removefromlist={this.removefromlist.bind(this)}
-              removeConversionNotes={this.removeConversionNotes.bind(this)}
-              addtolist={this.addtolist.bind(this)}
-              handleIdChange={this.handleIdChange.bind(this)}
-              handleCBChange={this.handleCBChange.bind(this)}
-              handleIntChange={this.handleIntChange.bind(this)}
-              handleListChange={this.handleListChange.bind(this)}
-              updateExit={this.updateExit.bind(this)}
-              showObject={this.showObject.bind(this)}
-              selectTab={this.selectTab.bind(this)}
-              controls={this.controls}
-              objects={this.state.objects}
-              options={this.state.options}
-              warning={this.nameTest(this.state.currentObjectName)}
-            />
-          </SplitPane>
-          <div id="statusbar">Status:</div>
-        </SplitPane>
-      </SplitPane>
-    </div>);
+    return (
+      <Container>
+        <Preferences
+          show={this.state.showPreferences}
+          close={this.closePreferences}
+        />
+        <Toolbar
+          objects={this.questObjects}
+          newGame={this.newGame}
+          openGame={this.openGame}
+          saveGame={this.saveGame}
+          search={this.find}
+        />
+        <Content>
+          <Container>
+            <SidePane objects={this.questObjects} />
+            <MainPane objects={this.questObjects} />
+          </Container>
+        </Content>
+      </Container>
+    )
+// TODO: Implent darkMode
   }
-
 }

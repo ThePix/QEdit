@@ -2,6 +2,7 @@
   {
     "action":"tab",
     "tabName":"Command",
+    "icon":"code",
     "displayIf":"o.jsObjType === 'command'",
     "tabControls":[
       {

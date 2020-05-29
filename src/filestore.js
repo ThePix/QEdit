@@ -1,14 +1,9 @@
-'use strict'
-
-const fs = require('fs');
-const path = require('path');
-const mkdirp = require('mkdirp');
-const [QuestObject] = require('./questobject')
-
-const useWithDoor = "useWithDoor";
-const DSPY_SCENERY = 5;
-
-const QUEST_JS_PATH = '../questjs/'
+import fs from 'fs'
+import path from 'path'
+import mkdirp from 'mkdirp'
+import XML2JSON from './translators/xml2json'
+import JSON2JS from './translators/json2js'
+import * as Constants from './constants'
 
 /*
 
@@ -17,108 +12,38 @@ and it is reasonable to expect the user to wait whilst it happens.
 
 */
 
-export class FileStore {
-
+export default class FileStore {
   // This should read both Quest 5 and Quest 6 XML files,
   // which hopefully are pretty much the same
-  readFile(filename, settings) {
-    const str = fs.readFileSync(filename, "utf8");
-    return this.readXmlString(str, filename, settings)
-  }
-
-  // Separated out so it can be unit tested more easily
-  readXmlString(str, filename, settings) {
-    const parser = new DOMParser();
-    const xmlDoc = parser.parseFromString(str, "text/xml");
-
-    const version = parseInt(xmlDoc.getElementsByTagName("asl")[0].getAttribute('version'));
-
-    console.log("Opening XML file (" + filename + "), version " + version);
-
-    const objects = [];
-
-    if (version < 600) {
-      var settings = new QuestObject(settings)
-      settings.importSettings(xmlDoc)
-      objects.push(settings)
+  static readASLFile(filename) {
+    const str = fs.readFileSync(filename, "utf8")
+    if (/^\s*\</.test(str)) {
+      return XML2JSON.parse(str)
     }
-
-    const errs = xmlDoc.getElementsByTagName("parsererror");
-    for (let err of errs) {
-      console.log("XML Error: " + err.innerHTML)
+    else if (/^\s*[\{,\[]/.test(str)) {
+      return JSON.parse(str)
     }
-
-    this.getElementsOfType(xmlDoc, objects, version, settings, "object")
-    this.getElementsOfType(xmlDoc, objects, version, settings, "command")
-    this.getElementsOfType(xmlDoc, objects, version, settings, "function")
-    this.getElementsOfType(xmlDoc, objects, version, settings, "type")
-
-    // If we imported from Quest 5, object names will have been modified
-    // so there is a chance of a new name collision
-    if (version < 600) {
-      for (let i = 0; i < objects.length; i++) {
-        if (objects[i].jsOldName) {
-          for (let j = 0; j < objects.length; j++) {
-            if (objects[j].loc === objects[i].jsOldName) objects[j].loc = objects[i].name;
-            if (i !== j && objects[j].name === objects[i].name) objects[i].jsConversionNotes.push("Renaming has caused a naming collision!!!");
-          }
-        }
-      }
-    }
-
-    console.log("Loaded " + objects.length + " objects (including setting)");
-    return objects;
-  }
-
-  getElementsOfType(xmlDoc, objects, version, settings, type) {
-    const arr = xmlDoc.getElementsByTagName(type)
-    for (let xml of arr) {
-      try {
-        const obj = new QuestObject(xml, version, settings)
-        objects.push(obj)
-      } catch (e) {
-        if (e !== 'NullObject') {
-          console.error(e)
-        }
-      }
+    else {
+      alert('Unknow file format')
     }
   }
 
-
-  importAskTell(xml) {
-    const res = {type: 'asktell', store:'simple', entries:[]}
-    for (let item of xml) {
-      res.entries.push({
-        regex:item.getAttribute('key').replace(/ /g, '|'),
-        aslScript:item.innerHTML
-      })
-    }
-    console.log(res)
-    return res
-  }
-
-
-  async writeFile (app, objects, filename) {
-    if (filename.endsWith('.aslx')) {
-      filename = filename.replace('.aslx', '.asl6')
+  static async writeASLFile (objects, filename) {
+    if (filename.endsWith(Constants.EXTENSION_ASLX)) {
+      filename = filename.replace(Constants.EXTENSION_ASLX, Constants.EXTENSION_ASL6)
       if (fs.existsSync(filename)) {
         return "A file already exists with the .asl6 extension. You should rename, move or delete that so this file can safely be saved with the new extension."
       }
     }
-    console.log(filename)
-    let str = "<!--Saved by Quest 6.0.0-->\n<asl version=\"600\">\n"
 
-    for (let i = 0; i < objects.length; i++) {
-      str += objects[i].toXml();
-    }
-    str += "</asl>"
+    const str = JSON.stringify(objects, null, 2)
     await mkdirp(path.dirname(filename));
-    fs.writeFileSync(filename, str, "utf8");
+    fs.writeFileSync(filename, str, "utf8")
     return "Saved: " + filename
   }
 
-  writeFileJS(objects, filename) {
-    const outputPath = filename.replace(/\\/g, '/').replace('.asl6', '/').replace('.aslx', '/')
+  static writeJSFile(objects, filename) {
+    const outputPath = filename.replace(/\\/g, '/').replace(Constants.EXTENSION_ASL6, '/').replace(Constants.EXTENSION_ASLX, '/')
     console.log('Export to JavaScript files')
     if (!fs.existsSync(outputPath)) {
       console.log('Folders need creating')
@@ -149,34 +74,20 @@ export class FileStore {
       for (let filename of filenames) {
         console.log("About to copy " + filename + '...');
         fs.copyFile(QUEST_JS_PATH + filename, outputPath + filename, (err) => {
-          if (err) throw err;
-          console.log("...Done");
-        });
+          if (err) throw err
+          console.log("...Done")
+        })
       }
     }
     else {
       console.log('Folders already exist')
     }
 
-    let str1 = "\"use strict\";";
-    let str2 = "\"use strict\";";
-    let str3 = "";
-    let str4 = "\"use strict\";";
-    for (let obj of objects) {
-      console.log(obj.name)
-      str1 += obj.toJs();
-      str2 += obj.toJsSettings();
-      str3 += obj.toCss();
-      str4 += obj.toCode();
-    }
-    console.log(str2)
     console.log('About to write files')
-    fs.writeFileSync(outputPath + "game/data.js", str1, "utf8");
-    fs.writeFileSync(outputPath + "game/settings.js", str2, "utf8");
-    fs.writeFileSync(outputPath + "game/style.css", str3, "utf8");
-    fs.writeFileSync(outputPath + "game/code.js", str4, "utf8");
+    fs.writeFileSync(outputPath + "game/data.js", JSON2JS.parseData(objects), "utf8")
+    fs.writeFileSync(outputPath + "game/settings.js", JSON2JS.parseSettings(objects), "utf8")
+    fs.writeFileSync(outputPath + "game/style.css", JSON2JS.parseStyle(objects), "utf8")
+    fs.writeFileSync(outputPath + "game/code.js", JSON2JS.parseCode(objects), "utf8")
     return('Export completed')
   }
-
-
 }

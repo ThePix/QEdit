@@ -2,6 +2,7 @@
   {
     "action":"tab",
     "tabName":"Topic",
+    "icon": "comment",
     "displayIf":"o.jsMobilityType === 'Topic'",
     "tabControls":[
       {
