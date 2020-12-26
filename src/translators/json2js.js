@@ -44,7 +44,7 @@ export default class JSON2JS {
 
   // Converts items to JavaScript code
   static parseSettings(objects) {
-    let str = STRICT
+    let str = Constants.STRICT
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== Constants.SETTINGS_TYPE) continue
 
@@ -147,7 +147,7 @@ export default class JSON2JS {
 
   // Converts items to CSS settings
   static parseStyle(objects) {
-    let str = STRICT
+    let str = Constants.STRICT
 
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== 'settings') continue
@@ -176,7 +176,7 @@ export default class JSON2JS {
   // Converts items to code.js settings
   // This will be functions and commands
   static parseCode(objects) {
-    let str = STRICT
+    let str = Constants.STRICT
 
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== 'command') continue
