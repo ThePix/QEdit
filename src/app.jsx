@@ -178,7 +178,7 @@ export default class App extends React.Component {
       title: 'Save file',
     }
     const filename = dialog.showSaveDialog(dialogOptions)
-    //console.log(filename)
+    console.log(filename)
     if (filename) {
       this.questObjects.setFilename(filename)
       this.saveGame(filename)

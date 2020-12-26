@@ -45,7 +45,7 @@ export default class JSON2JS {
 
   // Converts items to JavaScript code
   static parseSettings(objects) {
-    let str = Constants.STRICT
+    let str = Constants.JSSTRICT
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== Constants.SETTINGS_TYPE) continue
 
@@ -148,7 +148,7 @@ export default class JSON2JS {
 
   // Converts items to CSS settings
   static parseStyle(objects) {
-    let str = Constants.STRICT
+    let str = Constants.JSSTRICT
 
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== 'settings') continue
@@ -214,14 +214,14 @@ function beautifyObjectHelper(item, indent) {
       //case "function": str += tabs(indent) + key + ":" + this.beautifyFunction(item[key].toString(), indent); break;
       case "number": str += tabs(indent) + key + ":" + item[key] + ","; break
       case "object":
-        console.log("item")
-        console.log(item)
-        console.log("item[key]")
-        console.log(item[key])
-        console.log("item[key].type")
-        console.log(item[key].type)
-        console.log("Constants")
-        console.log(Constants)
+        // console.log("item")
+        // console.log(item)
+        // console.log("item[key]")
+        // console.log(item[key])
+        // console.log("item[key].type")
+        // console.log(item[key].type)
+        // console.log("Constants")
+        // console.log(Constants)
         if (item[key] instanceof Exits) {
           str += beautify(item[key], key, indent); break
         }

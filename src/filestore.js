@@ -16,7 +16,7 @@ export default class FileStore {
   // This should read both Quest 5 and Quest 6 XML files,
   // which hopefully are pretty much the same
   static readASLFile(filename) {
-    console.log(filename)
+    //console.log(filename)
     const str = fs.readFileSync(filename, "utf8")
     if (/^\s*\</.test(str)) {
       return XML2JSON.parse(str)
