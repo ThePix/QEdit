@@ -33,6 +33,9 @@ const createWindow = async () => {
     icon: path.join(__dirname, '/images/icon.png')
   });
 
+  // Maximize the window!
+  mainWindow.maximize()
+
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`)
 

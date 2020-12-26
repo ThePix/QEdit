@@ -1,5 +1,6 @@
 import TabControls from '../tabcontrols'
 import * as Constants from '../constants'
+import { Exits } from '../inputcomponents'
 
 
 export default class JSON2JS {
@@ -176,7 +177,7 @@ export default class JSON2JS {
   // Converts items to code.js settings
   // This will be functions and commands
   static parseCode(objects) {
-    let str = Constants.STRICT
+    let str = Constants.JSSTRICT
 
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== 'command') continue
@@ -213,7 +214,15 @@ function beautifyObjectHelper(item, indent) {
       //case "function": str += tabs(indent) + key + ":" + this.beautifyFunction(item[key].toString(), indent); break;
       case "number": str += tabs(indent) + key + ":" + item[key] + ","; break
       case "object":
-        if (item[key] instanceof Exit) {
+        console.log("item")
+        console.log(item)
+        console.log("item[key]")
+        console.log(item[key])
+        console.log("item[key].type")
+        console.log(item[key].type)
+        console.log("Constants")
+        console.log(Constants)
+        if (item[key] instanceof Exits) {
           str += beautify(item[key], key, indent); break
         }
         else if (item[key] instanceof RegExp) {

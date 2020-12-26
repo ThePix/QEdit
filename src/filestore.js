@@ -75,15 +75,15 @@ export default class FileStore {
         'lib/style.css',
       ]
       for (let filename of filenames) {
-        console.log("__dirname", __dirname)
+        //console.log("__dirname", __dirname)
         console.log("About to copy " + filename + '...');
-        console.log("Constants.QUEST_JS_PATH + filename:")
-        console.log(Constants.QUEST_JS_PATH + filename)
+        //console.log("Constants.QUEST_JS_PATH + filename:")
+        //console.log(Constants.QUEST_JS_PATH + filename)
         let inputDir = path.join(__dirname, Constants.QUEST_JS_PATH);
-        console.log("inputDir:")
-        console.log(inputDir)
-        console.log("inputDir + filename:")
-        console.log(inputDir + filename)
+        //console.log("inputDir:")
+        //console.log(inputDir)
+        //console.log("inputDir + filename:")
+        //console.log(inputDir + filename)
         fs.copyFile(inputDir + filename, outputPath + filename, (err) => {
           if (err) throw err
           console.log("...Done")

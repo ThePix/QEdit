@@ -643,8 +643,9 @@ const OPENABLE = function(alreadyOpen) {
     s += this.alias;
     if (options && options.possessive) s += "'s";
     if (!this.closed && options.modified) { s += " (open)"; }
-    return s;
     if (options && options.capital) s = sentenceCase(s);
+    return s;
+    
   };
 
   const c = CONTAINER();

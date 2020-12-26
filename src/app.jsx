@@ -178,7 +178,7 @@ export default class App extends React.Component {
       title: 'Save file',
     }
     const filename = dialog.showSaveDialog(dialogOptions)
-    console.log(filename)
+    //console.log(filename)
     if (filename) {
       this.questObjects.setFilename(filename)
       this.saveGame(filename)
@@ -189,8 +189,9 @@ export default class App extends React.Component {
   }
 
   exportGame(filename) {
-    this.saveGame(filename) // make sure this is saved to asl6 first
     filename = this.questObjects.getFilename()
+    this.saveGame(filename) // make sure this is saved to asl6 first
+    
     if (!filename) {
       console.log('Save your game before exporting')
       this.message('Save your game before exporting')
