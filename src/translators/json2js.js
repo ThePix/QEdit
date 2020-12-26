@@ -217,7 +217,11 @@ function beautifyObjectHelper(item, indent) {
       case "number": str += tabs(indent) + key + ":" + item[key] + ","; break
       case "object":
         if (key === Constants.EXIT_TYPE + 's') {
-          str += beautify(item[key][0], item[key][0].name, indent); break
+          let tmpExits = item[key]
+          for (let i in tmpExits){
+            str += beautify(tmpExits[i], tmpExits[i].name, indent);
+          }
+          break
         }
         else if (item[key] instanceof RegExp) {
           str += tabs(indent) + key + ":/" + item[key].source + "/,"; break
