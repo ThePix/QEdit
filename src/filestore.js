@@ -16,7 +16,6 @@ export default class FileStore {
   // This should read both Quest 5 and Quest 6 XML files,
   // which hopefully are pretty much the same
   static readASLFile(filename) {
-    //console.log(filename)
     const str = fs.readFileSync(filename, "utf8")
     if (/^\s*\</.test(str)) {
       return XML2JSON.parse(str)
@@ -45,8 +44,6 @@ export default class FileStore {
 
   static writeJSFile(objects, filename) {
     const outputPath = filename.replace(/\\/g, '/').replace('.' + Constants.EXTENSION_ASL6, '/').replace('.' + Constants.EXTENSION_ASLX, '/')
-    //console.log("outputPath:",outputPath);
-    //console.log("EXTENSION_ASL6",Constants.EXTENSION_ASL6)
     console.log('Export to JavaScript files')
     if (!fs.existsSync(outputPath)) {
       console.log('Folders need creating')
@@ -75,15 +72,8 @@ export default class FileStore {
         'lib/style.css',
       ]
       for (let filename of filenames) {
-        //console.log("__dirname", __dirname)
         console.log("About to copy " + filename + '...');
-        //console.log("Constants.QUEST_JS_PATH + filename:")
-        //console.log(Constants.QUEST_JS_PATH + filename)
         let inputDir = path.join(__dirname, Constants.QUEST_JS_PATH);
-        //console.log("inputDir:")
-        //console.log(inputDir)
-        //console.log("inputDir + filename:")
-        //console.log(inputDir + filename)
         fs.copyFile(inputDir + filename, outputPath + filename, (err) => {
           if (err) throw err
           console.log("...Done")
