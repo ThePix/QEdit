@@ -201,7 +201,9 @@ function beautifyObjectHelper(item, indent) {
       if (key === 'jsTopicScript') str += tabs(indent) + 'script' + beautifyScript(item[key])
       continue
     }
+
     switch (typeof item[key]) {
+     
       case "boolean": str += tabs(indent) + key + ":" + (item[key] ? "true" : "false") + ","; break
       case "string":
         if (/^function\(/.test(item[key])) {
@@ -228,6 +230,10 @@ function beautifyObjectHelper(item, indent) {
         }
         else if (item[key].type === 'js') {
           str += tabs(indent) + key + ":function(" + (item[key].params ? item[key].params : '') + ") {\n" + indentLines(item[key].code, indent + 1) + tabs(indent) + "},"; break
+        }
+        else if (item[key].type === 'msg' || key === 'desc') {
+          
+          str += tabs(indent) + key + ":\"" + item[key].code + "\","
         }
     }
     str += "\n"
