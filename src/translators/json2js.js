@@ -216,8 +216,8 @@ function beautifyObjectHelper(item, indent) {
       //case "function": str += tabs(indent) + key + ":" + this.beautifyFunction(item[key].toString(), indent); break;
       case "number": str += tabs(indent) + key + ":" + item[key] + ","; break
       case "object":
-        if (item[key] instanceof Exits) {
-          str += beautify(item[key], key, indent); break
+        if (key === Constants.EXIT_TYPE + 's') {
+          str += beautify(item[key][0], item[key][0].name, indent); break
         }
         else if (item[key] instanceof RegExp) {
           str += tabs(indent) + key + ":/" + item[key].source + "/,"; break
@@ -276,7 +276,7 @@ beautifyFunction(str, indent) {
 */
 function beautify(item, dir, indent) {
     //console.log(this.data)
-    let s = tabs(indent) + dir + ":new Exit(\"" + item.name + "\""
+    let s = tabs(indent) + dir + ":new Exit(\"" + item.data.name + "\""
     if (item.data.useType === "default") return s + "),"
     if (item.data.useType === "msg") return s + ", {\n" + tabs(indent+1) + "msg:\"" + item.data.msg + "\",\n" + tabs(indent) + "}),"
     if (item.data.useType === "custom") {
