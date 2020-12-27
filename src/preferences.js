@@ -11,6 +11,8 @@ const defaultPreferences = {
   jsAutosaveInterval: 1,
   darkMode: false
 }
+global.AUTOSAVEINTERVAL = defaultPreferences.jsAutosaveInterval
+
 const preferences = new Store({defaults:defaultPreferences})
 
 export default class Preferences extends React.Component {
@@ -73,8 +75,8 @@ export default class Preferences extends React.Component {
                 max={100}
                 onChange={(value) =>{
                   console.log(value)
-                  Preferences.set(Constants.AUTOSAVEINTERVALVALUE, value.toString())
-                  console.log(Constants.AUTOSAVEINTERVALVALUE)
+                  global.AUTOSAVEINTERVAL = value
+                  console.log(global.AUTOSAVEINTERVAL)
                 }}
               />
             </FormGroup>

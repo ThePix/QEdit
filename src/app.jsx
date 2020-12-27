@@ -18,6 +18,8 @@ const platform = require('os').platform()
 const arch = require('os').arch()
 const fs = require('fs')
 
+
+
 // Next four lines disable warning from React-hot-loader
 import { hot, setConfig } from 'react-hot-loader'
 setConfig({
@@ -161,7 +163,7 @@ export default class App extends React.Component {
     var autosavePath = app.getPath('userData') + '/autosaves/'
     var autosaveFile = 'autosave' + this.autosaveCount + '.' + Constants.EXTENSION_ASL6
     this.saveGame(autosavePath + autosaveFile)
-    const interval = parseInt(Preferences.get(Constants.AUTOSAVEINTERVALVALUE))
+    const interval = global.AUTOSAVEINTERVAL
     console.log("autosave . . .")
     console.log(new Date())
     console.log("interval:")

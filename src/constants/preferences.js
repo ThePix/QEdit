@@ -3,7 +3,6 @@ export const SHOWROOMSONLY = 'showRoomsOnly'
 export const NEWROOMWHERE = 'newRoomWhere'
 export const NEWITEMWHERE = 'newRoomWhere'
 export const AUTOSAVEINTERVAL = 'autosaveInterval'
-export let AUTOSAVEINTERVALVALUE = '1'
 export const DARKMODE = 'darkMode'
 
 //NEWROOMWHERE / NEWITEMWHERE
