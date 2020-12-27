@@ -26,3 +26,15 @@ I can open the editor, name the game, and save to JS.  It works that way as of t
 Next, I shall add an object and see how that goes.
 
 More on this as it comes in . . .
+
+---
+### UPDATE
+
+It now works in Linux and Windows 10.
+
+I can add objects, rooms, exits, descriptions, and use functions in the room descriptions.
+
+Further testing in progress . . .
+
+---
+See [this issue](https://github.com/KVonGit/QEdit/issues/1) for updates (and whatnot).
