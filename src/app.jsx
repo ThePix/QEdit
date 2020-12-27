@@ -14,9 +14,9 @@ import Toolbar from './toolbar'
 const prompt = require('electron-prompt')
 const {Menu, dialog, app} = require('electron').remote
 const homedir = require('os').homedir()
-const plat = require('os').platform()
-const auth = require('os').hostname()
-const fs = require('fs-extra')
+const platform = require('os').platform()
+const arch = require('os').arch()
+const fs = require('fs')
 
 // Next four lines disable warning from React-hot-loader
 import { hot, setConfig } from 'react-hot-loader'
@@ -126,12 +126,17 @@ export default class App extends React.Component {
   }
 
   openGame() {
-    if (!fs.existsSync(homedir + '/Documents/quest_games')) {
+    let slash = platform === 'win32' ? '\\' : '/'
+    let gamePath = fs.existsSync(homedir + slash + 'Documents') ? homedir + slash + 'Documents' : homedir
+    
+    gamePath += slash + 'quest_games'
+    //console.log(gamePath)
+    if (!fs.existsSync(gamePath)) {
       console.log('Folders need creating')
-      fs.mkdirSync(homedir + '/Documents/quest_games', { recursive: true })
-    }
+      fs.mkdirSync(gamePath, { recursive: true })
+    } 
     const dialogOptions = {
-      defaultPath: homedir + '/Documents/quest_games',
+      defaultPath: gamePath,
       filters: [
         { name: "Quest files", extensions: Constants.FILEEXTENSIONS },
         { name: "All Files", extensions: ["*"] },
@@ -156,8 +161,12 @@ export default class App extends React.Component {
     var autosavePath = app.getPath('userData') + '/autosaves/'
     var autosaveFile = 'autosave' + this.autosaveCount + '.' + Constants.EXTENSION_ASL6
     this.saveGame(autosavePath + autosaveFile)
-    const interval = Preferences.get(Constants.AUTOSAVEINTERVAL)
-    if (interval !== 0) {
+    const interval = parseInt(Preferences.get(Constants.AUTOSAVEINTERVALVALUE))
+    console.log("autosave . . .")
+    console.log(new Date())
+    console.log("interval:")
+    console.log(interval)
+    if (interval && interval !== 0) {
       setTimeout(this.autosave.bind(this), interval * 60000)
     }
   }
@@ -167,21 +176,27 @@ export default class App extends React.Component {
 
     if (filename) {
       const result = FileStore.writeASLFile(this.questObjects.getObjects(), filename)
-      console.log(result)
+      //console.log(result)
       this.message(result)
     }
     else {
       this.saveGameAs()
     }
+    console.log("Ran saveGame ", new Date())
   }
 
   saveGameAs() {
-    if (!fs.existsSync(homedir + '/Documents/quest_games')) {
+    let slash = platform === 'win32' ? '\\' : '/'
+    let gamePath = fs.existsSync(homedir + slash + 'Documents') ? homedir + slash + 'Documents' : homedir
+    
+    gamePath += slash + 'quest_games'
+    //console.log(gamePath)
+    if (!fs.existsSync(gamePath)) {
       console.log('Folders need creating')
-      fs.mkdirSync(homedir + '/Documents/quest_games', { recursive: true })
+      fs.mkdirSync(gamePath, { recursive: true })
     }
     const dialogOptions = {
-      defaultPath: homedir + '/Documents/quest_games',
+      defaultPath:gamePath,
       filters: [
         { name: "Quest files", extensions: Constants.FILEEXTENSIONS },
         { name: "All Files", extensions: ["*"] },

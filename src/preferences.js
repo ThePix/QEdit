@@ -67,11 +67,15 @@ export default class Preferences extends React.Component {
               <ControlLabel>Autosave interval:</ControlLabel>
               <InputNumber
                 key={Constants.AUTOSAVEINTERVAL}
-                stule={Constants.INPUTCOMPONENT_STYLE}
-                defaultValue={Preferences.get(Constants.AUTOSAVEINTERVAL)}
-                min={1}
+                style={Constants.INPUTCOMPONENT_STYLE}
+                defaultValue={defaultPreferences.jsAutosaveInterval}
+                min={0}
                 max={100}
-                onChange={(value) => Preferences.set(Constants.AUTOSAVEINTERVAL, value)}
+                onChange={(value) =>{
+                  console.log(value)
+                  Preferences.set(Constants.AUTOSAVEINTERVALVALUE, value.toString())
+                  console.log(Constants.AUTOSAVEINTERVALVALUE)
+                }}
               />
             </FormGroup>
             <FormGroup>

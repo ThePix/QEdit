@@ -78,7 +78,7 @@ export default class FileStore {
         console.log("...Done")
       })
       if (filename === 'style.css') {
-        console.log("Caught")
+        console.log("Caught 'style.css'!")
         let css = require('css')
         let newCss = JSON2JS.parseStyle(objects).toString()
         let styleCss = fs.readFileSync(inputDir + "style.css").toString()
