@@ -13,7 +13,10 @@ import Toolbar from './toolbar'
 
 const prompt = require('electron-prompt')
 const {Menu, dialog, app} = require('electron').remote
-
+const homedir = require('os').homedir()
+const plat = require('os').platform()
+const auth = require('os').hostname()
+const fs = require('fs-extra')
 
 // Next four lines disable warning from React-hot-loader
 import { hot, setConfig } from 'react-hot-loader'
@@ -123,8 +126,12 @@ export default class App extends React.Component {
   }
 
   openGame() {
+    if (!fs.existsSync(homedir + '/Documents/quest_games')) {
+      console.log('Folders need creating')
+      fs.mkdirSync(homedir + '/Documents/quest_games', { recursive: true })
+    }
     const dialogOptions = {
-      //defaultPath: "c:/",
+      defaultPath: homedir + '/Documents/quest_games',
       filters: [
         { name: "Quest files", extensions: Constants.FILEEXTENSIONS },
         { name: "All Files", extensions: ["*"] },
@@ -169,8 +176,12 @@ export default class App extends React.Component {
   }
 
   saveGameAs() {
+    if (!fs.existsSync(homedir + '/Documents/quest_games')) {
+      console.log('Folders need creating')
+      fs.mkdirSync(homedir + '/Documents/quest_games', { recursive: true })
+    }
     const dialogOptions = {
-      //defaultPath: "c:/",
+      defaultPath: homedir + '/Documents/quest_games',
       filters: [
         { name: "Quest files", extensions: Constants.FILEEXTENSIONS },
         { name: "All Files", extensions: ["*"] },

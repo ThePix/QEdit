@@ -513,8 +513,8 @@
 		"tabControls": [{
 				"name": "panes",
 				"type": "select",
-				"options": ["Left", "Right", "None"],
-				"default": "Left",
+				"options": ["left", "right", "none"],
+				"default": "left",
 				"display": "Side-pane",
 				"tooltip": "You can have the side pane on the left or right, or not at all."
 			},

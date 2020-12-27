@@ -148,7 +148,7 @@ export default class JSON2JS {
 
   // Converts items to CSS settings
   static parseStyle(objects) {
-    let str = Constants.JSSTRICT
+    let str = ''
 
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== 'settings') continue
