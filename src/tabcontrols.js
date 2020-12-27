@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('fs-extra');
 const {lang} = require("./lang-en.js");
 
 // Assumes files are provided in alphabetical order, so aaa.js is first

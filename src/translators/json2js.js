@@ -1,6 +1,6 @@
 import TabControls from '../tabcontrols'
 import * as Constants from '../constants'
-import { Exits } from '../inputcomponents'
+//import { Exits } from '../inputcomponents'
 
 
 export default class JSON2JS {

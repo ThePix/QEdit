@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs-extra'
 import path from 'path'
 import mkdirp from 'mkdirp'
 import XML2JSON from './translators/xml2json'
@@ -11,6 +11,7 @@ I think synchronous will be good enough because we are saving/loading locally
 and it is reasonable to expect the user to wait whilst it happens.
 
 */
+
 
 export default class FileStore {
   // This should read both Quest 5 and Quest 6 XML files,
@@ -54,27 +55,15 @@ export default class FileStore {
       fs.mkdirSync(outputPath + "images", { recursive: true })
       console.log('Folders created')
       const filenames = [
-        'lang/lang-en.js',
+        'lang',
         'page.html',
-        'lib/command.js',
-        'lib/commands.js',
-        'lib/defaults.js',
-        'lib/io.js',
-        'lib/npc.js',
-        'lib/parser.js',
-        'lib/saveload.js',
-        'lib/templates.js',
-        'lib/text.js',
-        'lib/util.js',
-        'lib/world.js',
-        'lib/settings.js',
-        'images/favicon.png',
-        'lib/style.css',
+        'lib',
+        'images',
       ]
       for (let filename of filenames) {
         console.log("About to copy " + filename + '...');
         let inputDir = path.join(__dirname, Constants.QUEST_JS_PATH);
-        fs.copyFile(inputDir + filename, outputPath + filename, (err) => {
+        fs.copy(inputDir + filename, outputPath + filename, (err) => {
           if (err) throw err
           console.log("...Done")
         })
