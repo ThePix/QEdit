@@ -142,7 +142,8 @@ const settings = {
     }
     for (let file of settings.files) {
       document.writeln('<script src="' + settings.folder + file + '.js"></scr' + "ipt>"); 
-    }    
+    }
+    document.writeln('<link rel="stylesheet" href="' + settings.cssFolder + 'style.css"/>') // Added by the editor. Should be last.
   }
 }
 

@@ -100,7 +100,7 @@ export default class App extends React.Component {
     this.find = this.find.bind(this)
   }
 
-  // Used to set upo the menus during set up
+  // Used to set up the menus during set up
   findMenuItem(template, label) {
     for (let i = 0; i < template.length; i++) {
       for (let j = 0; j < template[i].submenu.length; j++) {
@@ -165,10 +165,10 @@ export default class App extends React.Component {
     var autosaveFile = 'autosave' + this.autosaveCount + '.' + Constants.EXTENSION_ASL6
     this.saveGame(autosavePath + autosaveFile)
     const interval = global.AUTOSAVEINTERVAL
-    console.log("autosave . . .")
-    console.log(new Date())
-    console.log("interval:")
-    console.log(interval)
+    //console.log("autosave . . .")
+    //console.log(new Date())
+    //console.log("interval:")
+    //console.log(interval)
     if (interval && interval !== 0) {
       setTimeout(this.autosave.bind(this), interval * 60000)
     }
@@ -176,7 +176,6 @@ export default class App extends React.Component {
 
   saveGame(filename) {
     filename = filename || this.questObjects.getFilename()
-
     if (filename) {
       const result = FileStore.writeASLFile(this.questObjects.getObjects(), filename)
       //console.log(result)
@@ -185,7 +184,7 @@ export default class App extends React.Component {
     else {
       this.saveGameAs()
     }
-    console.log("Ran saveGame ", new Date())
+    //console.log("Ran saveGame ", new Date())
   }
 
   saveGameAs() {
@@ -228,7 +227,7 @@ export default class App extends React.Component {
       return
     }
 
-    const result = FileStore.writeJSFile(this.questObjects.getObjects(), filename)
+    const result = FileStore.writeJSFile(this.questObjects.questObjects, filename)
     console.log(result)
     this.message(result)
   }
@@ -310,6 +309,7 @@ export default class App extends React.Component {
 
   render() {
     console.log(this.state)
+    //global.app = this  // This lets you access this from the console in the editor!
     return (
       <Container>
         <Preferences

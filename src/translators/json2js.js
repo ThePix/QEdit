@@ -153,13 +153,14 @@ export default class JSON2JS {
     let str = ''
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== 'settings') continue
-
+      console.log("parseStyle")
+      console.log(objects[i])
       str += ''
 
       if (objects[i].jsGoogleFonts && objects[i].jsGoogleFonts.length > 1) {
         str += "@import url('https://fonts.googleapis.com/css?family=" + objects[i].jsGoogleFonts.map(el => el.replace(/ /g, '+')).join('|') + "');\n\n"
       }
-      str += "#main {\n"
+      str += "body {\n"
       if (objects[i].jsStyleMain_color) str += "  color:" + objects[i].jsStyleMain_color + ";\n"
       if (objects[i].jsStyleMain_background_color) str += "  background-color:" + objects[i].jsStyleMain_background_color + ";\n"
       if (objects[i].jsStyleMain_font_family) str += "  font-family:" + objects[i].jsStyleMain_font_family + ";\n"
@@ -174,72 +175,72 @@ export default class JSON2JS {
     }
     return str;
   }
-  static loadStyleFromCss(filename="assets/css/default.css", objs) {
-    // Filename should most likely be "assets/css/default.css".
-   // console.log("Running loadStyleFromCss . . .")
-    let target
-    objs.forEach(obj => {
-      if (obj.name === 'Settings'){
-        target = obj
-        //console.log("Found Settings:")
-      }
-    })
-    if (!target.name) return objs
-    let css = require('css')
-    let inputDir = path.join(__dirname, '../' + Constants.QUEST_JS_PATH)
-    let styleCss = fs.readFileSync(inputDir + filename).toString()
-    let cssObject = css.parse(styleCss)
-    Object.values(cssObject).forEach(val => {
-      val.rules.forEach(rule => {
-        rule.selectors.forEach(el => {
-          // If this is #main or .sidepanes, set the declarations to jsStyleMain_* or jsStyleSide_*
-          if (el === '#main') {
-            rule.declarations.forEach(declaration => {
-              switch (declaration.property) {
-                case 'color':
-                   target.jsStyleMain_color = declaration.value
-                  break
-                case 'background-color':
-                  target.jsStyleMain_background_color  = declaration.value
-                  break
-                case 'font-family':
-                  target.jsStyleMain_font_family  = declaration.value
-                  break
-                case 'font-size':
-                  target.jsStyleMain_font_size  = declaration.value
-                  break
-                default:
-                  // Do nothing
-              }
-            })
-          }
-          if (el === '.side-panes') {
-            rule.declarations.forEach(declaration => {
+  // static loadStyleFromCss(filename="assets/css/default.css", objs) {
+  //   // Filename should most likely be "assets/css/default.css".
+  //  // console.log("Running loadStyleFromCss . . .")
+  //   let target
+  //   objs.forEach(obj => {
+  //     if (obj.name === 'Settings'){
+  //       target = obj
+  //       //console.log("Found Settings:")
+  //     }
+  //   })
+  //   if (!target.name) return objs
+  //   let css = require('css')
+  //   let inputDir = path.join(__dirname, '../' + Constants.QUEST_JS_PATH)
+  //   let styleCss = fs.readFileSync(inputDir + filename).toString()
+  //   let cssObject = css.parse(styleCss)
+  //   Object.values(cssObject).forEach(val => {
+  //     val.rules.forEach(rule => {
+  //       rule.selectors.forEach(el => {
+  //         // If this is body or .side-panes, set the declarations to jsStyleMain_* or jsStyleSide_*
+  //         if (el === 'body') {
+  //           rule.declarations.forEach(declaration => {
+  //             switch (declaration.property) {
+  //               case 'color':
+  //                  target.jsStyleMain_color = declaration.value
+  //                 break
+  //               case 'background-color':
+  //                 target.jsStyleMain_background_color  = declaration.value
+  //                 break
+  //               case 'font-family':
+  //                 target.jsStyleMain_font_family  = declaration.value
+  //                 break
+  //               case 'font-size':
+  //                 target.jsStyleMain_font_size  = declaration.value
+  //                 break
+  //               default:
+  //                 // Do nothing
+  //             }
+  //           })
+  //         }
+  //         if (el === '.side-panes') {
+  //           rule.declarations.forEach(declaration => {
 
-              switch (declaration.property) {
-                case 'color':
-                   target.jsStyleSide_color = declaration.value
-                  break
-                case 'background-color':
-                  target.jsStyleSide_background_color  = declaration.value
-                  break
-                case 'font-family':
-                  target.jsStyleSide_font_family  = declaration.value
-                  break
-                case 'font-size':
-                  target.jsStyleSide_font_size  = declaration.value
-                  break
-                default:
-                  // Do nothing
-              }
-            })
-          }
-        })
+  //             switch (declaration.property) {
+  //               case 'color':
+  //                  target.jsStyleSide_color = declaration.value
+  //                 break
+  //               case 'background-color':
+  //                 target.jsStyleSide_background_color  = declaration.value
+  //                 break
+  //               case 'font-family':
+  //                 target.jsStyleSide_font_family  = declaration.value
+  //                 break
+  //               case 'font-size':
+  //                 target.jsStyleSide_font_size  = declaration.value
+  //                 break
+  //               default:
+  //                 // Do nothing
+  //             }
+  //           })
+  //         }
+  //       })
         
-     })
-    })
-    return objs;
-  }
+  //    })
+  //   })
+  //   return objs;
+  // }
   // Converts items to code.js settings
   // This will be functions and commands
   static parseCode(objects) {
