@@ -22,14 +22,18 @@ export default class FileStore {
       return XML2JSON.parse(str)
     }
     else if (/^\s*[\{,\[]/.test(str)) {
-      return JSON.parse(str)
+      let objs = JSON.parse(str)
+      objs = JSON2JS.loadStyleFromCss(undefined,objs)
+      return objs
     }
     else {
       alert('Unknown file format')
     }
+    
   }
 
   static async writeASLFile (objects, filename) {
+    
     if (filename.endsWith(Constants.EXTENSION_ASLX)) {
       filename = filename.replace(Constants.EXTENSION_ASLX, Constants.EXTENSION_ASL6)
       if (fs.existsSync(filename)) {
@@ -53,7 +57,10 @@ export default class FileStore {
       fs.mkdirSync(outputPath + "lang", { recursive: true })
       fs.mkdirSync(outputPath + "game", { recursive: true })
       fs.mkdirSync(outputPath + "assets", { recursive: true })
-      fs.mkdirSync(outputPath + "assets/css", { recursive: true })
+      fs.mkdirSync(outputPath + "assets/css", { recursive: true }, err => {
+        if (err) throw err
+        console.log("Copied css folder!")
+      })
       console.log('Folders created')
       
     }
@@ -89,12 +96,15 @@ export default class FileStore {
       // }
     }
     
-
+    // console.log('objects')
+    // console.log(objects)
     console.log('About to write files')
     fs.writeFileSync(outputPath + "game/data.js", JSON2JS.parseData(objects), "utf8")
     fs.writeFileSync(outputPath + "game/settings.js", JSON2JS.parseSettings(objects), "utf8")
     fs.writeFileSync(outputPath + "assets/css/style.css", JSON2JS.parseStyle(objects), "utf8") // Put this back here for now - KV
     fs.writeFileSync(outputPath + "game/code.js", JSON2JS.parseCode(objects), "utf8")
+    const {shell} = require('electron') // deconstructing assignment
+    shell.showItemInFolder(outputPath + 'page.html')
     return('Export completed')
   }
 }

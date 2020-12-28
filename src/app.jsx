@@ -129,8 +129,9 @@ export default class App extends React.Component {
 
   openGame() {
     let slash = platform === 'win32' ? '\\' : '/'
-    let gamePath = fs.existsSync(homedir + slash + 'Documents') ? homedir + slash + 'Documents' : homedir
-    
+    let docs = fs.existsSync(homedir + slash + 'Documents') ? 'Documents' : ''
+    if (docs === '') docs = fs.existsSync(homedir + slash + 'My Documents') ? 'My Documents' : ''
+    let gamePath = docs != '' ? homedir + slash + docs : homedir
     gamePath += slash + 'quest_games'
     //console.log(gamePath)
     if (!fs.existsSync(gamePath)) {
@@ -189,8 +190,9 @@ export default class App extends React.Component {
 
   saveGameAs() {
     let slash = platform === 'win32' ? '\\' : '/'
-    let gamePath = fs.existsSync(homedir + slash + 'Documents') ? homedir + slash + 'Documents' : homedir
-    
+    let docs = fs.existsSync(homedir + slash + 'Documents') ? 'Documents' : ''
+    if (docs === '') docs = fs.existsSync(homedir + slash + 'My Documents') ? 'My Documents' : ''
+    let gamePath = docs != '' ? homedir + slash + docs : homedir
     gamePath += slash + 'quest_games'
     //console.log(gamePath)
     if (!fs.existsSync(gamePath)) {
