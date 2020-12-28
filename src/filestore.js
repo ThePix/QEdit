@@ -53,6 +53,7 @@ export default class FileStore {
       fs.mkdirSync(outputPath + "lang", { recursive: true })
       fs.mkdirSync(outputPath + "game", { recursive: true })
       fs.mkdirSync(outputPath + "assets", { recursive: true })
+      fs.mkdirSync(outputPath + "assets/css", { recursive: true })
       console.log('Folders created')
       
     }
@@ -62,7 +63,7 @@ export default class FileStore {
     const filenames = [
       'lang',
       'page.html',
-      //'style.css',
+      //'style.css', // This was deprecated as of QuestJS v0.4. New CSS sheets are in "assets/css".
       'lib',
       'assets',
     ]
@@ -70,32 +71,29 @@ export default class FileStore {
       console.log("About to copy " + filename + '...');
       let inputDir = path.join(__dirname, Constants.QUEST_JS_PATH);
       let oPath = outputPath
-      if (filename === 'style.css') {
-        oPath+= 'game/'
-      }
+      // if (filename === 'style.css') { // This was deprecated as of QuestJS v0.4
+      //   oPath+= 'game/'
+      // }
       fs.copy(inputDir + filename, oPath + filename, (err) => {
         if (err) throw err
         console.log("...Done")
       })
-      if (filename === 'style.css') {
-        console.log("Caught 'style.css'!")
-        let css = require('css')
-        let newCss = JSON2JS.parseStyle(objects).toString()
-        let styleCss = fs.readFileSync(inputDir + "style.css").toString()
-        let badAssCss = css.parse(styleCss)
-        console.log(badAssCss)
-        //console.log(styleCss)
-        //console.log(newCss)
-        //console.log(newCss + `\n\n` + styleCss)
-        fs.writeFileSync(outputPath + "game/style.css", newCss + `\n\n` + styleCss, "utf8") // backwards for the moment
-      }
+      // if (filename === 'style.css') { // This was deprecated as of QuestJS v0.4, but I still need to use the following code (or bits of it) - KV
+      //   console.log("Caught 'style.css'!")
+      //   let css = require('css')
+      //   let newCss = JSON2JS.parseStyle(objects).toString()
+      //   let styleCss = fs.readFileSync(inputDir + "style.css").toString()
+      //   let badAssCss = css.parse(styleCss)
+      //   console.log(badAssCss)
+      //   fs.writeFileSync(outputPath + "game/style.css", newCss + `\n\n` + styleCss, "utf8") // backwards for the moment
+      // }
     }
     
 
     console.log('About to write files')
     fs.writeFileSync(outputPath + "game/data.js", JSON2JS.parseData(objects), "utf8")
     fs.writeFileSync(outputPath + "game/settings.js", JSON2JS.parseSettings(objects), "utf8")
-    
+    fs.writeFileSync(outputPath + "assets/css/style.css", JSON2JS.parseStyle(objects), "utf8") // Put this back here for now - KV
     fs.writeFileSync(outputPath + "game/code.js", JSON2JS.parseCode(objects), "utf8")
     return('Export completed')
   }
