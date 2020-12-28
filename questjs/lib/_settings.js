@@ -28,10 +28,11 @@ const settings = {
   files:["code", "data"], // Additional files to load
   libraries:["_saveload", "_text", "_io", "_command", "_defaults", "_templates", "_world", "_npc", "_parser", "_commands"],  // util already loaded
   customLibraries:[],
-  imagesFolder:'images/',
-  iconsFolder:'icons/',
-  soundsFolder:'audio/',
-  videosFolder:'video/',
+  imagesFolder:'assets/images/',
+  iconsFolder:'assets/icons/',
+  soundsFolder:'assets/audio/',
+  videosFolder:'assets/video/',
+  cssFolder:'assets/css/',
   soundsFileExt:'.mp3',
   
 
@@ -61,7 +62,7 @@ const settings = {
   silent:false,
   walkthroughMenuResponses:[],
   startingDialogEnabled:false,
-  darkModeActive:false,
+  darkModeActive:false,   // setting to true is a bad idea (use io.toggleDarkMode)
   mapAndImageCollapseAt:1200,
 
 
@@ -103,7 +104,7 @@ const settings = {
   maxUndo:10,
   moneyFormat:"$!",
   version:'1.0',
-  questVersion:'0.3',
+  questVersion:'0.4',
   author:'Anonymous',
   title:'My New Game Needs A Title',
   mapStyle:{right:'0', top:'200px', width:'300px', height:'300px', 'background-color':'beige' },
@@ -113,7 +114,16 @@ const settings = {
 
   writeScript:function(folder) {
     settings.folder = folder ? folder + '/' : ''
-    document.writeln('<link rel="stylesheet" href="' + settings.folder + 'style.css"/>');
+    document.writeln('<link rel="shortcut icon" type="image/png" href="' + settings.iconsFolder + 'favicon.png"/>')
+    document.writeln('<link rel="stylesheet" href="' + settings.cssFolder + 'default.css"/>')
+    if (settings.themes) {
+      for (let file of settings.themes) {
+        document.writeln('<link rel="stylesheet" href="' + settings.cssFolder + file + '.css"/>')
+      }
+    }
+    if (settings.styleFile) {
+      document.writeln('<link rel="stylesheet" href="' + settings.folder + settings.styleFile + '.css"/>')
+    }
     if (settings.tests) {
       document.writeln('<script src="lib/test-lib.js"></scr' + "ipt>"); 
       document.writeln('<script src="' + settings.folder + 'tests.js"></scr' + "ipt>"); 

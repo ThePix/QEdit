@@ -24,6 +24,21 @@ test.testing = false;
 //@UNDOC
 
 
+
+
+const log = console.log
+const debuglog = (s) => { if(settings.playMode === 'dev' || settings.playMode === 'meta'){ log(s)} }
+const parserlog = (s) => { if(parser.debug){ log(s)} }
+
+
+//@DOC
+// Runs the given string as though the player typed it, including recording it in the output
+function runCmd(cmd) {
+  io.msgInputText(cmd)
+  parser.parse(cmd)
+}
+
+
 //@DOC
 // This is an attempt to mimic the firsttime functionality of Quest 5. Unfortunately, JavaScript does not
 // lend itself well to that!
@@ -717,7 +732,7 @@ util.getContents = function(situation) {
 util.testForRecursion = function(char, item) {
   let contName = this.name;
   while (w[contName]) {
-    if (w[contName].loc === item.name) return falsemsg(container_recursion(char, this, item));
+    if (w[contName].loc === item.name) return falsemsg(lang.container_recursion, {char:char, container:this, item:item})
     contName = w[contName].loc
   }
   return true;
@@ -784,17 +799,23 @@ function respond(params, list, func) {
   const response = util.findResponse(params, list)
   if (!response) {
     if (func) func(params)
-    errormsg("Failed to find a response (F12 for more)")
-    console.log("Failed to find a response")
+    errormsg("Failed to find a response")
     console.log(params)
     console.log(list)
     return false
   }
   //console.log(response)
   if (response.script) response.script(params)
-  if (response.msg) params.actor.msg(response.msg, params)
-  if (!response.script && !response.msg) {
-    errormsg("No script or msg for response (F12 for more)")
+  if (response.msg) {
+    if (params.actor) {
+      params.actor.msg(response.msg, params)
+    }
+    else {
+      msg(response.msg, params)
+    }
+  }
+  if (!response.script && !response.msg && !response.failed) {
+    errormsg("No script or msg for response")
     console.log(response)
   }
   if (func) func(params, response)
@@ -858,21 +879,21 @@ util.getResponseSubList = function(route, list) {
   }
 }
 
-util.verifyResponses = function(list) {
+util.verifyResponses = function(list, level) {
   //  console.log(list)
-  
+  if (level === undefined) level = 1
   if (list[list.length - 1].test) {
-    console.log("WARNING: Last entry has a test condition:")
+    console.log("WARNING: Last entry at depth " + level + " has a test condition:")
     console.log(list)
   }
   for (let item of list) {
     if (item.responses) {
       //console.log(item.name)
       if (item.responses.length === 0) {
-        console.log("Zero responses for: " + item.name)
+        console.log("Zero responses at depth " + level + " for: " + item.name)
       }
       else {
-        util.verifyResponses(item.responses)
+        util.verifyResponses(item.responses, level + 1)
       }
     }
   }
@@ -909,37 +930,6 @@ util.exitList = function(char = game.player) {
   return list;
 }
 
-util.defaultExitUse = function(char, dir) {
-  if (char.testMobility && !char.testMobility()) {
-    return false;
-  }
-
-  if (this.isLocked()) {
-    if (this.lockedmsg) {
-      msg(this.lockedmsg)
-    }
-    else {
-      msg(lang.locked_exit(char, this))
-    }
-    return false
-  }
-  
-  if (this.isUnlocked && !this.isUnlocked(char, dir)) return false
-
-  for (let el of char.onGoCheckList) {
-    if (!w[el].onGoCheck(char, this.name, dir)) return false
-  }
-
-  msg(lang.stop_posture(char))
-  if (this.msg) {
-    printOrRun(char, this, "msg")
-  }
-  else {
-    msg(lang.go_successful, {char:char, dir:dir})
-  }
-  world.setRoom(char, this.name, false)
-  return true
-}
 
 
 //@DOC
@@ -1086,6 +1076,41 @@ util.changePOV = function(char, pronouns) {
   game.update();
   if (w.background) world.setBackground();
 }
+
+
+util.defaultExitUse = function(char, dir, exit) {
+  if (!exit) exit = this
+  if (char.testMobility && !char.testMobility()) {
+    return false;
+  }
+
+  if (exit.isLocked()) {
+    if (exit.lockedmsg) {
+      msg(exit.lockedmsg)
+    }
+    else {
+      msg(lang.locked_exit(char, exit))
+    }
+    return false
+  }
+  
+  if (exit.isUnlocked && !exit.isUnlocked(char, dir)) return false
+
+  for (let el of char.onGoCheckList) {
+    if (!w[el].onGoCheck(char, exit.name, dir)) return false
+  }
+
+  msg(lang.stop_posture(char))
+  if (exit.msg) {
+    printOrRun(char, exit, "msg")
+  }
+  else {
+    msg(lang.go_successful, {char:char, dir:dir})
+  }
+  world.setRoom(char, exit.name, false)
+  return true
+}
+
 
 
 // Helper function for exits.

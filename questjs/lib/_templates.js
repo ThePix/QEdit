@@ -36,6 +36,9 @@ const TAKEABLE_DICTIONARY = {
     return true;
   },
   
+  // This returns the location from which the item is to be taken
+  // (and does not do taking from a location).
+  // This can be useful for weird objects, such as ropes
   takeFromLoc:function(char) { return this.loc }
   
 };
@@ -447,7 +450,7 @@ const WEARABLE = function(wear_layer, slots) {
       msg(prefix(this, isMultiple) + lang.wear_successful, {garment:this, char:char});
     }
     this.worn = true;
-    if (this.afterWear) this.afterWear(char);
+    if (this.onWear) this.onWear(char);
     return true;
   };
 
@@ -462,7 +465,7 @@ const WEARABLE = function(wear_layer, slots) {
       msg(prefix(this, isMultiple) + lang.remove_successful, {garment:this, char:char});
     }
     this.worn = false;
-    if (this.afterRemove) this.afterRemove(char);
+    if (this.onRemove) this.onRemove(char);
     return true;
   };
 
@@ -474,7 +477,7 @@ const OPENABLE_DICTIONARY = {
   open:function(isMultiple, char) {
     const tpParams = {char:char, container:this}
     if (!this.openable) {
-      msg(prefix(this, isMultiple) + lang.cannot_open, tpParams);
+      msg(prefix(this, isMultiple) + lang.cannot_open, {item:this});
       return false;
     }
     else if (!this.closed) {
@@ -483,6 +486,7 @@ const OPENABLE_DICTIONARY = {
     }
     if (this.locked) {
       if (this.testKeys(char)) {
+        this.locked = false;
         this.closed = false;
         msg(prefix(this, isMultiple) + lang.unlock_successful, tpParams);
         this.openMsg(isMultiple, tpParams);
@@ -502,14 +506,13 @@ const OPENABLE_DICTIONARY = {
   close:function(isMultiple, char) {
     const tpParams = {char:char, container:this}
     if (!this.openable) {
-      msg(prefix(this, isMultiple) + lang.cannot_close, tpParams);
+      msg(prefix(this, isMultiple) + lang.cannot_close, {item:this});
       return false;
     }
     else if (this.closed) {
       msg(prefix(this, isMultiple) + lang.already, {item:this});
       return false;
     }
-    this.hereVerbs = ['Examine', 'Open'];
     this.closed = true;
     this.closeMsg(isMultiple, tpParams);
     if (this.onClose) this.onClose(char)
@@ -560,7 +563,7 @@ const CONTAINER = function(openable) {
   
   res.openMsg = function(isMultiple, tpParams) {
     tpParams.list = this.listContents(world.LOOK)
-    msg(prefix(this, isMultiple) + lang.open_successful + " " + lang.look_inside, tpParams)
+    msg(prefix(this, isMultiple) + lang.open_successful + " " + (tpParams.list === lang.list_nothing ? lang.it_is_empty : lang.look_inside), tpParams)
   };
   
   res.icon = function() {
@@ -622,38 +625,34 @@ const LOCKED_WITH = function(keyNames) {
   const res = {
     keyNames:keyNames,
     locked:true,
+    
     lock:function(isMultiple, char) {
       const tpParams = {char:char, container:this}
-      if (this.locked) {
-        msg(lang.already, tpParams);
-        return false;
-      }
-      if (!this.testKeys(char, true)) {
-        msg(no_key, tpParams);
-        return false;
-      }
+      if (this.locked) return falsemsg(lang.already, tpParams)
+      if (!this.testKeys(char, true)) return falsemsg(lang.no_key, tpParams)
+
       if (!this.closed) {
-        this.closed = true;
-        msg(close_successful, tpParams);
-      }      
-      msg(lock_successful, tpParams);
-      this.locked = true;
-      return true;
+        this.closed = true
+        this.locked = true
+        msg(lang.close_and_lock_successful, tpParams)
+      }
+      else {
+        this.locked = true
+        msg(lang.lock_successful, tpParams)
+      }
+      return true
     },
+    
     unlock:function(isMultiple, char) {
       const tpParams = {char:char, container:this}
-      if (!this.locked) {
-        msg(lang.already, tpParams);
-        return false;
-      }
-      if (!this.testKeys(char, false)) {
-        msg(no_key, tpParams);
-        return false;
-      }
-      msg(unlock_successful, tpParams);
-      this.locked = false;
-      return true;
+      if (!this.locked) return falsemsg(lang.already, {item:this})
+      if (!this.testKeys(char, false)) return falsemsg(lang.no_key, tpParams)
+      msg(lang.unlock_successful, tpParams)
+      this.locked = false
+      if (this.onUnlock) this.onUnlock(char)
+      return true
     },
+    
     testKeys:function(char, toLock) {
       for (let s of keyNames) {
         if (!w[s]) {
@@ -666,9 +665,9 @@ const LOCKED_WITH = function(keyNames) {
       }
       return false;
     }
-  };
-  return res;
-};
+  }
+  return res
+}
 
 
 
@@ -758,39 +757,60 @@ const FURNITURE = function(options) {
     return char === game.player ? cmd : 'Npc' + cmd
   }
 
-  res.assumePosture = function(isMultiple, char, posture, success_msg, adverb) {
+  res.onCreation = function(o) {
+    o.verbFunctions.push(function(o, verbList) {
+      if (game.player.posture && game.player.postureFurniture === o.name) {
+        verbList.push(lang.verbs.getOff)
+        return
+      }
+      if (game.player.posture) return
+      if (o.siton) verbList.push(lang.verbs.sitOn)
+      if (o.standon) verbList.push(lang.verbs.standOn)
+      if (o.reclineon) verbList.push(lang.verbs.reclineOn)
+    })
+  }
+
+  res.assumePosture = function(isMultiple, char, posture, name, adverb) {
     const tpParams = {char:char, item:this}
     if (char.posture === posture && char.postureFurniture === this.name) {
-      char.msg(lang.already, {item:char});
-      return false;
+      char.msg(lang.already, {item:char})
+      return false
     }
     if (!this.testForPosture(char, posture)) {
-      return false;
+      return false
     }
-    if (char.posture) {
+    if (char.posture && char.postureFurniture !== this.name) {
       char.msg(stop_posture(char))
+      char.msg(lang[name + '_on_successful'], tpParams)
     }
-    char.posture = posture;
-    char.postureFurniture = this.name;
+    else if (char.posture && this[char.posture + "_to_" + posture] && this.postureChangesImplemented) {
+      char.msg(this[char.posture + "_to_" + posture], {actor:char, item:this})
+    }
+    else {
+      char.msg(lang[name + '_on_successful'], tpParams)
+    }
+    char.posture = posture
+    char.postureFurniture = this.name
     char.postureAdverb = adverb === undefined ? 'on' : adverb;
-    char.msg(success_msg, tpParams);
-    if (typeof this["on" + posture] === "function") this["on" + posture](char);
-    return true;
-  };
+    const eventName = 'on' + sentenceCase(name)
+    if (typeof this[eventName] === "function") this[eventName](char)
+    return true
+  }
+
   if (options.sit) {
     res.siton = function(isMultiple, char) {
-      return this.assumePosture(isMultiple, char, "sitting", lang.sit_on_successful);
-    };
+      return this.assumePosture(isMultiple, char, "sitting", 'sit')
+    }
   }
   if (options.stand) {
     res.standon = function(isMultiple, char) {
-      return this.assumePosture(isMultiple, char, "standing", lang.stand_on_successful);
-    };
+      return this.assumePosture(isMultiple, char, "standing", 'stand')
+    }
   }
   if (options.recline) {
     res.reclineon = function(isMultiple, char) {
-      return this.assumePosture(isMultiple, char, "reclining", lang.recline_on_successful);
-    };
+      return this.assumePosture(isMultiple, char, "reclining", 'recline')
+    }
   }
   if (options.useCmd) {
     res.useCmd = options.useCmd
@@ -1047,9 +1067,9 @@ const ROPE = function(tetheredTo) {
     tethered:(tetheredTo !== undefined),
     tiedTo1:tetheredTo,
     locs:[],
-    attachVerb:lang.ropeAttachVerb,
-    attachedVerb:lang.ropeAttachedVerb,
-    detachVerb:lang.ropeDetachVerb,
+    attachVerb:lang.rope_attach_verb,
+    attachedVerb:lang.rope_attached_verb,
+    detachVerb:lang.rope_detach_verb,
     isAtLoc:function(loc, situation) {
       if (this.loc) {
         this.locs = [this.loc]
@@ -1079,8 +1099,8 @@ const ROPE = function(tetheredTo) {
       // Handle the easy cases, only one loc in locs
       if (this.locs.length === 1) {
         if (obj1 && obj2) return processText(lang.examineAddBothEnds, {rope:this, obj1:obj1, obj2:obj2})
-        if (obj1) return processText(lang.ropeExamineAddOneEnd, {rope:this, obj1:obj1})
-        if (obj2) return processText(lang.ropeExamineAddOneEnd, {rope:this, obj1:obj2})
+        if (obj1) return processText(lang.rope_examine_attached_one_end, {rope:this, obj1:obj1})
+        if (obj2) return processText(lang.rope_examine_attached_one_end, {rope:this, obj1:obj2})
         return ''  // just in one place, like any ordinary object
       }
 
@@ -1098,31 +1118,31 @@ const ROPE = function(tetheredTo) {
       let s = ''
       let flag = false
       if (obj1 || holder1 || loc1) {
-        s += ' ' + lang.ropeOneEnd + ' '
+        s += ' ' + lang.rope_one_end + ' '
         flag = true
       }
       if (obj1) {
-        s += lang.ropeExamineEndAttached.replace('obj', 'obj1')
+        s += lang.rope_examine_end_attached.replace('obj', 'obj1')
       }
       else if (holder1) {
-        s += lang.ropeExamineEndHeld.replace('holder', 'holder1')
+        s += lang.rope_examine_end_held.replace('holder', 'holder1')
       }
       else if (loc1) {
-        s += lang.ropeExamineEndHeaded.replace('loc', 'loc1')
+        s += lang.rope_examine_end_headed.replace('loc', 'loc1')
       }
       
       if (obj2 || holder2 || loc2) {
-        s += ' ' + (flag ? lang.ropeOtherEnd : lang.ropeOneEnd) + ' '
+        s += ' ' + (flag ? lang.rope_other_end : lang.rope_one_end) + ' '
         flag = true
       }
       if (obj2) {
-        s += lang.ropeExamineEndAttached.replace('obj', 'obj2')
+        s += lang.rope_examine_end_attached.replace('obj', 'obj2')
       }
       else if (holder2) {
-        s += lang.ropeExamineEndHeld.replace('holder', 'holder2')
+        s += lang.rope_examine_end_held.replace('holder', 'holder2')
       }
       else if (loc2) {
-        s += lang.ropeExamineEndHeaded.replace('loc', 'loc2')
+        s += lang.rope_examine_end_headed.replace('loc', 'loc2')
       }
       
       return processText(s, {rope:this, obj1:obj1, obj2:obj2, holder1:holder1, holder2:holder2, loc1:loc1, loc2:loc2})
@@ -1271,49 +1291,65 @@ const ROPE = function(tetheredTo) {
 }
 
 
+
+const BUTTON_DICTIONARY = {
+  button:true,
+  
+  onCreation:function(o) {
+    o.verbFunctions.push(function(o, verbList) {
+      verbList.push(lang.verbs.push)
+    })
+  },
+}
+
+const BUTTON = function() {
+  const res = $.extend({}, BUTTON_DICTIONARY)
+
+  res.push = function(isMultiple, char) {
+    const tpParams = {char:char, item:this}
+    msg(lang.push_button_successful, tpParams)
+    if (this.onPress) this.onPress(char)
+  }
+
+  return res
+}
+
+
+
 const TRANSIT_BUTTON = function(nameOfTransit) {
-  const res = {
-    loc:nameOfTransit,
-    transitButton:true,
+  const res = $.extend({}, BUTTON_DICTIONARY)
+  res.loc = nameOfTransit,
+  res.transitButton = true,
     
-    onCreation:function(o) {
-      //console.log('button: ' + o.name)
-      o.verbFunctions.push(function(o, verbList) {
-        verbList.push(lang.verbs.push)
-      })
-      //console.log(o.verbFunctions.length)
-    },
+  res.isAtLoc = function(loc, situation) {
+    if (situation === world.LOOK) return false;
+    if (typeof loc !== "string") loc = loc.name
+    return (this.loc === loc)
+  }
 
-    isAtLoc:function(loc, situation) {
-      if (situation === world.LOOK) return false;
-      if (typeof loc !== "string") loc = loc.name
-      return (this.loc === loc)
-    },
+  res.push = function(isMultiple, char) {
+    const transit = w[this.loc];
 
+    if (typeof transit.transitCheck === "function" && !transit.transitCheck()) {
+      if (transit.transitAutoMove) world.setRoom(game.player, game.player.previousLoc, transit.transitDoorDir)
+      return false;
+    }
 
-    push:function() {
-      const transit = w[this.loc];
+    const exit = transit[transit.transitDoorDir];
+    if (this.locked) {
+      printOrRun(game.player, this, "transitLocked");
+      return false;
+    }
+    else if (exit.name === this.transitDest) {
+      printOrRun(game.player, this, "transitAlreadyHere");
+      return false;
+    }
+    else {
+      printOrRun(game.player, this, "transitGoToDest")
+      transit.update(this, true)
+    }
+  }
 
-      if (typeof transit.transitCheck === "function" && !transit.transitCheck()) {
-        if (transit.transitAutoMove) world.setRoom(game.player, game.player.previousLoc, transit.transitDoorDir)
-        return false;
-      }
-
-      const exit = transit[transit.transitDoorDir];
-      if (this.locked) {
-        printOrRun(game.player, this, "transitLocked");
-        return false;
-      }
-      else if (exit.name === this.transitDest) {
-        printOrRun(game.player, this, "transitAlreadyHere");
-        return false;
-      }
-      else {
-        printOrRun(game.player, this, "transitGoToDest")
-        transit.update(this, true)
-      }
-    },
-  };
   return res;
 };
 
@@ -1374,7 +1410,7 @@ const TRANSIT = function(exitDir) {
         this.mapZ = loc.mapZ
         this.mapRegion = loc.mapRegion
       }
-      if (callEvent && this.transitOnMove) this.transitOnMove(transitButton.transitDest, previousDest)
+      if (callEvent && this.onTransitMove) this.onTransitMove(transitButton.transitDest, previousDest)
     },
   
     // The exit is not saved, so after a load, need to update the exit

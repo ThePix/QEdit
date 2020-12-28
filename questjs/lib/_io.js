@@ -324,32 +324,21 @@ function debugmsg(s) {
 //@DOC
 // Clears the screen.
 function clearScreen() {
-  io.outputQueue.push({action:'clear'})
+  //io.outputQueue.push({action:'clear'})
+  io.addToOutputQueue({action:'clear'})
 }
-
-
 
 //@DOC
 // Stops outputting whilst waiting for the player to click.
 function wait(delay, text) {
   if (test.testing) return
-  //io.outputSuspended = true
   if (delay === undefined) {
-    io.addToOutputQueue({action:'wait', disable:true, text:text, cssClass:'continue'})
+    io.addToOutputQueue({action:'wait', text:text, cssClass:'continue'})
   }
   else {
-    io.addToOutputQueue({action:'delay', disable:true, delay:delay, text:text, cssClass:'continue'})
+    io.addToOutputQueue({action:'delay', delay:delay, text:text, cssClass:'continue'})
   }
 }
-
-
-
-
-
-
-
-
-
 
 function askQuestion(title, fn) {
   msg(title);
@@ -366,7 +355,7 @@ function askQuestion(title, fn) {
 //      });
 function showMenu(title, options, fn) {
   const opts = {article:DEFINITE, capital:true}
-  io.input(title, options, fn, function(options) {
+  io.input(title, options, false, fn, function(options) {
     for (let i = 0; i < options.length; i++) {
       let s = '<a class="menu-option" onclick="io.menuResponse(' + i + ')">';
       s += (typeof options[i] === 'string' ? options[i] : lang.getName(options[i], opts))
@@ -376,9 +365,22 @@ function showMenu(title, options, fn) {
   })
 }
 
+function showMenuWithNumbers(title, options, fn) {
+  const opts = {article:DEFINITE, capital:true}
+  parser.overrideWith(function(s) {io.menuResponse(s)})
+  io.input(title, options, true, fn, function(options) {
+    for (let i = 0; i < options.length; i++) {
+      let s = (i + 1) + '. <a class="menu-option" onclick="io.menuResponse(' + i + ')">';
+      s += (typeof options[i] === 'string' ? options[i] : lang.getName(options[i], opts))
+      s += '</a>';
+      msg(s);
+    }
+  })
+}
+
 function showDropDown(title, options, fn) {
   const opts = {article:DEFINITE, capital:true}
-  io.input(title, options, fn, function(options) {
+  io.input(title, options, false, fn, function(options) {
     let s = '<select id="menu-select" class="custom-select" style="width:400px;" ';
     s += 'onchange=\"io.menuResponse($(\'#menu-select\').find(\':selected\').val())\">';
     s += '<option value="-1">-- Select one --</option>';
@@ -395,6 +397,10 @@ function showDropDown(title, options, fn) {
 
 function showYesNoMenu(title, fn) {
   showMenu(title, lang.yesNo, fn)
+}
+
+function showYesNoMenuWithNumbers(title, fn) {
+  showMenuWithNumbers(title, lang.yesNo, fn)
 }
 
 function showYesNoDropDown(title, fn) {
@@ -432,8 +438,39 @@ function endTurnUI(update) {
 
 
 
+function createPaneBox(position, title, content) 
+{
+    $("div.pane-div:nth-child(" + position + ")").before('<div class="pane-div"><h4 class="side-pane-heading">' + title + '</h4><div class="">' + content + '</div></div>');
+}
 
 
+
+
+
+// Create Toolbar
+function createToolbar() {
+  let html = "";
+  html += '<div class="toolbar button" id="toolbar">';
+  html += '<div class="status">';
+  if (settings.toolbar.content) html += ' <div>' + settings.toolbar.content() + '</div>';
+  html += '</div>';
+  
+  html += '<div class="room">';
+  if (settings.toolbar.roomdisplay) {
+    html += ' <div>' + sentenceCase(lang.getName(w[game.player.loc], { article:DEFINITE })) + '</div>';
+  }
+  html += '</div>';
+    
+  html += '<div class="links">'
+  for (let link of settings.toolbar.buttons) {
+    const js = link.cmd ? "runCmd('" + link.cmd + "')" : link.onclick
+    html += ` <a class="link" onclick="${js}"><i class="fas ${link.icon}" title="${link.title}"></i></a>`;
+  }
+  html += '</div>';
+  html += '</div>';
+       
+  $("#output").before(html);
+}
 
 
 
@@ -443,9 +480,18 @@ function endTurnUI(update) {
 
 
 const io = {
+
+  // Each line that is output is given an id, n plus an id number.
+  nextid:0,
+  // A list of names for items currently world. in the inventory panes
+  currentItemList:[],
+
   modulesToUpdate:[],
   modulesToInit:[],
-  spoke:false,
+  spoken:false,
+  
+  
+  
   // TRANSCRIPT SUPPORT
   transcript:false,
   transcriptFlag:false,
@@ -521,7 +567,9 @@ const io = {
 };
 
 
-io.input = function(title, options, reactFunction, displayFunction) {
+
+
+io.input = function(title, options, allowText, reactFunction, displayFunction) {
   io.menuStartId = io.nextid;
   io.menuFn = reactFunction;
   io.menuOptions = options;
@@ -545,10 +593,19 @@ io.input = function(title, options, reactFunction, displayFunction) {
     return; 
   }
   
-  io.disable();
+  io.disable(allowText ? 2 : 3);
   msg(title, {}, 'menu-title');
   displayFunction(options)
 }
+
+
+
+
+
+
+
+// The output system is quite complicated...
+// https://github.com/ThePix/QuestJS/wiki/The-Output-Queue
 
 io.outputQueue = []
 io.outputSuspended = false
@@ -556,8 +613,10 @@ io.outputSuspended = false
 
 // Stops the current pause immediately (no effect if not paused)
 io.unpause = function() {
+  $('.continue').remove()
   io.outputSuspended = false
   io.outputFromQueue()
+  if (settings.textInput) $('#textbox').focus();
 }
 
 io.addToOutputQueue = function(data) {
@@ -567,40 +626,37 @@ io.addToOutputQueue = function(data) {
   io.outputFromQueue()
 }
 
+io.forceOutputFromQueue = function() {
+  io.outputSuspended = false
+  io.outputFromQueue()
+}
+
+
 io.outputFromQueue = function() {
+  if (io.outputSuspended) return
   if (io.outputQueue.length === 0) {
     io.enable()
     return
   }
-  if (io.outputSuspended) return
   
-  if (io.continuePrintId) {
-    // this is in case we have a timed delay with a prompt to get rid of the prompt
-    const el = document.getElementById('n' + io.continuePrintId)
-    el.style.display = 'none'
-    delete io.continuePrintId
-  }
-
   //if (settings.textInput) $('#input').show()
   const data = io.outputQueue.shift()
-  if (data.disable) io.disable()
   if (data.action === 'wait') {
+    io.disable()
     io.outputSuspended = true
-    if (settings.textInput) $('#input').hide()
-    io.continuePrintId = data.id
+    //if (settings.textInput) $('#input').hide()
     data.tag = 'p'
-    data.onclick="io.waitContinue()"
+    data.onclick="io.unpause()"
     if (!data.text) data.text = lang.click_to_continue
     io.print(data)
   }
   if (data.action === 'delay') {
     io.disable()
+    io.outputSuspended = true
     if (data.text) {
-      io.continuePrintId = data.id
       data.tag = 'p'
       io.print(data)
     }
-    io.outputSuspended = true
     setTimeout(io.unpause, data.delay * 1000)
   }
   if (data.action === 'output') {
@@ -610,6 +666,7 @@ io.outputFromQueue = function() {
     io.outputFromQueue()
   }
   if (data.action === 'effect') {
+    io.disable()
     // need a way to handle spoken and transcript here
     data.effect(data)
   }
@@ -620,18 +677,20 @@ io.outputFromQueue = function() {
   if (data.action === 'sound') {
     console.log("PLAY SOUND " + data.name)
     if (!settings.silent) {
-      document.getElementById(data.name).currentTime = 0
-      document.getElementById(data.name).play()
+      const el = document.getElementById(data.name)
+      el.currentTime = 0
+      el.play()
     }
   }
   if (data.action === 'ambient') {
     console.log("PLAY AMBIENT " + data.name)
     for (let el of document.getElementsByTagName('audio')) el.pause()
     if (!settings.silent && data.name) {
-      document.getElementById(data.name).currentTime = 0
-      document.getElementById(data.name).loop = true
-      document.getElementById(data.name).play()
-      if (data.volume) document.getElementById(data.name).volume = data.volume / 10
+      const el = document.getElementById(data.name)
+      el.currentTime = 0
+      el.loop = true
+      el.play()
+      if (data.volume) el.volume = data.volume / 10
     }
   }
  
@@ -665,10 +724,6 @@ io.print = function(data) {
 }
 
 
-io.waitContinue = function() {
-  io.unpause()
-};
-
 io.typewriterEffect = function(data) {
   if (!data.position) {
     $("#output").append('<' + data.tag + ' id="n' + data.id + '" class=\"typewriter\"></' + data.tag + '>');
@@ -678,14 +733,17 @@ io.typewriterEffect = function(data) {
   const el = $('#n' + data.id)
   el.html(data.text.slice(0, data.position) + "<span class=\"typewriter-active\">" + data.text.slice(data.position, data.position + 1) + "</span>");
   data.position++
-  if (data.position <= data.text.length) io.outputQueue.unshift(data)
-  setTimeout(io.outputFromQueue, settings.textEffectDelay)
+  if (data.position <= data.text.length) {
+    io.outputQueue.unshift(data)
+    io.outputSuspended = true
+  }
+  setTimeout(io.forceOutputFromQueue, settings.textEffectDelay)
 }
 
 io.unscrambleEffect = function(data) {
-  // Set it the system
+  // Set up the system
   if (!data.count) {
-    $("#output").append('<' + data.tag + ' id="n' + data.id + '" class="unscrambler"></' + data.tag + '>');
+    $("#output").append('<' + data.tag + ' id="n' + data.id + '" class="typewriter"></' + data.tag + '>');
     data.count = 0
     data.text = processText(data.text, data.params)
     if (!data.pick) data.pick = io.unscamblePick
@@ -727,8 +785,11 @@ io.unscrambleEffect = function(data) {
   }
   data.count--
   $("#n" + data.id).html(io.unscambleScramble(data))
-  if (data.count > 0) io.outputQueue.unshift(data)
-  setTimeout(io.outputFromQueue, settings.textEffectDelay)
+  if (data.count > 0) {
+    io.outputQueue.unshift(data)
+    io.outputSuspended = true
+  }
+  setTimeout(io.forceOutputFromQueue, settings.textEffectDelay)
 }
 
 io.unscamblePick = function() {
@@ -745,9 +806,9 @@ io.unscambleScramble = function(data) {
 }
 
 
-//KV changed this to backticks to avoid odd error.
+
 io.cmdlink = function(command, str) {
-  return `<a class="cmd-link" onclick="parser.parse('${command}')">${str}</a>`;
+  return `<a class="cmd-link" onclick="runCmd('${command}')">${str}</a>`;
 }
 
 
@@ -759,16 +820,6 @@ io.scrollToEnd = function() {
 
 
 
-// Each line that is output is given an id, n plus an id number.
-io.nextid = 0;
-// This is used by showMenu to prevent the user ignoring the menu
-io.inputIsDisabled = false;
-// Also used by showMenu
-io.menuStartId;
-io.menuFn;
-io.menuOptions;
-// A list of names for items currently world. in the inventory panes
-io.currentItemList = [];
 
 io.setTitleAndInit = function(s) {
   document.title = s
@@ -778,23 +829,7 @@ io.setTitleAndInit = function(s) {
   io.calcMargins()
 }
 
-
-
-
 io.calcMargins = function() {
-  // Do we show the side panes?
-  if (settings.panes !== 'none') {
-    const margin = settings.panes === 'left' ? 'margin-left' : 'margin-right'
-    if (io.resizePanesListener.matches) { // If media query matches
-      $('#main').css(margin, (io.mainGutter) + 'px')
-      $('#panes').css('display', 'none')
-    } else {
-      $('#main').css(margin, (io.panesWidth + io.mainGutter) + 'px')
-      $('#panes').css('display', 'block')
-    }
-  }
-
-
   //How much space do we need for images and map?
   let mapImageWidth = 0
   if (typeof map !== 'undefined') {
@@ -803,21 +838,34 @@ io.calcMargins = function() {
   if (typeof imagePane !== 'undefined') {
     if (!settings.hideImagePane && settings.imageWidth > mapImageWidth) mapImageWidth = settings.imageWidth
   }
-  
-  if (mapImageWidth === 0) {
-    $('#main').css(settings.panes === 'right' ? 'margin-left' : 'margin-right', '20px')
-    return
+
+  $('#main').css('margin-left', '40px')
+  $('#main').css('margin-right', '40px')
+
+  // Do we show the side panes?
+  if (settings.panes !== 'none') {
+    const margin = settings.panes === 'left' ? 'margin-left' : 'margin-right'
+    if (io.resizePanesListener.matches) { // If media query matches
+      // hide sidepane
+      $('#main').css(margin, (io.mainGutter) + 'px')
+      $('#panes').css('display', 'none')
+    } else {
+      // show sidepane
+      $('#main').css(margin, (io.panesWidth + io.mainGutter) + 'px')
+      $('#panes').css('display', 'block')
+    }
   }
 
   let margin = settings.panes === 'right' ? 'margin-left' : 'margin-right'
   if (settings.mapImageSide) margin = settings.mapImageSide === 'left' ? 'margin-left' : 'margin-right'
   if (io.resizeMapImageListener.matches) { // If media query matches
+    // hide image
     $('#main').css(margin, (io.mainGutter) + 'px')
     $('#quest-image').css('display', 'none')
     $('#quest-map').css('display', 'none')
   } else {
+    // show image
     $('#main').css(margin, (mapImageWidth + io.mainGutter) + 'px')
-    //$('#main').css('margin-right', '20px')
     $('#quest-image').css('display', 'block')
     $('#quest-map').css('display', 'block')
   }
@@ -833,21 +881,27 @@ io.resizeMapImageListener.addListener(io.calcMargins) // Attach listener functio
 
 
   
+// 0: not disabled at all
+// 1: disable until output is done
+// 2: awaiting special input, eg from menu, including text
+// 3: awaiting special input, eg from menu, excluding text
+io.disableLevel = 0
 
-
-
-io.disable = function(stillAllowText) {
-  if (io.inputIsDisabled) return
-  io.inputIsDisabled = true;
-  if (!stillAllowText) $('#input').hide();
-  $('.compass-button').css('color', '#808080');
+io.disable = function(level) {
+  if (!level) level = 1
+  if (level <= io.disableLevel) return
+  io.disableLevel = level
+  if (level !== 2) $('#input').hide();
+  $('.compass-button .dark-body').css('color', '#808080');
   $('.item').css('color', '#808080');
   $('.item-action').css('color', '#808080');
 };
 
-io.enable = function() {
-  if (!io.inputIsDisabled) return
-  io.inputIsDisabled = false;
+io.enable = function(level) {
+  //console.log('enable ' + level + ' (' + io.disableLevel + ')')
+  if (!level) level = 1
+  if (!io.disableLevel || level < io.disableLevel) return
+  io.disableLevel = 0
   $('#input').show();
   $('.compass-button').css('color', io.textColour);
   $('.item').css('color', io.textColour);
@@ -877,36 +931,49 @@ io.updateUIItems = function() {
 
 
 io.updateStatus = function() {
-  if (!settings.statusPane) return;
-  
-  $("#status-pane").empty();
-  for (let st of settings.status) {
-    if (typeof st === "string") {
-      if (game.player[st] !== undefined) {
-        let s = '<tr><td width="' + settings.statusWidthLeft + '">' + sentenceCase(st) + "</td>";
-        s += '<td width="' + settings.statusWidthRight + '">' + game.player[st] + "</td></tr>";
-        $("#status-pane").append(s);
+  if (settings.statusPane) {
+    $("#status-pane").empty();
+    for (let st of settings.status) {
+      if (typeof st === "string") {
+        if (game.player[st] !== undefined) {
+          let s = '<tr><td width="' + settings.statusWidthLeft + '">' + sentenceCase(st) + "</td>";
+          s += '<td width="' + settings.statusWidthRight + '">' + game.player[st] + "</td></tr>";
+          $("#status-pane").append(s);
+        }
+      }
+      else if (typeof st === "function") {
+        $("#status-pane").append("<tr>" + st() + "</tr>");
       }
     }
-    else if (typeof st === "function") {
-      $("#status-pane").append("<tr>" + st() + "</tr>");
-    }
   }
-};
 
+  if (settings.toolbar) { 
+    $("#toolbar").remove();
+    createToolbar();
+  }
+
+}
 
 
 
 
 
 io.menuResponse = function(n) {
-  io.enable();
-  $('#input').css('world.', "block");
-  for (let i = io.menuStartId; i < io.nextid; i++) {
-    $('#n' + i).remove();
+  if (typeof n === 'string' && n.match(/^\d+$/)) n = parseInt(n) - 1
+  if (typeof n === 'string') {
+    const s = n
+    n = io.menuOptions.findIndex(el => {
+      console.log(el)
+      if (typeof el === 'string') return el.includes(s)
+      return el.name.includes(s)
+    })
   }
+  io.enable(5);
+  parser.overrideWith()
+  $('#input').css('world.', "block");
+  for (let i = io.menuStartId; i < io.nextid; i++) $('#n' + i).remove()
   if (n === undefined) {
-    io.menuFn(n)
+    io.menuFn()
   }
   else if (n !== -1) {
     if (io.transcript) io.scriptAppend({cssClass:'menu', text:(io.menuOptions[n].alias ? io.menuOptions[n].alias : io.menuOptions[n]), n:n});
@@ -916,8 +983,10 @@ io.menuResponse = function(n) {
   if (settings.textInput) $('#textbox').focus();
 };
 
+
+
 io.clickExit = function(dir) {
-  if (io.inputIsDisabled) return;
+  if (io.disableLevel) return;
 
   let failed = false;
   io.msgInputText(dir);
@@ -928,7 +997,7 @@ io.clickExit = function(dir) {
 };
 
 io.clickItem = function(itemName) {
-  if (io.inputIsDisabled) return;
+  if (io.disableLevel) return;
 
   for (let item of io.currentItemList) {
     if (item === itemName) {
@@ -940,49 +1009,27 @@ io.clickItem = function(itemName) {
   }
 };
 
-io.clickItemAction = function(itemName, action) {
-  if (io.inputIsDisabled) return;
 
+io.clickItemAction = function(itemName, action) {
+  if (io.disableLevel) return
   const item = w[itemName];
-  action = action.split(' ').map(el => sentenceCase(el)).join('')
-  const cmd = io.getCommand(action);
-  if (cmd === undefined) {
-    errormsg("I don't know that command (" + action + ") - and obviously I should as you just clicked it. Please alert the game author about this bug (F12 for more).");
-    console.log("Click action failed")
-    console.log("Action: " + action)
-    console.log("Item: " + itemName)
-    console.log("Click actions in the side pane by-pass the usual parsing process because it is considered safe to say they will already match a command and an item. This process assumes there are commands with that exact name (case sensitive). In this case you need a command called \"" + action + "\" (with only one element in its actions list).")
-    console.log("One option would be to create a new command just to catch the side pane click, and give it a nonsense regex so it never gets used when the player types a command.")
-  }
-  else if (cmd.objects.filter(el => !el.ignore).length !== 1) {
-    errormsg("That command (" + action + ") cannot be used with an action in the side pane. Please alert the game author about this bug (F12 for more).");
-    console.log("Click action failed")
-    console.log("Action: " + action)
-    console.log("Item: " + itemName)
-    console.log("Click actions in the side pane by-pass the usual parsing process because it is considered safe to say they will already match a command and an item. This process assumes a command with exactly one entry in the objects list, and will fail if that is not the case.")
-    console.log("If you think this is already the case, it may be worth checking that there are not two (or more) commands with the same name.")
-    console.log("One option would be to create a new command just to catch the side pane click, and give it a nonsense regex so it never gets used when the player types a command.")
-  }
-  else if (item === undefined) {
-    errormsg("I don't know that object (" + itemName + ") - and obviously I should as it was listed. Please alert this as a bug in Quest.");
-  }
-  else {
-    io.msgInputText(action + " " + item.alias);
-    parser.quickCmd(cmd, item);
-  }
-};
+  const cmd = action.includes('%') ? action.replace('%', item.alias) : action + ' ' + item.alias
+  io.msgInputText(cmd)
+  parser.parse(cmd)
+}
 
 
 // Add the item to the DIV named htmlDiv
 // The item will be given verbs from its attName attribute
 io.appendItem = function(item, htmlDiv, loc, isSubItem) {
-  $('#' + htmlDiv).append('<p class="item' + (isSubItem ? ' sub-item' : '') + '" onclick="io.clickItem(\'' + item.name + '\')">' + io.getIcon(item) + item.getListAlias(loc) + "</p>");
+  $('#' + htmlDiv).append('<div id="' + item.name + '-item"><p class="item' + (isSubItem ? ' sub-item' : '') + '" onclick="io.clickItem(\'' + item.name + '\')">' + io.getIcon(item) + item.getListAlias(loc) + "</p></div>");
   io.currentItemList.push(item.name);
   const verbList = item.getVerbs(loc);
   if (verbList === undefined) { errormsg("No verbs for " + item.name); console.log(item); }
   for (let verb of verbList) {
-    let s = '<div class="' + item.name + '-actions item-action" onclick="io.clickItemAction(\'' + item.name + '\', \'' + verb + '\')">';
-    s += verb;
+    if (typeof verb === 'string') verb = {name:verb, action:verb}
+    let s = '<div class="' + item.name + '-actions item-action" onclick="io.clickItemAction(\'' + item.name + '\', \'' + verb.action + '\')">';
+    s += verb.name;
     s += '</div>';
     $('#' + htmlDiv).append(s);
   }
@@ -1059,7 +1106,7 @@ io.writeExit = function(n) {
   document.write('<td class="compass-button" title="' + lang.exit_list[n].name + '">')
   document.write('<span class="compass-button" id="exit-' + lang.exit_list[n].name)
   document.write('" onclick="io.clickExit(\'' + lang.exit_list[n].name + '\')">')
-  document.write(settings.symbolsForCompass ? lang.exit_list[n].symbol : lang.exit_list[n].abbrev);
+  document.write(settings.symbolsForCompass ? io.displayIconsCompass(lang.exit_list[n]) : lang.exit_list[n].abbrev);
   document.write('</span></td>');
 };
 
@@ -1111,7 +1158,12 @@ $(document).ready(function() {
             }
             io.savedCommandsPos = io.savedCommands.length;
             parser.parse(s);
-            $('#textbox').val('');
+            if (io.doNotEraseLastCommand) {
+              io.doNotEraseLastCommand = false
+            }
+            else {
+              $('#textbox').val('');
+            }
           }
         }
       }
@@ -1327,4 +1379,29 @@ io.getIcon = function(item) {
   if (!item.icon) return ''
   if (item.icon() === '') return ''
   return '<img src="' + settings.iconsFolder + (settings.darkModeActive ? 'l_' : 'd_') + item.icon() + '.png" />'
-}  
+}
+
+
+io.againOrOops = function(isAgain) {
+  if (io.savedCommands.length === 0) {
+    metamsg(lang.again_not_available)
+    return world.FAILED
+  }
+  io.savedCommands.pop() // do not save AGAIN/OOPS
+  if (isAgain) {
+    parser.parse(io.savedCommands[io.savedCommands.length - 1])
+  }
+  else {
+    $('#textbox').val(io.savedCommands[io.savedCommands.length - 1])
+    io.doNotEraseLastCommand = true
+  }
+  return world.SUCCESS_NO_TURNSCRIPTS;
+}
+
+
+
+// Display Icons for compas
+io.displayIconsCompass = function(exit) {
+  const datatransform = exit.rotate ? ' style="transform: rotate(40deg)"' : ''
+  return '<i class="fas ' + exit.symbol + '"' + datatransform + '></i>';
+}

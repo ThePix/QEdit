@@ -185,6 +185,16 @@ tp.text_processors.random = function(arr, params) {
   return arr[Math.floor(Math.random()*arr.length)];
 };
 
+tp.text_processors.select = function(arr, params) {
+  const o = w[arr[0]]
+  if (!o) errormsg('Failed to find an object called "' + arr[0] + '" in text processor select.')
+  const l = o[arr[1]]
+  if (!l) errormsg('Failed to find an attribute called "' + arr[1] + '" for "' + arr[0] + '" in text processor select.')
+  const n = o[arr[2]]
+  if (!l) errormsg('Failed to find an attribute called "' + arr[2] + '" for "' + arr[0] + '" in text processor select.')
+  return l[n]
+};
+
 tp._findObject = function(name, params, arr) {
   if (params && params[name]) return typeof params[name] === 'string' ? w[params[name]] : params[name]
   if (name === "player") return game.player
@@ -411,7 +421,7 @@ tp.text_processors.once = function(arr, params) {
 tp.text_processors.notOnce = function(arr, params) {
   return params.tpFirstTime ? "" : arr.join(":");
 };
-//KV changed cmd-link to cmdlink
+
 tp.text_processors.cmd = function(arr, params) {
   if (arr.length === 1) {
     return io.cmdlink(arr[0], arr[0]);
@@ -420,7 +430,7 @@ tp.text_processors.cmd = function(arr, params) {
     return io.cmdlink(arr[0], arr[1]);
   }
 };
-//KV changed cmd-link to cmdlink
+
 tp.text_processors.command = function(arr, params) {
   if (arr.length === 1) {
     return io.cmdlink(arr[0], arr[0]);

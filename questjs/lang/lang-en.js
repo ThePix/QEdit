@@ -14,7 +14,7 @@ const lang = {
     // Meta commands
     MetaHelp:/^help$|^\?$/,
     MetaHint:/^(?:hint|clue)s?$/,
-    MetaCredits:/^about$|^credits?$|^version$/,
+    MetaCredits:/^(?:about|credits|version|info)$/,
     MetaDarkMode:/^(?:dark|dark mode|toggle dark|toggle dark mode)$/,
     MetaWarnings:/^warn(?:ing|ings|)$/,
     MetaImages:/^images$/,
@@ -38,8 +38,12 @@ const lang = {
     MetaLoadGame:/^(?:load|reload) (.+)$/,
     MetaDir:/^dir$|^directory$/,
     MetaDeleteGame:/^(?:delete|del) (.+)$/,
-    MetaAgain:/^(?:again|g)$/,
     MetaUndo:/^undo$/,
+    MetaAgain:/^(?:again|g)$/,
+    MetaOops:/^(?:oops)$/,
+    MetaRestart:/^restart$/,
+    MetaScore:/^score$/,
+    MetaPronouns:/^pronouns$/,
     
     // Misc
     Look:/^l$|^look$/,
@@ -176,7 +180,7 @@ const lang = {
   remove_successful:"{nv:char:take:true} {nm:garment:the} off.",
   cannot_wear:"{nv:char:can't:true} wear {ob:item}.",
   cannot_wear_ensemble:"Individual parts of an ensemble must be worn and removed separately.",
-  wearing:"{nv:char:'be:true} wearing {ob:garment}.",
+  //wearing:"{nv:char:'be:true} wearing {ob:garment}.",  // I do not think this is used at all
   not_wearing:"{nv:char:'be:true} not wearing {ob:item}.",
   cannot_wear_over:"{nv:char:can't:true} put {nm:garment:the} on over {pa:char} {nm:outer}.",
   cannot_remove_under:"{nv:char:can't:true} take off {pa:char} {nm:garment} whilst wearing {pa:char} {nm:outer}.",
@@ -186,16 +190,17 @@ const lang = {
 
 
   // CONTAINER, etc.
-  open_successful:"{nv:char:open:true} {sb:container}.",
+  open_successful:"{nv:char:open:true} {nm:container:the}.",
   close_successful:"{nv:char:close:true} {nm:container:the}.",
   lock_successful:"{nv:char:lock:true} {nm:container:the}.",
   unlock_successful:"{nv:char:unlock:true} {nm:container:the}.",
-  cannot_open:"{nv:container:can't:true} be opened.",
-  cannot_close:"{nv:container:can't:true} be closed.",
-  cannot_lock:"{nv:char:can't:true} lock {ob:container}.",
-  cannot_unlock:"{nv:char:can't:true} unlock {ob:container}.",
-  not_container:"{nv:container:is:true} not a container.",
-  container_recursion:"What? You want to put {nm:item:the} in {nm:containter:the} when {nm:containter:the} is already in {nm:item:the}? That's just too freaky for me.",
+  close_and_lock_successful:"{nv:char:close:true} {nm:container:the} and {cj:char:lock} {sb:container}.",
+  cannot_open:"{nv:item:can't:true} be opened.",
+  cannot_close:"{nv:item:can't:true} be closed.",
+  cannot_lock:"{nv:char:can't:true} lock {ob:item}.",
+  cannot_unlock:"{nv:char:can't:true} unlock {ob:item}.",
+  not_container:"{nv:container:be:true} not a container.",
+  container_recursion:"What? You want to put {nm:item:the} in {nm:container:the} when {nm:container:the} is already in {nm:item:the}? That's just too freaky for me.",
   not_inside:"{nv:item:'be:true} not inside that.",
   locked:"{nv:container:be:true} locked.",
   no_key:"{nv:char:do:true} have the right key.",
@@ -205,17 +210,15 @@ const lang = {
   try_but_locked:"{nv:char:try:true} the {param:doorName}, but it is locked.",
   container_closed:"{nv:container:be:true} closed.",
   inside_container:"{nv:item:be:true} inside {nm:container:the}.",
-  look_inside:"Inside {sb:container} {nv:char:can} see {param:list}.",
+  look_inside:"Inside {nm:container:the} {nv:char:can} see {param:list}.",
   
   
   // MECHANDISE
   purchase_successful:"{nv:char:buy:true} {nm:item:the} for {money:money}.",
   sell_successful:"{nv:char:sell:true} {nm:item:the} for {money:money}.",
-  cannot_purchase:"{nv:char:can't:true} buy {ob:item}.",
   cannot_purchase_again:"{nv:char:can't:true} buy {nm:item:the} here - probably because {pv:char:be} already holding {ob:item}.",
   cannot_purchase_here:"{nv:char:can't:true} buy {nm:item:the} here.",
   cannot_afford:"{nv:char:can't:true} afford {nm:item:the} (need {money:money}).",
-  cannot_sell:"{nv:char:can't:true} sell {ob:item}.",
   cannot_sell_here:"{nv:char:can't:true} sell {nm:item:the} here.",
 
 
@@ -223,9 +226,9 @@ const lang = {
   sit_on_successful:"{nv:char:sit:true} on {nm:item:the}.",
   stand_on_successful:"{nv:char:stand:true} on {nm:item:the}.",
   recline_on_successful:"{nv:char:lie:true} down on {nm:item:the}.",
-  cannot_stand_on:"{nv:char:'be:true} not something you can stand on.",
-  cannot_sit_on:"{nv:char:'be:true} not something you can sit on.",
-  cannot_recline_on:"{nv:char:'be:true} not something you can lie on.",
+  cannot_stand_on:"{nv:item:'be:true} not something you can stand on.",
+  cannot_sit_on:"{nv:item:'be:true} not something you can sit on.",
+  cannot_recline_on:"{nv:item:'be:true} not something you can lie on.",
 
 
   // SWITCHABLE
@@ -234,7 +237,7 @@ const lang = {
   cannot_switch_on:"{nv:char:can't:true} turn {ob:item} on.",
   cannot_switch_off:"{nv:char:can't:true} turn {ob:item} off.",
 
-
+/*
   // VESSEL
   fill_successful:"{nv:char:fill:true} {nm:container:the}.",
   empty_successful:"{nv:char:empty:true} {nm:container:the}.",
@@ -242,7 +245,7 @@ const lang = {
   cannot_mix:"{nv:container:'be:true} not something you can mix liquids in.",
   cannot_empty:"{nv:container:'be:true} not something you can empty.",
   not_vessel:"{pv:container:be:true} is not a vessel.",
-
+*/
 
   // NPC
   not_npc:"{nv:char:can:true} tell {nm:item:the} to do what you like, but there is no way {pv:item:'ll} do it.",
@@ -260,6 +263,9 @@ const lang = {
   npc_no_interest_in:"{nv:actor:have:true} no interest in that subject.",
 
 
+  // BUTTON
+  push_button_successful:"{nv:char:push:true} {nm:item:the}.",
+
   // SHIFTABLE
   push_exit_successful:"{nv:char:push:true} {nm:item:the} {param:dir}.",
   cannot_push:"{pv:item:'be:true} not something you can move around like that.",
@@ -268,16 +274,16 @@ const lang = {
 
 
   // ROPE
-  ropeExamineAddBothEnds:" It is {rope.attachedVerb} to both {nm:obj1:the} and {nm:obj2:the}.",
-  ropeExamineAddOneEnd:" It is {rope.attachedVerb} to {nm:obj1:the}.",
-  ropeAttachVerb:'tie',
-  ropeAttachedVerb:'tied',
-  ropeDetachVerb:'untie',
-  ropeOneEnd:'One end',
-  ropeOtherEnd:'The other end',
-  ropeExamineEndAttached:'is {rope.attachedVerb} to {nm:obj:the}.',
-  ropeExamineEndHeld:'is held by {nm:holder:the}.',
-  ropeExamineEndHeaded:'heads into {nm:loc:the}.',
+  rope_examine_attached_both_ends:" It is {rope.attachedVerb} to both {nm:obj1:the} and {nm:obj2:the}.",
+  rope_examine_attached_one_end:" It is {rope.attachedVerb} to {nm:obj1:the}.",
+  rope_attach_verb:'tie',
+  rope_attached_verb:'tied',
+  rope_detach_verb:'untie',
+  rope_one_end:'One end',
+  rope_other_end:'The other end',
+  rope_examine_end_attached:'is {rope.attachedVerb} to {nm:obj:the}.',
+  rope_examine_end_held:'is held by {nm:holder:the}.',
+  rope_examine_end_headed:'heads into {nm:loc:the}.',
     
 
 
@@ -306,7 +312,7 @@ const lang = {
   nothing_for_sale:"Nothing for sale here.",
   wait_msg:"You wait one turn.",
   no_map:"Sorry, no map available.",
-  inventoryPreamble:"You are carrying",
+  inventory_prefix:"You are carrying",
 
 
   // General command fails
@@ -314,6 +320,7 @@ const lang = {
   no_listen:"{pv:char:can't:true} hear anything of note here.",
   nothing_there:"{nv:char:be:true} sure there's nothing there.",
   nothing_inside:"There's nothing to see inside.",
+  it_is_empty:"{pv:container:be:true} empty.",
   not_here:"{pv:item:'be:true} not here.",
   char_has_it:"{nv:holder:have:true} {ob:item}.",
   none_here:"There's no {nm:item} here.",
@@ -376,7 +383,7 @@ const lang = {
   },
   
   // Use when the NPC leaves a room; will give a message if the player can observe it
-  npcLeavingMsg:function(npc, dest) {
+  npc_leaving_msg:function(npc, dest) {
     let s = "";
     let flag = false;
     if (w[game.player.loc].canViewLocs && w[game.player.loc].canViewLocs.includes(npc.loc)) {
@@ -393,7 +400,7 @@ const lang = {
   },
 
   // the NPC has already been moved, so npc.loc is the destination
-  npcEnteringMsg:function(npc, origin) {
+  npc_entering_msg:function(npc, origin) {
     let s = "";
     let flag = false;
     if (w[game.player.loc].canViewLocs && w[game.player.loc].canViewLocs.includes(npc.loc)) {
@@ -436,6 +443,11 @@ const lang = {
   undo_not_available:"There are no saved game-states to UNDO back to.",
   undo_done:"Undoing...",
   again_not_available:"There are no previous commands to repeat.",
+  scores_not_implemented:'Scores are not a part of this game.',
+  restart_are_you_sure:'Do you really want to restart the game? {b:[Y/N]}',
+  restart_no:'Restart cancelled',
+  yes_regex:/^(y|yes)$/i,
+  
 
 
 
@@ -445,14 +457,14 @@ const lang = {
       metamsg("{b:Movement:} To move, use the eight compass directions (or just N, NE, etc.). Up/down and in/out may be options too. When \"Num Lock\" is on, you can use the number pad for all eight compass directions, - and + for UP and DOWN, / and * for IN and OUT.");
       metamsg("{b:Other commands:} You can also LOOK (or just L or 5 on the number pad), HELP (or ?) or WAIT (or Z or the dot on the number pad). Other commands are generally of the form GET HAT or PUT THE BLUE TEAPOT IN THE ANCIENT CHEST. Experiment and see what you can do!");
       metamsg("{b:Using items: }You can use ALL and ALL BUT with some commands, for example TAKE ALL, and PUT ALL BUT SWORD IN SACK. You can also use pronouns, so LOOK AT MARY, then TALK TO HER. The pronoun will refer to the last subject in the last successful command, so after PUT HAT AND FUNNY STICK IN THE DRAWER, 'IT' will refer to the funny stick (the hat and the stick are subjects of the sentence, the drawer was the object).");
-      metamsg("{b:Characters: }If you come across another character, you can ask him or her to do something. Try things like MARY,PUT THE HAT INTHE BOX, or TELL MARY TO GET ALL BUT THE KNIFE. Depending on the game you may be able to TALK TO a character, to ASK or TELL a character ABOUT a topic, or just SAY something and they will respond..");
+      metamsg("{b:Characters: }If you come across another character, you can ask him or her to do something. Try things like MARY,PUT THE HAT IN THE BOX, or TELL MARY TO GET ALL BUT THE KNIFE. Depending on the game you may be able to TALK TO a character, to ASK or TELL a character ABOUT a topic, or just SAY something and they will respond..");
       metamsg("{b:Meta-commands:} Type ABOUT to find out about the author, SCRIPT to learn about transcripts or SAVE to learn about saving games. Use WARNINGS to see any applicable sex, violence or trigger warnings.")
       let s = "You can also use BRIEF/TERSE/VERBOSE to control room descriptions. Type DARK to toggle dark mode or SILENT to toggle sounds and music (if implemented)."
       if (typeof map !== "undefined") s += " Use MAP to toggle/show the map."
       if (typeof imagePane !== "undefined") s += " Use IMAGES to toggle/show the iage pane."
       metamsg(s)
       metamsg("{b:Shortcuts:}You can often just type the first few characters of an item's name and Quest will guess what you mean.  If fact, if you are in a room with Brian, who is holding a ball, and a box, Quest should be able to work out that B,PUT B IN B mean you want Brian to put the ball in the box.")
-      metamsg("You can use the up and down arrows to scroll back though your previous commands - especially useful if you realise you spelled something wrong.")
+      metamsg("You can use the up and down arrows to scroll back though your previous typed commands - especially useful if you realise you spelled something wrong. If you do not have arrow keys, use OOPS to retrieve the last typed command so you can edit it. Use AGAIN or just G to repeat the last typed command.")
     }
     if (settings.panes !== "none") {
       metamsg("{b:User Interface:} To interact with an object, click on its name in the side pane, and a set of possible actions will appear under it. Click on the appropriate action.");
@@ -477,14 +489,15 @@ const lang = {
   },
 
   aboutScript:function() {
-    metamsg("{i:{param:settings:title} version {param:settings:version}} was written by {param:settings:author} using Quest 6 AKA Quest JS version {param:settings:questVersion}.", {settings:settings});
+    metamsg("{i:{param:settings:title} version {param:settings:version}} was written by {param:settings:author} using Quest 6 AKA Quest JS version {param:settings:questVersion}.", {settings:settings})
+    if (settings.ifdb) metamsg("IFDB number: " + settings.ifdb)
     if (settings.thanks && settings.thanks.length > 0) {
-      metamsg("Thanks to " + formatList(settings.thanks, {lastJoiner:lang.list_and}) + ".");
+      metamsg("Thanks to " + formatList(settings.thanks, {lastJoiner:lang.list_and}) + ".")
     }
     if (settings.additionalAbout !== undefined) {
       for (let s of settings.additionalAbout) metamsg(s)
     }
-    return world.SUCCESS_NO_TURNSCRIPTS;
+    return world.SUCCESS_NO_TURNSCRIPTS
   },
 
   warningsScript:function() {
@@ -545,12 +558,14 @@ const lang = {
   buy:"Buy", // used in the command link in the purchase table
   buy_headings:["Item", "Cost", ""],
   current_money:"Current money",
-
+  inside:"inside",
+  on_top:"on top",
+  carrying:"carrying",
 
 
 
   article_filter_regex:/^(?:the |an |a )?(.+)$/,
-  joiner_regex:/\,|\band\b/,
+  joiner_regex:/\band\b|\, ?and\b|\,/,
   all_regex:/^(all|everything)$/,
   all_exclude_regex:/^((all|everything) (but|bar|except)\b)/,
   go_pre_regex:"go to |goto |go |head |",
@@ -595,6 +610,10 @@ const lang = {
     equip:"Equip",
     unequip:"Unequip",
     attack:"Attack",
+    sitOn:"Sit on",
+    standOn:"Stand on",
+    reclineOn:"Lie on",
+    getOff:"Get off",
   },
   
   // Flag the state of an item in a list
@@ -609,23 +628,23 @@ const lang = {
   // Change the abbrev values to suit your game (or language)
   // You may want to do that in settings, which is loaded first
   exit_list:[
-    {name:'northwest', abbrev:'NW', niceDir:"the northwest", type:'compass', key:103, x:-1 ,y:1, z:0, opp:'southeast', symbol:'&#129132;'}, 
-    {name:'north', abbrev:'N', niceDir:"the north", type:'compass', key:104, x:0 ,y:1, z:0, opp:'south', symbol:'&#129129;'}, 
-    {name:'northeast', abbrev:'NE', niceDir:"the northeast", type:'compass', key:105, x:1 ,y:1, z:0, opp:'southwest', symbol:'&#129133;'}, 
-    {name:'in', abbrev:'In', alt:'enter|i', niceDir:"inside", type:'inout', key:111, opp:'out', symbol:'&#8628;'}, 
-    {name:'up', abbrev:'U', niceDir:"above", type:'vertical', key:109, x:0 ,y:0, z:1, opp:'down', symbol:'&#8613;'},
+    {name:'northwest', abbrev:'NW', niceDir:"the northwest", type:'compass', key:103, x:-1 ,y:1, z:0, opp:'southeast', symbol:'fa-arrow-left', rotate:45}, 
+    {name:'north', abbrev:'N', niceDir:"the north", type:'compass', key:104, x:0 ,y:1, z:0, opp:'south', symbol:'fa-arrow-up'}, 
+    {name:'northeast', abbrev:'NE', niceDir:"the northeast", type:'compass', key:105, x:1 ,y:1, z:0, opp:'southwest', symbol:'fa-arrow-up', rotate:45}, 
+    {name:'in', abbrev:'In', alt:'enter|i', niceDir:"inside", type:'inout', key:111, opp:'out', symbol:'fa-sign-in-alt'}, 
+    {name:'up', abbrev:'U', niceDir:"above", type:'vertical', key:109, x:0 ,y:0, z:1, opp:'down', symbol:'fa-arrow-up'},
     
-    {name:'west', abbrev:'W', niceDir:"the west", type:'compass', key:100, x:-1 ,y:0, z:0, opp:'east', symbol:'&#129128;'}, 
-    {name:'Look', abbrev:'Lk', type:'nocmd', key:101, symbol:'&#128065;'}, 
-    {name:'east', abbrev:'E', niceDir:"the east", type:'compass', key:102, x:1 ,y:0, z:0, opp:'west', symbol:'&#129130;'}, 
-    {name:'out', abbrev:'Out', alt:'exit|o', niceDir:"outside", type:'inout', key:106,opp:'in', symbol:'&#8625;'}, 
-    {name:'down', abbrev:'Dn', alt:'d', niceDir:"below", type:'vertical', key:107, x:0 ,y:0, z:-1, opp:'up', symbol:'&#8615;'}, 
+    {name:'west', abbrev:'W', niceDir:"the west", type:'compass', key:100, x:-1 ,y:0, z:0, opp:'east', symbol:'fa-arrow-left'}, 
+    {name:'Look', abbrev:'L', type:'nocmd', key:101, symbol:'fa-eye'}, 
+    {name:'east', abbrev:'E', niceDir:"the east", type:'compass', key:102, x:1 ,y:0, z:0, opp:'west', symbol:'fa-arrow-right'}, 
+    {name:'out', abbrev:'Out', alt:'exit|o', niceDir:"outside", type:'inout', key:106,opp:'in', symbol:'fa-sign-out-alt'}, 
+    {name:'down', abbrev:'Dn', alt:'d', niceDir:"below", type:'vertical', key:107, x:0 ,y:0, z:-1, opp:'up', symbol:'fa-arrow-down'}, 
 
-    {name:'southwest', abbrev:'SW', niceDir:"the southwest", type:'compass', key:97, x:-1 ,y:-1, z:0, opp:'northeast', symbol:'&#129135;'}, 
-    {name:'south', abbrev:'S', niceDir:"the south", type:'compass', key:98, x:0 ,y:-1, z:0, opp:'north', symbol:'&#129131;'}, 
-    {name:'southeast', abbrev:'SE', niceDir:"the southeast", type:'compass', key:99, x:1 ,y:-1, z:0, opp:'northwest', symbol:'&#129134;'}, 
-    {name:'Wait', abbrev:'Z', type:'nocmd', key:110, symbol:'&#9208;'}, 
-    {name:'Help', abbrev:'?', type:'nocmd', symbol:'&#128712;'}, 
+    {name:'southwest', abbrev:'SW', niceDir:"the southwest", type:'compass', key:97, x:-1 ,y:-1, z:0, opp:'northeast', symbol:'fa-arrow-down', rotate:45}, 
+    {name:'south', abbrev:'S', niceDir:"the south", type:'compass', key:98, x:0 ,y:-1, z:0, opp:'north', symbol:'fa-arrow-down'}, 
+    {name:'southeast', abbrev:'SE', niceDir:"the southeast", type:'compass', key:99, x:1 ,y:-1, z:0, opp:'northwest', symbol:'fa-arrow-right', rotate:45}, 
+    {name:'Wait', abbrev:'Z', type:'nocmd', key:110, symbol:'fa-pause'}, 
+    {name:'Help', abbrev:'?', type:'nocmd', symbol:'fa-info'}, 
   ],
 
   numberUnits:"zero;one;two;three;four;five;six;seven;eight;nine;ten;eleven;twelve;thirteen;fourteen;fifteen;sixteen;seventeen;eighteen;nineteen;twenty".split(";"),

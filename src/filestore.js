@@ -52,7 +52,7 @@ export default class FileStore {
       fs.mkdirSync(outputPath + "lib", { recursive: true })
       fs.mkdirSync(outputPath + "lang", { recursive: true })
       fs.mkdirSync(outputPath + "game", { recursive: true })
-      fs.mkdirSync(outputPath + "images", { recursive: true })
+      fs.mkdirSync(outputPath + "assets", { recursive: true })
       console.log('Folders created')
       
     }
@@ -62,9 +62,9 @@ export default class FileStore {
     const filenames = [
       'lang',
       'page.html',
-      'style.css',
+      //'style.css',
       'lib',
-      'images',
+      'assets',
     ]
     for (let filename of filenames) {
       console.log("About to copy " + filename + '...');

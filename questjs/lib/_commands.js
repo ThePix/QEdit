@@ -15,10 +15,10 @@
 
 const cmdDirections = []
 for (let exit of lang.exit_list) {
-  if (exit.type === 'nocmd') continue;
-  cmdDirections.push(exit.name);
-  cmdDirections.push(exit.abbrev.toLowerCase());
-  if (exit.alt) cmdDirections.push(exit.alt);
+  if (exit.type === 'nocmd') continue
+  cmdDirections.push(exit.name)
+  cmdDirections.push(exit.abbrev.toLowerCase())
+  if (exit.alt) cmdDirections.push(exit.alt)
 }
 
 
@@ -52,7 +52,7 @@ const commands = [
         settings.silent = true
         ambient()
       }
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
   }),
   new Cmd('MetaWarnings', {
@@ -63,14 +63,14 @@ const commands = [
   new Cmd('MetaSpoken', {
     script:function() {
       if (io.spoken) {
-        io.spoken = false;
-        metamsg(lang.spoken_off);
+        io.spoken = false
+        metamsg(lang.spoken_off)
       }
       else {
-        io.spoken = true;
-        metamsg(lang.spoken_on);
+        io.spoken = true
+        metamsg(lang.spoken_on)
       }
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
   }),
   new Cmd('MetaIntro', {
@@ -82,28 +82,28 @@ const commands = [
       else {
         for (let el of settings.intro) msg(el)
       }
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
   }),
   new Cmd('MetaBrief', {
     script:function() {
-      game.verbosity = world.BRIEF;
-      metamsg(lang.mode_brief);
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      game.verbosity = world.BRIEF
+      metamsg(lang.mode_brief)
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
   }),
   new Cmd('MetaTerse', {
     script:function() {
-      game.verbosity = world.TERSE;
-      metamsg(lang.mode_terse);
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      game.verbosity = world.TERSE
+      metamsg(lang.mode_terse)
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
   }),
   new Cmd('MetaVerbose', {
     script:function() {
-      game.verbosity = world.VERBOSE;
-      metamsg(llang.mode_verbose);
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      game.verbosity = world.VERBOSE
+      metamsg(llang.mode_verbose)
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
   }),
   
@@ -113,39 +113,39 @@ const commands = [
   new Cmd('MetaTranscriptOn', {
     script:function() {
       if (io.transcript) {
-        metamsg(lang.transcript_already_on);
+        metamsg(lang.transcript_already_on)
         return world.FAILED
       }
-      io.scriptStart();
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      io.scriptStart()
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
   }),
   new Cmd('MetaTranscriptOff', {
     script:function() {
       if (!io.transcript) {
-        metamsg(lang.transcript_already_off);
+        metamsg(lang.transcript_already_off)
         return world.FAILED
       }
-      io.scriptEnd();
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      io.scriptEnd()
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
   }),
   new Cmd('MetaTranscriptClear', {
     script:function() {
-      io.scriptClear();
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      io.scriptClear()
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
   }),
   new Cmd('MetaTranscriptShow', {
     script:function() {
-      io.scriptShow();
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      io.scriptShow()
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
   }),
   new Cmd('MetaTranscriptShowWithOptions', {
     script:function(arr) {
-      io.scriptShow(arr[0]);
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      io.scriptShow(arr[0])
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
     objects:[
       {text:true},
@@ -153,14 +153,14 @@ const commands = [
   }),
   new Cmd('MetaTranscriptToWalkthrough', {
     script:function() {
-      io.scriptShow('w');
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      io.scriptShow('w')
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
   }),
   new Cmd('MetaPlayerComment', {
     script:function(arr) {
-      metamsg("Comment: " + arr[0]);
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      metamsg("Comment: " + arr[0])
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
     objects:[
       {text:true},
@@ -174,8 +174,8 @@ const commands = [
   }),
   new Cmd('MetaSaveGame', {
     script:function(arr) {
-      saveLoad.saveGame(arr[0]);
-      return world.SUCCESS_NO_TURNSCRIPTS; 
+      saveLoad.saveGame(arr[0])
+      return world.SUCCESS_NO_TURNSCRIPTS;
     },
     objects:[
       {text:true},
@@ -186,8 +186,8 @@ const commands = [
   }),
   new Cmd('MetaLoadGame', {
     script:function(arr) {
-      saveLoad.loadGame(arr[0]);
-      return world.SUCCESS_NO_TURNSCRIPTS; 
+      saveLoad.loadGame(arr[0])
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
     objects:[
       {text:true},
@@ -195,14 +195,14 @@ const commands = [
   }),
   new Cmd('MetaDir', {
     script:function() {
-      saveLoad.dirGame();
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      saveLoad.dirGame()
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
   }),
   new Cmd('MetaDeleteGame', {
     script:function(arr) {
-      saveLoad.deleteGame(arr[0]);
-      return world.SUCCESS_NO_TURNSCRIPTS; 
+      saveLoad.deleteGame(arr[0])
+      return world.SUCCESS_NO_TURNSCRIPTS
     },
     objects:[
       {text:true},
@@ -213,30 +213,52 @@ const commands = [
   new Cmd('MetaUndo', {
     script:function() {
       if (settings.maxUndo === 0) {
-        metamsg(lang.undo_disabled);
-        return world.FAILED;
+        metamsg(lang.undo_disabled)
+        return world.FAILED
       }
       if (game.gameState.length < 2) {
-        metamsg(lang.undo_not_available);
-        return world.FAILED;
+        metamsg(lang.undo_not_available)
+        return world.FAILED
       }
-      game.gameState.pop();
-      const gameState = game.gameState[game.gameState.length - 1];
-      metamsg(lang.undo_done);
-      saveLoad.loadTheWorld(gameState);
-      w[game.player.loc].description();
+      game.gameState.pop()
+      const gameState = game.gameState[game.gameState.length - 1]
+      metamsg(lang.undo_done)
+      saveLoad.loadTheWorld(gameState)
+      w[game.player.loc].description()
     },
   }),
   new Cmd('MetaAgain', {
     script:function() {
-      if (io.savedCommands.length === 0) {
-        metamsg(lang.again_not_available)
-        return world.FAILED
-      }
-      io.savedCommands.pop()
-      parser.parse(io.savedCommands[io.savedCommands.length - 1])
-      
-      return world.SUCCESS_NO_TURNSCRIPTS;
+      return io.againOrOops(true)
+    },
+  }),
+  new Cmd('MetaOops', {
+    script:function() {
+      return io.againOrOops(false)
+    },
+  }),
+  new Cmd('MetaRestart', {
+    script:function() {
+      askQuestion(lang.restart_are_you_sure, function(result) {
+        if (result.match(lang.yes_regex)) {
+          location.reload()
+        }
+        else {
+          metamsg(lang.restart_no)
+        }
+      });
+      return world.SUCCESS_NO_TURNSCRIPTS
+    },
+  }),
+  new Cmd('MetaPronouns', {
+    script:function() {
+      metamsg('See the developer console (F12) for the current pronouns')
+      console.log(parser.pronouns)
+    },
+  }),
+  new Cmd('MetaScore', {
+    script:function() {
+      metamsg(lang.scores_not_implemented)
     },
   }),
 
@@ -269,7 +291,7 @@ const commands = [
   new Cmd('Inv', {
     script:function() {
       const listOfOjects = game.player.getContents(world.INVENTORY);
-      msg(lang.inventoryPreamble + " " + formatList(listOfOjects, {article:INDEFINITE, lastJoiner:lang.list_and, modified:true, nothing:lang.list_nothing, loc:game.player.name}) + ".");
+      msg(lang.inventory_prefix + " " + formatList(listOfOjects, {article:INDEFINITE, lastJoiner:lang.list_and, modified:true, nothing:lang.list_nothing, loc:game.player.name}) + ".");
       return settings.lookCountsAsTurn ? world.SUCCESS : world.SUCCESS_NO_TURNSCRIPTS;
     },
   }),
@@ -403,7 +425,7 @@ const commands = [
 
   new Cmd('Take', {
     npcCmd:true,
-    rules:[cmdRules.isHereNotHeld, cmdRules.canManipulate],
+    rules:[cmdRules.isHereNotHeldAlready, cmdRules.canManipulate],
     objects:[
       {scope:parser.isHereOrContained, multiple:true},
     ],
@@ -484,7 +506,7 @@ const commands = [
     objects:[
       {scope:parser.isForSale},
     ],
-    defmsg:lang.cannot_purchase,
+    defmsg:lang.cannot_purchase_here,
   }),
   new Cmd('Sell', {
     npcCmd:true,
@@ -492,7 +514,7 @@ const commands = [
     objects:[
       {scope:parser.isHeld, multiple:true},
     ],
-    defmsg:lang.cannot_sell,
+    defmsg:lang.cannot_sell_here,
   }),
   new Cmd('Smash', {
     npcCmd:true,
@@ -691,6 +713,7 @@ const commands = [
   new Cmd('GetOff', {
     npcCmd:true,
     cmdCategory:"Posture",
+    score:5, // to give priority over TAKE
     rules:[cmdRules.canPosture, cmdRules.isHereNotHeld],
     attName:"getoff",
     cmdCategory:"Posture",
@@ -738,7 +761,7 @@ const commands = [
       {scope:parser.isNpcAndHere},
     ],
     default:function(item) {
-      return failedmsg(cannot_talk_to, {char:game.player, item:item});
+      return failedmsg(lang.cannot_talk_to, {char:game.player, item:item});
     },
   }),
 
@@ -825,13 +848,10 @@ const commands = [
       {scope:parser.isLiquid},
     ],
     script:function(objects) {
-      const npc = objects[0][0];
-      if (!npc.npc) {
-        failedmsg(lang.not_npc, {char:game.player, item:npc});
-        return world.FAILED; 
-      }
-      objects.shift();
-      return handleFillWithLiquid(npc, objects[0][0], objects[1][0]);
+      const npc = objects[0][0]
+      if (!npc.npc) return failedmsg(lang.not_npc, {char:game.player, item:npc})
+      objects.shift()
+      return handleFillWithLiquid(npc, objects[0][0], objects[1][0])
     },
   }),
 
@@ -856,13 +876,10 @@ const commands = [
       {scope:parser.isPresent, attName: "container"},
     ],
     script:function(objects) {
-      const npc = objects[0][0];
-      if (!npc.npc) {
-        failedmsg(lang.not_npc, {char:game.player, item:npc});
-        return world.FAILED; 
-      }
-      objects.shift();
-      return handlePutInContainer(npc, objects);
+      const npc = objects[0][0]
+      if (!npc.npc) return failedmsg(lang.not_npc, {char:game.player, item:npc})
+      objects.shift()
+      return handlePutInContainer(npc, objects)
     },
   }),
 
@@ -886,13 +903,10 @@ const commands = [
       {scope:parser.isPresent, attName: "container"},
     ],
     script:function(objects) {
-      const npc = objects[0][0];
-      if (!npc.npc) {
-        failedmsg(lang.not_npc, {char:game.player, item:npc});
-        return world.FAILED; 
-      }
-      objects.shift();
-      return handleTakeFromContainer(npc, objects);
+      const npc = objects[0][0]
+      if (!npc.npc) return failedmsg(lang.not_npc, {char:game.player, item:npc})
+      objects.shift()
+      return handleTakeFromContainer(npc, objects)
     },
   }),
 
@@ -903,7 +917,7 @@ const commands = [
       {scope:parser.isPresent, attName: "npc"},
     ],
     script:function(objects) {
-      return handleGiveToNpc(game.player, objects);
+      return handleGiveToNpc(game.player, objects)
     },
   }),
   new Cmd('NpcGiveTo', {
@@ -916,12 +930,9 @@ const commands = [
     ],
     script:function(objects) {
       const npc = objects[0][0];
-      if (!npc.npc) {
-        failedmsg(lang.not_npc, {char:game.player, item:npc});
-        return world.FAILED; 
-      }
-      objects.shift();
-      return handleGiveToNpc(npc, objects);
+      if (!npc.npc) return failedmsg(lang.not_npc, {char:game.player, item:npc})
+      objects.shift()
+      return handleGiveToNpc(npc, objects)
     },
   }),
 
@@ -944,10 +955,7 @@ const commands = [
     cmdCategory:"Push",
     script:function(objects) {
       const npc = objects[0][0];
-      if (!npc.npc) {
-        failedmsg(lang.not_npc, {char:game.player, item:npc});
-        return world.FAILED; 
-      }
+      if (!npc.npc) return failedmsg(lang.not_npc, {char:game.player, item:npc})
       objects.shift();
       return handlePushExit(npc, objects);
     },
@@ -977,10 +985,7 @@ const commands = [
     cmdCategory:"Tie",
     script:function(objects) {
       const npc = objects[0][0];
-      if (!npc.npc) {
-        failedmsg(lang.not_npc, {char:game.player, item:npc});
-        return world.FAILED; 
-      }
+      if (!npc.npc) return failedmsg(lang.not_npc, {char:game.player, item:npc})
       objects.shift();
       return handleTieTo(npc, objects[0][0], objects[1][0])
     },
@@ -1005,10 +1010,7 @@ const commands = [
     cmdCategory:"Tie",
     script:function(objects) {
       const npc = objects[0][0];
-      if (!npc.npc) {
-        failedmsg(lang.not_npc, {char:game.player, item:npc});
-        return world.FAILED; 
-      }
+      if (!npc.npc) return failedmsg(lang.not_npc, {char:game.player, item:npc})
       objects.shift();
       return handleUntieFrom(npc, objects[0][0], objects[1][0])
     },
@@ -1034,11 +1036,8 @@ const commands = [
     cmdCategory:"Tie",
     script:function(objects) {
       const npc = objects[0][0];
-      if (!npc.npc) {
-        failedmsg(lang.not_npc, {char:game.player, item:npc});
-        return world.FAILED; 
-      }
-      objects.shift();
+      if (!npc.npc) return failedmsg(lang.not_npc, {char:game.player, item:npc})
+      objects.shift()
       return handleUntieFrom(npc, objects[0][0], objects[1][0])
     },
     objects:[
@@ -1108,10 +1107,10 @@ const commands = [
   new Cmd('AskAbout', {
     rules:[cmdRules.canTalkTo],
     script:function(arr) {
-      if (!game.player.canTalk()) return false;
-      if (!arr[0][0].askabout) return failedmsg(cannot_ask_about, {char:game.player, item:arr[0][0], text:arr[1]});
+      if (!game.player.canTalk()) return false
+      if (!arr[0][0].askabout) return failedmsg(lang.cannot_ask_about, {char:game.player, item:arr[0][0], text:arr[2]})
 
-      return arr[0][0].askabout(arr[2], arr[1]) ? world.SUCCESS : world.FAILED; 
+      return arr[0][0].askabout(arr[2], arr[1]) ? world.SUCCESS : world.FAILED
     },
     objects:[
       {scope:parser.isNpcAndHere},
@@ -1122,10 +1121,10 @@ const commands = [
   new Cmd('TellAbout', {
     rules:[cmdRules.canTalkTo],
     script:function(arr) {
-      if (!game.player.canTalk()) return false;
-      if (!arr[0][0].tellabout) return failedmsg(cannot_tell_about, {char:game.player, item:arr[0][0], text:arr[1]});
+      if (!game.player.canTalk()) return false
+      if (!arr[0][0].tellabout) return failedmsg(cannot_tell_about, {char:game.player, item:arr[0][0], text:arr[1]})
 
-      return arr[0][0].tellabout(arr[2], arr[1]) ? world.SUCCESS : world.FAILED; 
+      return arr[0][0].tellabout(arr[2], arr[1]) ? world.SUCCESS : world.FAILED
     },
     objects:[
       {scope:parser.isNpcAndHere},
@@ -1134,7 +1133,7 @@ const commands = [
     ]
   }),
   
-];
+]
 
 
 
@@ -1321,17 +1320,11 @@ function handlePutInContainer(char, objects) {
   const container = objects[1][0];
   const multiple = objects[0].length > 1 || parser.currentCommand.all;
   const tpParams = {char:char, container:container}
-  if (!container.container) {
-    failedmsg(lang.not_container(char, container));
-    return world.FAILED; 
-  }
-  if (container.closed) {
-    failedmsg(lang.container_closed, tpParams);
-    return world.FAILED; 
-  }
-  if (!char.canManipulate(objects[0], "put")) {
-    return world.FAILED;
-  }
+  
+  if (!container.container) return failedmsg(lang.not_container, {char, container})
+  if (container.closed) return failedmsg(lang.container_closed, tpParams)
+  if (!char.canManipulate(objects[0], "put")) return world.FAILED
+
   for (let obj of objects[0]) {
     let flag = true;
     if (!char.getAgreement("Put/in", obj)) {

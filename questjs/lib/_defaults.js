@@ -120,6 +120,7 @@ const DEFAULT_OBJECT = {
   },
 
   eventActive:false,
+  eventPeriod:1,
   eventCountdown:0,
   eventIsActive:function() { return this.eventActive},
   doEvent:function(turn) {
@@ -310,7 +311,7 @@ const DEFAULT_ITEM = {
         for (let s of this.heldVerbs) verbList.push(s)
       }
     }
-    if (this.verbFunction) this.verbFunctions(verbList)
+    if (this.verbFunction) this.verbFunction(verbList)
     return verbList;
   },
 };

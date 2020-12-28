@@ -6,7 +6,7 @@
 
 const NPC = function(isFemale) {
   // A whole bunch of defaults are the same as the player
-  const res = Object.assign({}, CHARACTER(), CONSULTABLE());
+  const res = Object.assign({}, CHARACTER(), CONSULTABLE(), AGENDA_FOLLOWER());
   
   res.npc = true;
   res.isFemale = isFemale;
@@ -15,12 +15,9 @@ const NPC = function(isFemale) {
   res.talktoCount = 0;
   res.askOptions = [];
   res.tellOptions = [];
-  res.agenda = [];
-  res.followers = [];
   res.excludeFromAll = true;
   res.reactions = NULL_FUNC;
   res.canReachThrough = () => false;
-  res.suspended = false;
   res.icon = () => 'npc12'
 
   res.isAtLoc = function(loc, situation) {
@@ -59,17 +56,6 @@ const NPC = function(isFemale) {
   }
   
   
-  res.templatePreSave = function() {
-    if (this.agenda) this.customSaveAgenda = this.agenda.join("^");
-    this.preSave();
-  }
-
-  res.templatePostLoad = function() {
-    if (this.customSaveAgenda) this.agenda = this.customSaveAgenda.split("^");
-    delete this.customSaveAgenda;
-    if (this.leaderName) w[this.leaderName].followers.push(this);
-    this.postLoad();
-  }
   
   
   res.inSight = function() {
@@ -89,16 +75,7 @@ const NPC = function(isFemale) {
     npc.followers.push(this)
   }
   
-  res.pause = function() {
-    //debugmsg("pausing " + this.name);
-    if (this.leaderName) {
-      w[this.leaderName].pause();
-    }
-    else {
-      this.paused = true;
-    }
-  };
-  
+
   res.doEvent = function() {
     if (this.dead) return
     this.sayTakeTurn()
@@ -128,33 +105,6 @@ const NPC = function(isFemale) {
     }
   };
   
-  res.doAgenda = function() {
-    // If this NPC has followers, we fake it so it seems to be the group
-    if (this.followers.length !== 0) {
-      this.savedPronouns = this.pronouns;
-      this.savedAlias = this.alias
-      this.pronouns = lang.pronouns.plural;
-      this.followers.unshift(this);
-      this.alias = formatList(this.followers, {lastJoiner:lang.list_and});
-      this.followers.shift();
-    }
-
-    const arr = this.agenda[0].split(":");
-    const fn = arr.shift();
-    if (typeof agenda[fn] !== "function") {
-      errormsg("Unknown function `" + fn + "' in agenda for " + this.name);
-      return;
-    }
-    const flag = agenda[fn](this, arr);
-    if (flag) this.agenda.shift();
-    
-    // If we are faking the group, reset
-    if (this.savedPronouns) {
-      this.pronouns = this.savedPronouns;
-      this.alias = this.savedAlias
-      delete this.savedPronouns;
-    }
-  };
   
 
   // Use this to move the NPC to tell the player
@@ -163,13 +113,13 @@ const NPC = function(isFemale) {
     if (typeof dest === "object") dest = dest.name;
     const origin = this.loc;
 
-    lang.npcLeavingMsg(this, dest);
+    lang.npc_leaving_msg(this, dest);
     
     // Move NPC (and followers)
     this.loc = dest;
     for (let follower of this.followers) follower.loc = dest;
     
-    lang.npcEnteringMsg(this, origin);
+    lang.npc_entering_msg(this, origin);
   };
   
 
@@ -285,7 +235,86 @@ const npc_utilities = {
 
 
 
+const AGENDA_FOLLOWER = function() {
+  const res = {}
+  res.agenda = []
+  res.suspended = false
+  res.followers = []
+  res.inSight = function() { return false }
+  res.doEvent = function() {
+    if (!this.paused && !this.suspended && this.agenda.length > 0) this.doAgenda()
+  }
+  
+  res.setAgenda = function(agenda) {
+    this.agenda = agenda
+    this.suspended = false
+    delete this.agendaWaitCounter
+    delete this.patrolCounter
+  }
+  
+  res.doAgenda = function() {
+    // If this NPC has followers, we fake it so it seems to be the group
+    if (this.followers.length !== 0) {
+      this.savedPronouns = this.pronouns;
+      this.savedAlias = this.alias
+      this.pronouns = lang.pronouns.plural;
+      this.followers.unshift(this);
+      this.alias = formatList(this.followers, {lastJoiner:lang.list_and});
+      this.followers.shift();
+    }
+
+    const arr = this.agenda[0].split(":");
+    const fn = arr.shift();
+    if (typeof agenda[fn] !== "function") {
+      errormsg("Unknown function `" + fn + "' in agenda for " + this.name);
+      return;
+    }
+    const flag = agenda[fn](this, arr);
+    if (flag) this.agenda.shift();
+    
+    // If we are faking the group, reset
+    if (this.savedPronouns) {
+      this.pronouns = this.savedPronouns;
+      this.alias = this.savedAlias
+      delete this.savedPronouns;
+    }
+  }
+  
+  res.templatePreSave = function() {
+    if (this.agenda) this.customSaveAgenda = this.agenda.join("^");
+    this.preSave();
+  }
+
+  res.templatePostLoad = function() {
+    if (this.customSaveAgenda) this.agenda = this.customSaveAgenda.split("^");
+    delete this.customSaveAgenda;
+    if (this.leaderName) w[this.leaderName].followers.push(this);
+    this.postLoad();
+  }
+
+  res.pause = function() {
+    //debugmsg("pausing " + this.name);
+    if (this.leaderName) {
+      w[this.leaderName].pause();
+    }
+    else {
+      this.paused = true;
+    }
+  }
+  
+  return res
+}
+
+
 const agenda = {
+  debug:function(s, npc, arr) {
+    if (settings.agendaDebugging && settings.playMode === 'dev') debugmsg('AGENDA for ' + npc.name + ': ' + s + '; ' + formatList(arr, {doNotSort:true}))
+  },
+  debugS:function(s) {
+    if (settings.agendaDebugging && settings.playMode === 'dev') debugmsg('AGENDA comment: ' + s)
+  },
+
+  
   // wait one turn
   pause:function(npc, arr) {
     return true;
@@ -295,25 +324,25 @@ const agenda = {
   // otherwise this will be skipped
   // Used by several other functions, so this applies to them too
   text:function(npc, arr) {
-    //debugmsg("Doing text...");
     if (typeof npc[arr[0]] === "function") {
+      this.debug("text (function)", npc, arr);
       const fn = arr.shift();
       const res = npc[fn](arr);
       return (typeof res === "boolean" ? res : true);
     }
+    this.debug("text (string)", npc, arr);
     
-    if (npc.inSight()) {
-      for (let item of arr) {
-        msg(item);
-      }
-    }
+    if (npc.inSight()) msg(arr.join(':'))
     return true;
   },
+  
+  // Alias for text
+  run:function(npc, arr) { return this.text(npc, arr) },
   
   // sets one attribute on the given item
   // it will guess if Boolean, integer or string
   setItemAtt:function(npc, arr) {
-    debugmsg("Setting item att...");
+    this.debug("setItemAtt", npc, arr);
     const item = arr.shift();
     const att = arr.shift();
     let value = arr.shift();
@@ -328,12 +357,14 @@ const agenda = {
 
   // Wait n turns
   wait:function(npc, arr) {
+    this.debug("wait", npc, arr);
     if (arr.length === 0) return true;
     if (isNaN(arr[0])) errormsg("Expected wait to be given a number in the agenda of '" + npc.name + "'");
     const count = parseInt(arr.shift());
     if (npc.agendaWaitCounter !== undefined) {
       npc.agendaWaitCounter++;
       if (npc.agendaWaitCounter >= count) {
+        this.debugS("Pass")
         this.text(npc, arr);
         return true;
       }
@@ -346,9 +377,12 @@ const agenda = {
   // Wait until ...
   // This may be repeated any number of times
   waitFor:function(npc, arr) {
+    this.debug("waitFor", npc, arr);
     let name = arr.shift();
     if (typeof npc[name] === "function") {
       if (npc[name](arr)) {
+        this.text(npc, arr);
+        this.debugS("Pass")
         return true;
       }
       else {
@@ -359,6 +393,7 @@ const agenda = {
       if (name === "player") name = game.player.name;
       if (npc.isHere()) {
         this.text(npc, arr);
+        this.debugS("Pass")
         return true;
       }
       else {
@@ -368,6 +403,7 @@ const agenda = {
   },
   
   joinedBy:function(npc, arr) {
+    this.debug("joinedBy", npc, arr);
     const followerName = arr.shift();
     w[followerName].setLeader(npc);
     this.text(npc, arr);
@@ -375,6 +411,7 @@ const agenda = {
   },
   
   joining:function(npc, arr) {
+    this.debug("joining", npc, arr);
     const leaderName = arr.shift();
     npc.setLeader(w[leaderName]);
     this.text(npc, arr);
@@ -382,6 +419,7 @@ const agenda = {
   },
   
   disband:function(npc, arr) {
+    this.debug("disband", npc, arr);
     for (let follower of npc.followers) {
       delete follower.leader;
     }
@@ -393,10 +431,9 @@ const agenda = {
   // Move the given item directly to the given location, then print the rest of the array as text
   // Do not use for items with a funny location, such as COUNTABLES
   moveItem:function(npc, arr) {
-    //debugmsg("Moving item...");
+    this.debug("moveItem", npc, arr);
     const item = arr.shift();
     const dest = arr.shift();
-    //debugmsg("dest:" + dest);
     if (!w[item]) errormsg("Item '" + item + "' was not recognised in the agenda of " + npc.name);
     if (!w[dest]) errormsg("Location '" + dest + "' was not recognised in the agenda of " + npc.name);
     w[item].moveToFrom(dest);
@@ -409,9 +446,8 @@ const agenda = {
   // Use an item (i.e., an object not flagged as a room) to have the NPC move
   // to the room containing the item.
   moveTo:function(npc, arr) {
-    //debugmsg("Moving...");
+    this.debug("moveTo", npc, arr);
     const dest = arr.shift();
-    //debugmsg("dest:" + dest);
     if (dest === "player") dest = game.player.loc;
     if (!w[dest]) debugmsg("Location '" + dest + "' not recognised in the agenda of " + npc.name);
     if (!w[dest].room) dest = dest.loc;
@@ -422,6 +458,7 @@ const agenda = {
   },
   
   patrol:function(npc, arr) {
+    this.debug("patrol", npc, arr);
     if (npc.patrolCounter === undefined) npc.patrolCounter = -1;
     npc.patrolCounter = (npc.patrolCounter + 1) % arr.length;
     this.moveTo(npc, [arr[npc.patrolCounter]]);
@@ -430,7 +467,7 @@ const agenda = {
 
   // Move to another room via a random, unlocked exit, then print the rest of the array as text
   walkRandom:function(npc, arr) {
-    //debugmsg("Moving random...");
+    this.debug("walkRandom", npc, arr);
     const exit = w[npc.loc].getRandomExit(true);
     if (exit === null) {
       this.text(npc, arr);
@@ -449,9 +486,8 @@ const agenda = {
   // to the room containing the item.
   // This may be repeated any number of turns
   walkTo:function(npc, arr) {
-    //debugmsg("Walking...");
+    this.debug("walkTo", npc, arr);
     let dest = arr.shift();
-    //debugmsg("dest:" + dest);
     if (dest === "player") dest = game.player.loc;
     if (w[dest] === undefined) {
       errormsg("Location '" + dest + "' not recognised in the agenda of " + npc.name);
@@ -471,7 +507,6 @@ const agenda = {
     else {
       const route = agenda.findPath(w[npc.loc], w[dest]);
       if (!route) errormsg("Location '" + dest + "' not reachable in the agenda of " + npc.name);
-      //debugmsg(formatList(route));
       npc.moveWithDescription(route[0]);
       if (npc.isAtLoc(dest)) {
         this.text(npc, arr);
@@ -556,6 +591,10 @@ const CONSULTABLE = function() {
       metamsg(settings.noAskTell);
       return false;
     }
+    if (!list || list.length === 0) {
+      metamsg(settings.noAskTell);
+      return errormsg("No " + action + "Options set for " + this.name + " and I think there should at least be default saying why.")
+    }
     if (settings.givePlayerAskTellMsg) msg(intro(this, text1, text2));
     
     const params = {
@@ -564,12 +603,12 @@ const CONSULTABLE = function() {
       actor:this,
       action:action,      
     }
-    return respond(params, list, this.asktelldone);
-  };
-  res.asktelldone = function(params, response) {
+    return respond(params, list, this.askTellDone)
+  }
+  res.askTellDone = function(params, response) {
     if (!response) {
       msg(lang.npc_no_interest_in, params)
-      return;
+      return
     }
     if (response.mentions) {
       for (let s of response.mentions) {
@@ -613,18 +652,24 @@ const TOPIC = function(fromStart) {
     nowHide:[],
     count:0,
     isAtLoc:() => false,
+    eventPeriod:1,
+    eventActive:function() { this.showTopic && !this.hideTopic && this.countdown },
+    eventScript:function() { 
+      this.countdown--
+      if (this.countdown < 0) this.hideTopic = true
+    },
     runscript:function() {
       let obj = w[this.loc];
       obj.pause();
       this.hideTopic = this.hideAfter;
       this.script(obj);
-      if (typeof this.nowShow === "string") errormsg("nowShow for topic " + this.nname + " is a string.");
+      if (typeof this.nowShow === "string") errormsg("nowShow for topic " + this.name + " is a string.");
       for (let s of this.nowShow) {
         obj = w[s];
         if (obj === undefined) errormsg("No topic called " + s + " found.");
         obj.showTopic = true;
       }
-      if (typeof this.nowHide === "string") errormsg("nowHide for topic " + this.nname + " is a string.");
+      if (typeof this.nowHide === "string") errormsg("nowHide for topic " + this.name + " is a string.");
       for (let s of this.nowHide) {
         obj = w[s];
         if (obj === undefined) errormsg("No topic called " + s + " found.");

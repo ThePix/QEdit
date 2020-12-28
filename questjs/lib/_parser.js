@@ -60,8 +60,6 @@ const parser = {};
     
     // Need to disambiguate, until each of the lowest level lists has exactly one member
     let flag = false;
-   console.log("KV: currentCommand.objects:")
-    console.log(parser.currentCommand.objects)
     for (let i = 0; i < parser.currentCommand.objects.length; i++) {
       for (let j = 0; j < parser.currentCommand.objects[i].length; j++) {
         if (parser.currentCommand.objects[i][j] instanceof Array) {
@@ -72,7 +70,7 @@ const parser = {};
             flag = true;
             parser.currentCommand.disambiguate1 = i;
             parser.currentCommand.disambiguate2 = j;
-            showMenu(lang.disambig_msg, parser.currentCommand.objects[i][j], function(result) {
+            showMenuWithNumbers(lang.disambig_msg, parser.currentCommand.objects[i][j], function(result) {
               parser.currentCommand.objects[parser.currentCommand.disambiguate1][parser.currentCommand.disambiguate2] = result;
               parser.parse(null);
             });
@@ -161,7 +159,7 @@ const parser = {};
     const candidates = commands.filter(function(el) {
       if (!Array.isArray(el.regexes)) console.log(el)  // it will crash in the next line!
       for (let regex of el.regexes) {
-        if (regex.test(cmdString)) {return true}
+        if (regex.test(cmdString)) return true
       }
     });
     if (candidates.length === 0) {
@@ -263,8 +261,6 @@ const parser = {};
       res.objectTexts.push(arr[i]);
       if (cmd.objects[i].text) {
         // this capture group has been flagged to be text
-        console.log(cmd.objects[i])
-        alert("TEXT!")
         res.objects.push(arr[i]);
         score = 1;
       }
@@ -282,11 +278,6 @@ const parser = {};
           }
         }
         
-        if (list.length === 0) {
-          res.error = cmd.nothingForAll ? cmd.nothingForAll : lang.nothing_msg;
-          res.score = -1;
-          return res;
-        }
         if (lang.all_exclude_regex.test(arr[i])) {
           // if this is ALL BUT we need to remove some things from the list
           // excludes must be in isVisible
@@ -303,6 +294,11 @@ const parser = {};
         list = list.filter(function(el) { return !exclude.includes(el); });
         if (list.length > 1 && !cmd.objects[i].multiple) {
           res.error = lang.no_multiples_msg;
+          res.score = -1;
+          return res;
+        }
+        if (list.length === 0) {
+          res.error = cmd.nothingForAll ? cmd.nothingForAll : lang.nothing_msg;
           res.score = -1;
           return res;
         }
@@ -360,12 +356,6 @@ const parser = {};
   // or 1 if in the third list).
   // If not found the score will be 0, and an empty array returned.
   parser.findInScope = function(s, listOfLists, cmdParams) {
-    //console.log("s")
-    //console.log(s)
-    //console.log("listOfLists")
-    //console.log(listOfLists)
-    //console.log("cmdParams:")
-    //console.log(cmdParams)
     parser.msg("Now matching: " + s)
     // First handle IT etc.
     for (let key in lang.pronouns) {
