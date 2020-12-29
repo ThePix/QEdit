@@ -56,8 +56,8 @@
     "jsStatusList": [],
     "jsStyleSide_font_family": "'Arial Black', Gadget, sans-serif",
     "jsStyleSide_font_size": 9,
-    "jsStyleSide_color": "white",
-    "jsStyleSide_background_color": "blue"
+    "jsStyleSide_color": "black",
+    "jsStyleSide_background_color": "whte"
   },
   {
     "name": "lounge",

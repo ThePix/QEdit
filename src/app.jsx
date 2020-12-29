@@ -9,8 +9,6 @@ import Menus from './menus'
 import QuestObjects from './questobjects'
 import Toolbar from './toolbar'
 
-import Blockly from 'blockly/node';
-
 const prompt = require('electron-prompt')
 const {Menu, dialog, app} = require('electron').remote
 const homedir = require('os').homedir()
@@ -175,10 +173,10 @@ export default class App extends React.Component {
   }
 
   saveGame(filename) {
-    filename = typeof(filename) === 'string' ? filename : this.questObjects.questObjects[0].title || 'untitled'
-    console.log(filename)
+    filename = typeof(filename) === 'string' ? filename : this.questObjects.getFilename()
+    //console.log(filename)
     if (filename) {
-      const result = FileStore.writeASLFile(this.questObjects.questObjects, filename)
+      const result = FileStore.writeASLFile(this.questObjects.getObjects(), filename)
       //console.log(result)
       this.message(result)
     }
@@ -208,7 +206,7 @@ export default class App extends React.Component {
       title: 'Save file',
     }
     const filename = dialog.showSaveDialog(dialogOptions)
-    console.log(filename)
+    //console.log(filename)
     if (filename) {
       this.questObjects.setFilename(filename)
       this.saveGame(filename)
@@ -223,13 +221,14 @@ export default class App extends React.Component {
     this.saveGame(filename) // make sure this is saved to asl6 first
     
     if (!filename) {
-      console.log('Save your game before exporting')
+      window.alert('Save your game before exporting!')
+      //console.log('Save your game before exporting')
       this.message('Save your game before exporting')
       return
     }
 
     const result = FileStore.writeJSFile(this.questObjects.questObjects, filename)
-    console.log(result)
+    //console.log(result)
     this.message(result)
   }
 

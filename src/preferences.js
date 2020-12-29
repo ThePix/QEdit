@@ -75,9 +75,9 @@ export default class Preferences extends React.Component {
                 min={0}
                 max={100}
                 onChange={(value) =>{
-                  console.log(value)
+                  //console.log(value)
                   global.AUTOSAVEINTERVAL = value
-                  console.log(global.AUTOSAVEINTERVAL)
+                  //console.log(global.AUTOSAVEINTERVAL)
                 }}
               />
             </FormGroup>
@@ -90,7 +90,7 @@ export default class Preferences extends React.Component {
                 style={{marginTop:5}}
               />
             </FormGroup>
-
+            
           </Form>
         </Modal.Body>
       </Modal>

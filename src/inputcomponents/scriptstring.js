@@ -63,45 +63,55 @@ export default class ScriptString extends React.Component {
     }
 */
     return (
-      <Form layout="horizontal">
         <FormGroup>
-        <ControlLabel>Blockly:</ControlLabel>
-        <Toggle
-          key={Constants.BLOCKLYVISIBLE}
-          defaultChecked={Preferences.get(Constants.BLOCKLYVISIBLE)}
-          onChange={(value) => {
-            Preferences.set(Constants.BLOCKLYVISIBLE, value)
-            window.document.getElementsByTagName('body')[0].style.overflow = Preferences.get(Constants.BLOCKLYVISIBLE) ? 'auto' : 'hidden';
+          <ControlLabel>{item.display}:</ControlLabel>
+          <SelectPicker
+            key={item.name + '_option'}
+            style={Constants.INPUTCOMPONENT_STYLE}
+            data={data}
+            defaultValue={option}
+            onChange={(v) => {
+                objects.setScript(item.name, {type:Constants.SCRIPT_TYPE[v]})
+                //console.log(v);
+                if (v === 'JavaScript') {
+                  console.log('Enabling Blockly toggle')
+                  window.document.getElementById('blocklyControl').style = 'display:auto'
+                } else {
+                  window.document.getElementById('blocklyControl').style = 'display:none'
+                }
+             }
             }
-          }
-          style={{marginTop:5}}
-        />
-      </FormGroup>
-      <FormGroup>
-        <ControlLabel>{item.display}:</ControlLabel>
-        <SelectPicker
-          key={item.name + '_option'}
-          style={Constants.INPUTCOMPONENT_STYLE}
-          data={data}
-          defaultValue={option}
-          onChange={(v) =>
-            objects.setScript(item.name, {type:Constants.SCRIPT_TYPE[v]})}
-          cleanable={false}
-        />
-        <br/>
-        <AceEditor
-          mode={mode}
-          theme={Constants.ACETHEME}
-          onChange={(v) => objects.setScript(item.name, {code:v})}
-          name={item.name}
-          editorProps={{ $blockScrolling: true }}
-          value={code}
-          style={Constants.ACE_STYLE}
-        />
-        {item.tooltip ? <HelpBlock tooltip>{item.tooltip}</HelpBlock> : ''}
-      </FormGroup>
-
-        </Form>
+            cleanable={false}
+          />
+          <br/>
+          <div id='blocklyControl' style={{display:'none'}}>
+            <ControlLabel>Blockly:</ControlLabel>
+          <Toggle
+            key={Constants.BLOCKLYVISIBLE}
+            defaultChecked={Preferences.get(Constants.BLOCKLYVISIBLE)}
+            onChange={(value) => {
+              Preferences.set(Constants.BLOCKLYVISIBLE, value)
+              window.document.getElementsByTagName('body')[0].style.overflow = Preferences.get(Constants.BLOCKLYVISIBLE) ? 'auto' : 'hidden';
+              }
+            }
+            style={{marginTop:5}}
+          />
+          </div>
+          <AceEditor
+            mode={mode}
+            theme={Constants.ACETHEME}
+            onChange={(v) => {
+                objects.setScript(item.name, {code:v})
+                console.log(item.name)
+              }
+            }
+            name={item.name}
+            editorProps={{ $blockScrolling: true }}
+            value={code}
+            style={Constants.ACE_STYLE}
+          />
+          {item.tooltip ? <HelpBlock tooltip>{item.tooltip}</HelpBlock> : ''}
+        </FormGroup>
     )
   }
 }

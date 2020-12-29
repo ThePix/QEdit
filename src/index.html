@@ -17,7 +17,7 @@
 <body style="overflow: hidden; margin: auto;" >
   <div id="App"></div>
   <textarea id="textarea"></textarea>
-  <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+  <div id="blocklyDiv" style="height: 600px; width: 800px;"></div>
   
   <xml id="toolbox" style="display: none">
       <block type="controls_if"></block>
@@ -35,7 +35,6 @@
   import React from 'react'
   import ReactDOM from 'react-dom'
   import {AppContainer} from 'react-hot-loader'
-  import AceEditor from "react-ace"
 
   const render = () => {
     const App = require('./app').default
@@ -55,18 +54,14 @@
   function myUpdateFunction(event) {
     var code = Blockly.JavaScript.workspaceToCode(workspace);
     document.getElementById('textarea').value = code;
-    //var textArea = document.getElementsByClassName('ace_text-input')[0]
-    //textArea.value = code; // This doesn't work in the app???
-    console.log(code);
+    //ace.edit('desc').renderer.textarea.value = code; // This doesn't count as an 'onchange' in the app??? But pressing enter in the textarea makes it pop up in there?
+    //console.log(code);
   }
   workspace.addChangeListener(myUpdateFunction);
-  //$('#App').appendChild($('#blocklyDiv'))
 
   // NOTE FROM KV: This app does not have real jQuery (as far as I can tell)
   function getEl(el){
-    return document.getElementById(el);
+    return window.document.getElementById(el);
   }
-  //getEl('desc').parentNode.insertBefore(getEl('blocklyDiv'), getEl('desc'))
-
 </script>
 </html>
