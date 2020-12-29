@@ -1,9 +1,7 @@
 #! /bin/bash
 
 if [ -z ${1+x} ]; then
-	echo "  You failed to add a commit message!"
-	echo "  EXAMPLE: ./doGit.sh \"Update files\""
-	exit 1
+	$1="Update files"
 fi
 
 git status &&

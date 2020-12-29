@@ -175,9 +175,10 @@ export default class App extends React.Component {
   }
 
   saveGame(filename) {
-    filename = filename || this.questObjects.getFilename()
+    filename = typeof(filename) === 'string' ? filename : this.questObjects.questObjects[0].title || 'untitled'
+    console.log(filename)
     if (filename) {
-      const result = FileStore.writeASLFile(this.questObjects.getObjects(), filename)
+      const result = FileStore.writeASLFile(this.questObjects.questObjects, filename)
       //console.log(result)
       this.message(result)
     }
@@ -309,7 +310,7 @@ export default class App extends React.Component {
 
   render() {
     console.log(this.state)
-    //global.app = this  // This lets you access this from the console in the editor!
+    global.app = this  // This lets you access this from the console in the editor!
     return (
       <Container>
         <Preferences
