@@ -9,7 +9,8 @@ const defaultPreferences = {
   jsNewRoomWhere: Constants.WHERE_TOP,
   jsNewItemWhere: Constants.WHERE_LOCATION,
   jsAutosaveInterval: 1,
-  darkMode: false
+  darkMode: false,
+  blocklyVisible: false
 }
 global.AUTOSAVEINTERVAL = defaultPreferences.jsAutosaveInterval
 
@@ -89,6 +90,7 @@ export default class Preferences extends React.Component {
                 style={{marginTop:5}}
               />
             </FormGroup>
+
           </Form>
         </Modal.Body>
       </Modal>

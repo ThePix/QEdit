@@ -32,8 +32,8 @@ export default class FileStore {
   }
 
   static async writeASLFile (objects, filename) {
-    console.log(filename)
-    console.log(typeof(filename))
+    //console.log(filename)
+    //console.log(typeof(filename))
     if (filename.endsWith(Constants.EXTENSION_ASLX)) {
       filename = filename.replace(Constants.EXTENSION_ASLX, Constants.EXTENSION_ASL6)
       if (fs.existsSync(filename)) {

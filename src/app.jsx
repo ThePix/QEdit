@@ -9,7 +9,7 @@ import Menus from './menus'
 import QuestObjects from './questobjects'
 import Toolbar from './toolbar'
 
-//import Blockly from 'blockly/blockly_compressed';
+import Blockly from 'blockly/node';
 
 const prompt = require('electron-prompt')
 const {Menu, dialog, app} = require('electron').remote

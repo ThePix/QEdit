@@ -1,8 +1,8 @@
 import React from 'react'
-import { FormGroup, SelectPicker, ControlLabel, HelpBlock } from 'rsuite'
+import { Form, FormGroup, SelectPicker, ControlLabel, HelpBlock, Toggle } from 'rsuite'
 import AceEditor from "react-ace"
 import * as Constants from '../constants'
-
+import Preferences from '../preferences'
 // Fixes bug in ace-builds, where it can't find the worker
 const ace = require('ace-builds/src-noconflict/ace')
 ace.config.set("basePath", __dirname + "/../../node_modules/ace-builds/src-noconflict/")
@@ -63,6 +63,20 @@ export default class ScriptString extends React.Component {
     }
 */
     return (
+      <Form layout="horizontal">
+        <FormGroup>
+        <ControlLabel>Blockly:</ControlLabel>
+        <Toggle
+          key={Constants.BLOCKLYVISIBLE}
+          defaultChecked={Preferences.get(Constants.BLOCKLYVISIBLE)}
+          onChange={(value) => {
+            Preferences.set(Constants.BLOCKLYVISIBLE, value)
+            window.document.getElementsByTagName('body')[0].style.overflow = Preferences.get(Constants.BLOCKLYVISIBLE) ? 'auto' : 'hidden';
+            }
+          }
+          style={{marginTop:5}}
+        />
+      </FormGroup>
       <FormGroup>
         <ControlLabel>{item.display}:</ControlLabel>
         <SelectPicker
@@ -86,6 +100,8 @@ export default class ScriptString extends React.Component {
         />
         {item.tooltip ? <HelpBlock tooltip>{item.tooltip}</HelpBlock> : ''}
       </FormGroup>
+
+        </Form>
     )
   }
 }

@@ -8,19 +8,34 @@
     font-src 'self' https://fonts.gstatic.com;
     script-src 'unsafe-eval' 'unsafe-inline' 'self' https://ajax.googleapis.com https://html5shiv.googlecode.com;
     worker-src blob: https://ajax.googleapis.com;
-    img-src 'self' data: https://ajax.googleapis.com;"
+    img-src 'self' data: https://ajax.googleapis.com https://blockly-demo.appspot.com;
+    media-src 'self' data: https://blockly-demo.appspot.com;"
   >
   <link rel="stylesheet" href="style/rsuite.css">
   <link rel="stylesheet" href="style/qedit.css">
-  <head>
+<head>
 <body style="overflow: hidden; margin: auto;" >
   <div id="App"></div>
+  <textarea id="textarea"></textarea>
+  <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+  
+  <xml id="toolbox" style="display: none">
+      <block type="controls_if"></block>
+      <block type="controls_repeat_ext"></block>
+      <block type="logic_compare"></block>
+      <block type="math_number"></block>
+      <block type="math_arithmetic"></block>
+      <block type="text"></block>
+      <block type="text_print"></block>
+      <block type="logic_boolean"></block>
+    </xml>
 </body>
 
 <script type="text/jsx">
   import React from 'react'
   import ReactDOM from 'react-dom'
   import {AppContainer} from 'react-hot-loader'
+  import AceEditor from "react-ace"
 
   const render = () => {
     const App = require('./app').default
@@ -31,5 +46,27 @@
   if (module.hot) {
     module.hot.accept(render)
   }
+
+  //Blockly
+  const Blockly = require('../node_modules/blockly/node')
+  var workspace = Blockly.inject('blocklyDiv',
+    {toolbox: document.getElementById('toolbox')});
+  
+  function myUpdateFunction(event) {
+    var code = Blockly.JavaScript.workspaceToCode(workspace);
+    document.getElementById('textarea').value = code;
+    //var textArea = document.getElementsByClassName('ace_text-input')[0]
+    //textArea.value = code; // This doesn't work in the app???
+    console.log(code);
+  }
+  workspace.addChangeListener(myUpdateFunction);
+  //$('#App').appendChild($('#blocklyDiv'))
+
+  // NOTE FROM KV: This app does not have real jQuery (as far as I can tell)
+  function getEl(el){
+    return document.getElementById(el);
+  }
+  //getEl('desc').parentNode.insertBefore(getEl('blocklyDiv'), getEl('desc'))
+
 </script>
 </html>
