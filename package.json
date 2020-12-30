@@ -1,7 +1,7 @@
 {
   "name": "QEdit",
   "productName": "QEdit",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Editor for Quest 6",
   "main": "src/index.js",
   "scripts": {
@@ -29,8 +29,7 @@
           "zip"
         ],
         "linux": [
-          "deb",
-          "rpm"
+          "deb"
         ]
       },
       "electronPackagerConfig": {
@@ -68,6 +67,7 @@
     "electron-store": "^5.2.0",
     "eslint-plugin-react-hooks": "^3.0.0",
     "esm": "^3.2.25",
+    "fs-extra": "5.0.0",
     "hoek": "^6.1.3",
     "jest-environment-jsdom-fourteen": "^1.0.1",
     "lodash": "^4.17.20",

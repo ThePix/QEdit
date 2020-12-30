@@ -153,8 +153,8 @@ export default class JSON2JS {
     let str = ''
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== 'settings') continue
-      console.log("parseStyle")
-      console.log(objects[i])
+      //console.log("parseStyle")
+      //console.log(objects[i])
       str += ''
 
       if (objects[i].jsGoogleFonts && objects[i].jsGoogleFonts.length > 1) {

@@ -16,8 +16,8 @@
 <head>
 <body style="overflow: hidden; margin: auto;" >
   <div id="App"></div>
-  <textarea id="textarea"></textarea>
-  <div id="blocklyDiv" style="height: 600px; width: 800px;"></div>
+  <textarea id="textarea" placeholder="//Your code will appear here.  Copy it from here and paste it." style="width:500px;height:50px;margin-left:20%;"></textarea>
+  <div id="blocklyDiv" style="height: 600px; width: 800px; margin-left:20%;"></div>
   
   <xml id="toolbox" style="display: none">
       <block type="controls_if"></block>
@@ -54,7 +54,10 @@
   function myUpdateFunction(event) {
     var code = Blockly.JavaScript.workspaceToCode(workspace);
     document.getElementById('textarea').value = code;
-    //ace.edit('desc').renderer.textarea.value = code; // This doesn't count as an 'onchange' in the app??? But pressing enter in the textarea makes it pop up in there?
+    let textArea = ace.edit('desc').renderer.textarea
+    //let editor = ace.edit('desc')
+    //editor.getSession().getValue(textArea.value)
+    //editor.session.doc.$lines = [code]; // This doesn't count as an 'onchange' in the app??? But pressing enter in the textarea makes it pop up in there?
     //console.log(code);
   }
   workspace.addChangeListener(myUpdateFunction);

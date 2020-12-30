@@ -637,7 +637,7 @@
 			{
 				"name": "jsStyleSide_color",
 				"type": "text",
-				"default": "inherit",
+				"default": "black",
 				"displayIf": "o.panes !== 'None'",
 				"display": "Colour",
 				"tooltip": "The colour of the text for the side text."
@@ -645,7 +645,7 @@
 			{
 				"name": "jsStyleSide_background_color",
 				"type": "text",
-				"default": "inherit",
+				"default": "white",
 				"display": "Background",
 				"tooltip": "The background colour for the side text.",
 				"displayIf": "o.panes !== 'None'"

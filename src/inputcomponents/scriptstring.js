@@ -85,7 +85,7 @@ export default class ScriptString extends React.Component {
           />
           <br/>
           <div id='blocklyControl' style={{display:'none'}}>
-            <ControlLabel>Blockly:</ControlLabel>
+            <ControlLabel>Blockly (experimental):</ControlLabel>
           <Toggle
             key={Constants.BLOCKLYVISIBLE}
             defaultChecked={Preferences.get(Constants.BLOCKLYVISIBLE)}
@@ -102,7 +102,7 @@ export default class ScriptString extends React.Component {
             theme={Constants.ACETHEME}
             onChange={(v) => {
                 objects.setScript(item.name, {code:v})
-                console.log(item.name)
+                //console.log(item.name)
               }
             }
             name={item.name}
