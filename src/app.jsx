@@ -309,7 +309,7 @@ export default class App extends React.Component {
 
   render() {
     console.log(this.state)
-    //global.app = this  // This lets you access this from the console in the editor!
+    global.app = this  // This lets you access this from the console in the editor!
     return (
       <Container>
         <Preferences

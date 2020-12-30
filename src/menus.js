@@ -34,7 +34,7 @@ export default class Menus {
         submenu: [
           { role: 'reload' },
           { role: 'forcereload' },
-          { role: 'toggledevtools' },
+          { role: 'toggledevtools', accelerator: 'CmdOrCtrl+Shift+I', registerAccelerator: true },
           { type: 'separator' },
           { role: 'resetzoom' },
           { role: 'zoomin' },
@@ -50,6 +50,7 @@ export default class Menus {
       },
       {
         label: 'Object',
+        id: 'objectMenu',
         submenu: [
           { label: 'Add location', accelerator: 'CmdOrCtrl+L',},
           { label: 'Add item', accelerator: 'CmdOrCtrl+I',},

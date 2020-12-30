@@ -1,6 +1,6 @@
 #! /bin/bash
 
-if [ -z ${1+x} ]; then
+if [ $# -eq 0 ]; then
 	$1="Update files"
 fi
 

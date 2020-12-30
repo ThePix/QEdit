@@ -85,8 +85,16 @@ export default class Preferences extends React.Component {
               <ControlLabel>Dark mode:</ControlLabel>
               <Toggle
                 key={Constants.DARKMODE}
-                defaultChecked={Preferences.get(Constants.DARKMODE)}
-                onChange={(value) => Preferences.set(Constants.DARKMODE, value)}
+                defaultChecked={Preferences.get(Constants.DARKMODE) || false}
+                onChange={(value) => {
+                  let el = window.document.getElementById('rsuiteStyle')
+                  Preferences.set(Constants.DARKMODE, value)
+                  if (value) {
+                    el.href = "style/rsuite-dark.css"
+                  } else {
+                    el.href = "style/rsuite.css"
+                  }
+                }}
                 style={{marginTop:5}}
               />
             </FormGroup>
