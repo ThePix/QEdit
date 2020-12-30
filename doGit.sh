@@ -1,7 +1,7 @@
 #! /bin/bash
 
 if [ $# -eq 0 ]; then
-	$1="Update files"
+	1="Update files"
 fi
 
 git status &&

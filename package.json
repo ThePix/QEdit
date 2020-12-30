@@ -1,7 +1,7 @@
 {
   "name": "QEdit",
   "productName": "QEdit",
-  "version": "1.0.3",
+  "version": "0.0.3",
   "description": "Editor for Quest 6",
   "main": "src/index.js",
   "scripts": {
@@ -29,7 +29,8 @@
           "zip"
         ],
         "linux": [
-          "deb"
+          "deb",
+          "rpm"
         ]
       },
       "electronPackagerConfig": {
