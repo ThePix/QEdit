@@ -5,6 +5,11 @@ autosaves/*.*
 package-lock.json
 games/*
 /trash
-*.sh
-*.log
+qedit.sh
+doGit.sh
+editincode.sh
+yarn.lock
+debug.log
 go.bat
+ghPush.js
+test.log
