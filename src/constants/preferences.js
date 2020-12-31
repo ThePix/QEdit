@@ -4,7 +4,7 @@ export const NEWROOMWHERE = 'newRoomWhere'
 export const NEWITEMWHERE = 'newRoomWhere'
 export const AUTOSAVEINTERVAL = 'autosaveInterval'
 export const DARKMODE = 'darkMode'
-export const BLOCKLYVISIBLE = 'blocklyVisible'
+//export const BLOCKLYVISIBLE = 'blocklyVisible'
 
 //NEWROOMWHERE / NEWITEMWHERE
 export const WHERE_TOP = 'Top'

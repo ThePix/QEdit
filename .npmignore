@@ -1,6 +1,5 @@
-/trash
-*.sh
+editincode
 ghPush.js
 go.bat
-*.md
-*.lock
+README.md
+yarn.lock

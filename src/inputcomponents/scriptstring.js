@@ -73,18 +73,18 @@ export default class ScriptString extends React.Component {
             onChange={(v) => {
                 objects.setScript(item.name, {type:Constants.SCRIPT_TYPE[v]})
                 //console.log(v);
-                if (v === 'JavaScript') {
-                  console.log('Enabling Blockly toggle')
-                  window.document.getElementById('blocklyControl').style = 'display:auto'
-                } else {
-                  window.document.getElementById('blocklyControl').style = 'display:none'
-                }
+                // if (v === 'JavaScript') {
+                //   console.log('Enabling Blockly toggle')
+                //   window.document.getElementById('blocklyControl').style = 'display:auto'
+                // } else {
+                //   window.document.getElementById('blocklyControl').style = 'display:none'
+                // }
              }
             }
             cleanable={false}
           />
           <br/>
-          <div id='blocklyControl' style={{display:'none'}}>
+          {/* <div id='blocklyControl' style={{display:'none'}}>
             <ControlLabel>Blockly (experimental):</ControlLabel>
           <Toggle
             key={Constants.BLOCKLYVISIBLE}
@@ -96,7 +96,7 @@ export default class ScriptString extends React.Component {
             }
             style={{marginTop:5}}
           />
-          </div>
+          </div> */}
           <AceEditor
             mode={mode}
             theme={Constants.ACETHEME}

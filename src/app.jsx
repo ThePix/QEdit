@@ -230,6 +230,7 @@ export default class App extends React.Component {
     const result = FileStore.writeJSFile(this.questObjects.questObjects, filename)
     //console.log(result)
     this.message(result)
+    
   }
 
   find() {
@@ -308,8 +309,71 @@ export default class App extends React.Component {
   }
 
   render() {
-    console.log(this.state)
-    global.app = this  // This lets you access this from the console in the editor!
+    //console.log(this.state)
+    //global.app = this  // This lets you access this from the console in the editor!
+    
+    // Add right-clicking.
+      // NOTE FROM KV: This app does not have real jQuery (as far as I can tell)
+    function getEl(el){
+      return window.document.getElementById(el);
+    }
+    const { remote } = require('electron')
+    const { Menu, MenuItem } = remote
+    const menu = new Menu()
+    menu.append(new MenuItem({ role: 'selectAll' }))
+    menu.append(new MenuItem({ role: 'copy' }))
+    menu.append(new MenuItem({ role: 'paste' }))
+    menu.append(new MenuItem({ type: 'separator' }))
+    menu.append(new MenuItem({ role: 'toggleDevTools' }))
+    menu.append(new MenuItem({ label: 'Toggle Blockly (EXPERIMENTAL)', click:() => {
+      let of = window.document.getElementsByTagName('body')[0].style.overflow
+      window.document.getElementsByTagName('body')[0].style.overflow = of === 'hidden' ? 'auto' : 'hidden'
+      getEl('blocklyDiv').style.display = of === 'hidden' ? 'block' : 'none'
+      getEl('textarea').style.display = of === 'hidden' ? 'block' : 'none'
+      if (of === 'hidden') {
+        window.alert("Scroll down for Blockly!\n\n(It's not worth much yet.)")
+      }
+    }}))
+    menu.append(new MenuItem({label: 'Object',
+    submenu: [
+      { label: 'Add location', accelerator: 'CmdOrCtrl+L', click:() => {
+        this.questObjects.addObject(Constants.ROOM_TYPE)
+      }},
+      { label: 'Add item', accelerator: 'CmdOrCtrl+I',click:() => {
+        this.questObjects.addObject(Constants.ITEM_TYPE)
+      }},
+      { label: 'Add stub', click:() => {
+        this.questObjects.addObject(Constants.STUB_TYPE)
+      }},
+      { type: 'separator' },
+      { label: 'Add function', accelerator: 'Alt+CmdOrCtrl+F', click:() => {
+        this.questObjects.addObject(Constants.FUNCTION_TYPE)
+      }},
+      { label: 'Add command', accelerator: 'Alt+CmdOrCtrl+C',click:() => {
+        this.questObjects.addObject(Constants.COMMAND_TYPE)
+      }},
+      { label: 'Add template', accelerator: 'Alt+CmdOrCtrl+T', click:() => {
+        this.questObjects.addObject(Constants.TEMPLATE_TYPE)
+      }},
+    ]}))
+    
+    window.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+      menu.popup({ window: remote.getCurrentWindow() })
+    }, false)
+
+    //Blockly
+    const Blockly = require('../node_modules/blockly/node')
+    let workspace = Blockly.inject('blocklyDiv',
+      {toolbox: window.document.getElementById('toolbox')});
+
+    function myUpdateFunction(event) {
+      let code = Blockly.JavaScript.workspaceToCode(workspace);
+      getEl('textarea').value = code;
+    }
+    workspace.addChangeListener(myUpdateFunction);
+
+
     return (
       <Container>
         <Preferences
@@ -331,6 +395,9 @@ export default class App extends React.Component {
         </Content>
       </Container>
     )
+
+
+  
 // TODO: Implent darkMode
   }
 }

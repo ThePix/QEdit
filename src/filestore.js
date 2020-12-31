@@ -43,6 +43,13 @@ export default class FileStore {
     const str = JSON.stringify(objects, null, 2)
     await mkdirp(path.dirname(filename));
     fs.writeFileSync(filename, str, "utf8")
+    let exportNotification = new Notification('QEdit', {
+      body: 'Save completed.\n\nView files?'
+    })
+    exportNotification.onclick = () => {
+      const {shell} = require('electron') // deconstructing assignment
+      shell.showItemInFolder(filename)
+    }
     return "Saved: " + filename
   }
 
@@ -86,8 +93,14 @@ export default class FileStore {
     console.log(objects)
     let newCss = JSON2JS.parseStyle(objects).toString()
     fs.writeFileSync(outputPath + "assets/css/style.css", newCss, "utf8") 
-    const {shell} = require('electron') // deconstructing assignment
-    shell.showItemInFolder(outputPath + 'page.html')
+    let exportNotification = new Notification('QEdit', {
+      body: 'Export completed.\n\nView files?'
+    })
+    exportNotification.onclick = () => {
+      const {shell} = require('electron') // deconstructing assignment
+      shell.showItemInFolder(outputPath + 'page.html')
+    }
+    
     return('Export completed')
   }
 }

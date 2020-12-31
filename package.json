@@ -1,7 +1,7 @@
 {
   "name": "QEdit",
   "productName": "QEdit",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Editor for Quest 6 (hacked by KV)",
   "main": "src/index.js",
   "scripts": {
@@ -18,7 +18,7 @@
   "jest": {
     "testEnvironment": "jest-environment-jsdom-fourteen"
   },
-  "repository": "github:ThePix/QEdit",
+  "repository": "github:KVonGit/QEdit",
   "config": {
     "forge": {
       "make_targets": {
@@ -76,6 +76,7 @@
     "mime": "^2.4.7",
     "react": "^16.14.0",
     "react-ace": "^8.1.0",
+    "react-devtools": "^4.10.1",
     "react-dom": "^16.14.0",
     "react-hot-loader": "^4.13.0",
     "rsuite": "^4.8.6",

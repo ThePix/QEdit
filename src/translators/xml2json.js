@@ -37,7 +37,7 @@ export default class XML2JSON {
       }
     }
 
-    console.log("Loaded " + objects.length + " objects (including setting)")
+    //console.log("Loaded " + objects.length + " objects (including setting)")
     return objects
   }
 }

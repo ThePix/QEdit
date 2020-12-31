@@ -9,8 +9,8 @@ const defaultPreferences = {
   jsNewRoomWhere: Constants.WHERE_TOP,
   jsNewItemWhere: Constants.WHERE_LOCATION,
   jsAutosaveInterval: 1,
-  darkMode: false,
-  blocklyVisible: false
+  darkMode: false//,
+  //blocklyVisible: false
 }
 global.AUTOSAVEINTERVAL = defaultPreferences.jsAutosaveInterval
 
