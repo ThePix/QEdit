@@ -47,19 +47,18 @@ export default class FileStore {
     const str = JSON.stringify(objects, null, 2)
     await mkdirp(path.dirname(filename));
     fs.writeFileSync(filename, str, "utf8")
-    console.log(platform)
     if (platform != 'win32'){
       let exportNotification = new Notification('QEdit', {
-      body: 'Export completed.\n\nView files?'
-    })
-    exportNotification.onclick = () => {
-      const {shell} = require('electron')
-      shell.showItemInFolder(outputPath + 'page.html')
+        body: 'Export completed.\n\nView files?'
+      })
+      exportNotification.onclick = () => {
+        const {shell} = require('electron')
+        shell.showItemInFolder(filename)
+      }
+    // } else {
+    //   const {shell} = require('electron')
+    //   shell.showItemInFolder(filename)
     }
-  } else {
-    const {shell} = require('electron')
-    shell.showItemInFolder(outputPath + 'page.html')
-  }
     return "Saved: " + filename
   }
 
