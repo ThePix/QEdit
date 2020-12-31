@@ -5,6 +5,10 @@ import XML2JSON from './translators/xml2json'
 import JSON2JS from './translators/json2js'
 import * as Constants from './constants'
 
+const homedir = require('os').homedir()
+const platform = require('os').platform()
+const arch = require('os').arch()
+
 /*
 
 I think synchronous will be good enough because we are saving/loading locally
@@ -43,13 +47,19 @@ export default class FileStore {
     const str = JSON.stringify(objects, null, 2)
     await mkdirp(path.dirname(filename));
     fs.writeFileSync(filename, str, "utf8")
-    let exportNotification = new Notification('QEdit', {
-      body: 'Save completed.\n\nView files?'
+    console.log(platform)
+    if (platform != 'win32'){
+      let exportNotification = new Notification('QEdit', {
+      body: 'Export completed.\n\nView files?'
     })
     exportNotification.onclick = () => {
-      const {shell} = require('electron') // deconstructing assignment
-      shell.showItemInFolder(filename)
+      const {shell} = require('electron')
+      shell.showItemInFolder(outputPath + 'page.html')
     }
+  } else {
+    const {shell} = require('electron')
+    shell.showItemInFolder(outputPath + 'page.html')
+  }
     return "Saved: " + filename
   }
 
@@ -93,11 +103,16 @@ export default class FileStore {
     console.log(objects)
     let newCss = JSON2JS.parseStyle(objects).toString()
     fs.writeFileSync(outputPath + "assets/css/style.css", newCss, "utf8") 
-    let exportNotification = new Notification('QEdit', {
-      body: 'Export completed.\n\nView files?'
-    })
-    exportNotification.onclick = () => {
-      const {shell} = require('electron') // deconstructing assignment
+    if (platform != 'win32'){
+        let exportNotification = new Notification('QEdit', {
+        body: 'Export completed.\n\nView files?'
+      })
+      exportNotification.onclick = () => {
+        const {shell} = require('electron')
+        shell.showItemInFolder(outputPath + 'page.html')
+      }
+    } else {
+      const {shell} = require('electron')
       shell.showItemInFolder(outputPath + 'page.html')
     }
     
