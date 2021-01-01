@@ -49,7 +49,7 @@ export default class FileStore {
     fs.writeFileSync(filename, str, "utf8")
     let regX = /\/autosaves\/autosave[0-9].asl6/
     if (platform != 'win32' && !regX.exec(filename)){
-      console.log(filename)
+      //console.log(filename)
       let exportNotification = new Notification('QEdit', {
         body: 'Export completed.\n\nView files?'
       })
