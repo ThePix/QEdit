@@ -1,7 +1,7 @@
 {
   "name": "QEdit",
   "productName": "QEdit",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Editor for Quest 6 (hacked by KV)",
   "main": "src/index.js",
   "scripts": {
@@ -29,8 +29,7 @@
           "zip"
         ],
         "linux": [
-          "deb",
-          "rpm"
+          "deb"
         ]
       },
       "electronPackagerConfig": {
@@ -65,7 +64,6 @@
     "electron-compile": "^6.4.4",
     "electron-devtools-installer": "^2.2.4",
     "electron-prompt": "^1.6.0",
-    "electron-react-devtools": "^0.5.3",
     "electron-squirrel-startup": "^1.0.0",
     "electron-store": "^5.2.0",
     "eslint-plugin-react-hooks": "^3.0.0",

@@ -4,12 +4,8 @@ out
 autosaves/*.*
 package-lock.json
 games/*
-/trash
-qedit.sh
-doGit.sh
-editincode.sh
+editincode
 yarn.lock
 debug.log
 go.bat
-ghPush.js
 test.log
