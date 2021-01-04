@@ -352,10 +352,6 @@ export default class App extends React.Component {
       e.preventDefault()
       menu.popup({ window: remote.getCurrentWindow() })
     }, false)
-
-    //const Blocks = require('./blocks')
-    console.log("To enable Blockly, enter this in the console:\n\n require('./blocks')\n\nYou will then have a 'Toggle Blockly' item in your 'View' menu.")
-
     return (
       <Container>
         <Preferences

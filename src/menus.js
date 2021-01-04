@@ -46,17 +46,6 @@ export default class Menus {
           //  label: 'Preview in browser',
           //  click () { require('electron').shell.openExternal("file://" + FILENAME) }
           //}
-          { type: 'separator' },
-          { id: 'toggleBlockly', label: 'Toggle Blockly (EXPERIMENTAL)', visible: false,
-            click:() => {
-              let of = window.document.getElementsByTagName('body')[0].style.overflow
-              window.document.getElementsByTagName('body')[0].style.overflow = of === 'hidden' ? 'auto' : 'hidden'
-              getEl('blocklyDiv').style.display = of === 'hidden' ? 'block' : 'none'
-              getEl('textarea').style.display = of === 'hidden' ? 'block' : 'none'
-              if (of === 'hidden') {
-                window.alert("Scroll down for Blockly!\n\n(It's not worth much yet.)")
-              }
-            }}
         ]
       },
       {

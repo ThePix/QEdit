@@ -1,7 +1,7 @@
 {
   "name": "QEdit-KV_Hack",
   "productName": "QEdit-KV_Hack",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Editor for Quest 6 (hacked by KV)",
   "main": "src/index.js",
   "scripts": {
@@ -23,9 +23,7 @@
   "config": {
     "forge": {
       "make_targets": {
-        "win32": [
-
-        ],
+        "win32": [],
         "darwin": [
           "zip"
         ],
@@ -57,7 +55,6 @@
     "@types/react": "^16.14.2",
     "ace-builds": "^1.4.12",
     "acorn": "^7.4.1",
-    "blockly": "^4.20201217.0",
     "constantinople": "^4.0.1",
     "cryptiles": "^4.1.3",
     "css": "^1.6.0",
