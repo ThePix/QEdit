@@ -1,7 +1,7 @@
 {
-  "name": "QEdit-KV_Hack",
+  "name": "qedit-kv_hack",
   "productName": "QEdit-KV_Hack",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Editor for Quest 6 (hacked by KV)",
   "main": "src/index.js",
   "scripts": {

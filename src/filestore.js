@@ -23,9 +23,9 @@ export default class FileStore {
   static readASLFile(filename) {
     const str = fs.readFileSync(filename, "utf8")
     if (/^\s*\</.test(str)) {
-      console.log(str)
+      //console.log(str)
       let objs = XML2JSON.parse(str);
-      console.log(objs)
+      //console.log(objs)
       return objs
     }
     else if (/^\s*[\{,\[]/.test(str)) {
