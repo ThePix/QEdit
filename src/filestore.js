@@ -1,13 +1,13 @@
-import fs from 'fs-extra'
-import path from 'path'
-import mkdirp from 'mkdirp'
-import XML2JSON from './translators/xml2json'
-import JSON2JS from './translators/json2js'
-import * as Constants from './constants'
+import fs from 'fs-extra';
+import path from 'path';
+import mkdirp from 'mkdirp';
+import XML2JSON from './translators/xml2json';
+import JSON2JS from './translators/json2js';
+import * as Constants from './constants';
 
-const homedir = require('os').homedir()
-const platform = require('os').platform()
-const arch = require('os').arch()
+const homedir = require('os').homedir();
+const platform = require('os').platform();
+const arch = require('os').arch();
 
 /*
 
@@ -23,11 +23,13 @@ export default class FileStore {
   static readASLFile(filename) {
     const str = fs.readFileSync(filename, "utf8")
     if (/^\s*\</.test(str)) {
-      return XML2JSON.parse(str)
+      console.log(str)
+      let objs = XML2JSON.parse(str);
+      console.log(objs)
+      return objs
     }
     else if (/^\s*[\{,\[]/.test(str)) {
       let objs = JSON.parse(str)
-      //objs = JSON2JS.loadStyleFromCss(undefined,objs)
       return objs
     }
     else {

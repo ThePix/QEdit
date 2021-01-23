@@ -1,0 +1,6 @@
+{
+    "editor.autoClosingBrackets": "never",
+    "editor.autoClosingQuotes": "never",
+    "editor.autoSurround": "never",
+    "eslint.enable": false
+}

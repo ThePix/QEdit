@@ -181,6 +181,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
     }
 
     // Attributes
+    let exits = [];
     for (let node of  xml.childNodes) {
       if (node.nodeType === 1 && node.tagName !== Constants.XMLOBJECT) {
         const attType = node.getAttribute('type')
@@ -220,7 +221,9 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
           }
         }
         else if (name === 'exit') {
-          object[node.getAttribute('alias')] = createExitFromXml(node)
+          let exit = createExitFromXml(node)
+          object[node.getAttribute('alias')] = exit
+          exits.push(exit)
           //console.log("Exit")
         }
         else if (name === 'statusattributes') {
@@ -504,6 +507,7 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
     }
 
     if (object.jsConversionNotes.length === 0) delete object.jsConversionNotes
+    if(exits.length > 0) object.exits = exits;
     return object
   }
 
@@ -558,12 +562,14 @@ function  _getElementsOfType(xmlDoc, objects, version, settings, type) {
     const data = xmlToDict(node)
     const name = node.getAttribute('to') || (' ' + data.to).slice(1) //Clone this
     if (!data.useType) data.useType = 'default'
+    data.name = name;
+    let alias = data.alias;
     delete data.alias
     delete data.to
 
     return {
       type:'exit',
-      name: name,
+      name: alias,
       data: data
     }
   }
