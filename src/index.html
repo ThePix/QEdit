@@ -8,11 +8,12 @@
     font-src 'self' https://fonts.gstatic.com;
     script-src 'unsafe-eval' 'unsafe-inline' 'self' https://ajax.googleapis.com https://html5shiv.googlecode.com;
     worker-src blob: https://ajax.googleapis.com;
-    img-src 'self' data: https://ajax.googleapis.com;"
+    img-src 'self' data: https://ajax.googleapis.com ;
+    media-src 'self' data:;"
   >
-  <link rel="stylesheet" href="style/rsuite.css">
+  <link id="rsuiteStyle" rel="stylesheet" href="style/rsuite.css">
   <link rel="stylesheet" href="style/qedit.css">
-  <head>
+<head>
 <body style="overflow: hidden; margin: auto;" >
   <div id="App"></div>
 </body>
@@ -21,7 +22,8 @@
   import React from 'react'
   import ReactDOM from 'react-dom'
   import {AppContainer} from 'react-hot-loader'
-
+  import * as Constants from './constants'
+  
   const render = () => {
     const App = require('./app').default
     ReactDOM.render(<AppContainer><App /></AppContainer>, document.getElementById('App'))
@@ -31,5 +33,7 @@
   if (module.hot) {
     module.hot.accept(render)
   }
+
+
 </script>
 </html>

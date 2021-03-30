@@ -11,6 +11,8 @@ const defaultPreferences = {
   jsAutosaveInterval: 1,
   darkMode: false
 }
+global.AUTOSAVEINTERVAL = defaultPreferences.jsAutosaveInterval
+
 const preferences = new Store({defaults:defaultPreferences})
 
 export default class Preferences extends React.Component {
@@ -67,22 +69,35 @@ export default class Preferences extends React.Component {
               <ControlLabel>Autosave interval:</ControlLabel>
               <InputNumber
                 key={Constants.AUTOSAVEINTERVAL}
-                stule={Constants.INPUTCOMPONENT_STYLE}
-                defaultValue={Preferences.get(Constants.AUTOSAVEINTERVAL)}
-                min={1}
+                style={Constants.INPUTCOMPONENT_STYLE}
+                defaultValue={defaultPreferences.jsAutosaveInterval}
+                min={0}
                 max={100}
-                onChange={(value) => Preferences.set(Constants.AUTOSAVEINTERVAL, value)}
+                onChange={(value) =>{
+                  //console.log(value)
+                  global.AUTOSAVEINTERVAL = value
+                  //console.log(global.AUTOSAVEINTERVAL)
+                }}
               />
             </FormGroup>
             <FormGroup>
               <ControlLabel>Dark mode:</ControlLabel>
               <Toggle
                 key={Constants.DARKMODE}
-                defaultChecked={Preferences.get(Constants.DARKMODE)}
-                onChange={(value) => Preferences.set(Constants.DARKMODE, value)}
+                defaultChecked={Preferences.get(Constants.DARKMODE) || false}
+                onChange={(value) => {
+                  let el = window.document.getElementById('rsuiteStyle')
+                  Preferences.set(Constants.DARKMODE, value)
+                  if (value) {
+                    el.href = "style/rsuite-dark.css"
+                  } else {
+                    el.href = "style/rsuite.css"
+                  }
+                }}
                 style={{marginTop:5}}
               />
             </FormGroup>
+            
           </Form>
         </Modal.Body>
       </Modal>

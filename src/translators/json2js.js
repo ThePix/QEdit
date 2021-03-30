@@ -1,5 +1,8 @@
 import TabControls from '../tabcontrols'
 import * as Constants from '../constants'
+//import { Exits } from '../inputcomponents'
+import fs from 'fs-extra'
+import path from 'path'
 
 
 export default class JSON2JS {
@@ -44,7 +47,7 @@ export default class JSON2JS {
 
   // Converts items to JavaScript code
   static parseSettings(objects) {
-    let str = STRICT
+    let str = Constants.JSSTRICT
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== Constants.SETTINGS_TYPE) continue
 
@@ -147,23 +150,23 @@ export default class JSON2JS {
 
   // Converts items to CSS settings
   static parseStyle(objects) {
-    let str = STRICT
-
+    let str = ''
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== 'settings') continue
-
+      //console.log("parseStyle")
+      //console.log(objects[i])
       str += ''
 
       if (objects[i].jsGoogleFonts && objects[i].jsGoogleFonts.length > 1) {
         str += "@import url('https://fonts.googleapis.com/css?family=" + objects[i].jsGoogleFonts.map(el => el.replace(/ /g, '+')).join('|') + "');\n\n"
       }
-      str += "#main {\n"
+      str += "body {\n"
       if (objects[i].jsStyleMain_color) str += "  color:" + objects[i].jsStyleMain_color + ";\n"
       if (objects[i].jsStyleMain_background_color) str += "  background-color:" + objects[i].jsStyleMain_background_color + ";\n"
       if (objects[i].jsStyleMain_font_family) str += "  font-family:" + objects[i].jsStyleMain_font_family + ";\n"
       if (objects[i].jsStyleMain_font_size) str += "  font-size:" + objects[i].jsStyleMain_font_size + "pt;\n"
       str += "}\n\n\n"
-      str += "sidepanes {\n"
+      str += ".side-panes {\n"
       if (objects[i].jsStyleSide_color) str += "  color:" + objects[i].jsStyleSide_color + ";\n"
       if (objects[i].jsStyleSide_background_color) str += "  background-color:" + objects[i].jsStyleSide_background_color + ";\n"
       if (objects[i].jsStyleSide_font_family) str += "  font-family:" + objects[i].jsStyleSide_font_family + ";\n"
@@ -172,11 +175,76 @@ export default class JSON2JS {
     }
     return str;
   }
+  // static loadStyleFromCss(filename="assets/css/default.css", objs) {
+  //   // Filename should most likely be "assets/css/default.css".
+  //  // console.log("Running loadStyleFromCss . . .")
+  //   let target
+  //   objs.forEach(obj => {
+  //     if (obj.name === 'Settings'){
+  //       target = obj
+  //       //console.log("Found Settings:")
+  //     }
+  //   })
+  //   if (!target.name) return objs
+  //   let css = require('css')
+  //   let inputDir = path.join(__dirname, '../' + Constants.QUEST_JS_PATH)
+  //   let styleCss = fs.readFileSync(inputDir + filename).toString()
+  //   let cssObject = css.parse(styleCss)
+  //   Object.values(cssObject).forEach(val => {
+  //     val.rules.forEach(rule => {
+  //       rule.selectors.forEach(el => {
+  //         // If this is body or .side-panes, set the declarations to jsStyleMain_* or jsStyleSide_*
+  //         if (el === 'body') {
+  //           rule.declarations.forEach(declaration => {
+  //             switch (declaration.property) {
+  //               case 'color':
+  //                  target.jsStyleMain_color = declaration.value
+  //                 break
+  //               case 'background-color':
+  //                 target.jsStyleMain_background_color  = declaration.value
+  //                 break
+  //               case 'font-family':
+  //                 target.jsStyleMain_font_family  = declaration.value
+  //                 break
+  //               case 'font-size':
+  //                 target.jsStyleMain_font_size  = declaration.value
+  //                 break
+  //               default:
+  //                 // Do nothing
+  //             }
+  //           })
+  //         }
+  //         if (el === '.side-panes') {
+  //           rule.declarations.forEach(declaration => {
 
+  //             switch (declaration.property) {
+  //               case 'color':
+  //                  target.jsStyleSide_color = declaration.value
+  //                 break
+  //               case 'background-color':
+  //                 target.jsStyleSide_background_color  = declaration.value
+  //                 break
+  //               case 'font-family':
+  //                 target.jsStyleSide_font_family  = declaration.value
+  //                 break
+  //               case 'font-size':
+  //                 target.jsStyleSide_font_size  = declaration.value
+  //                 break
+  //               default:
+  //                 // Do nothing
+  //             }
+  //           })
+  //         }
+  //       })
+        
+  //    })
+  //   })
+  //   return objs;
+  // }
   // Converts items to code.js settings
   // This will be functions and commands
   static parseCode(objects) {
-    let str = STRICT
+    let str = Constants.JSSTRICT
 
     for (var i = 0; i < objects.length; i++) {
       if (objects[i].jsObjType !== 'command') continue
@@ -200,7 +268,9 @@ function beautifyObjectHelper(item, indent) {
       if (key === 'jsTopicScript') str += tabs(indent) + 'script' + beautifyScript(item[key])
       continue
     }
+
     switch (typeof item[key]) {
+     
       case "boolean": str += tabs(indent) + key + ":" + (item[key] ? "true" : "false") + ","; break
       case "string":
         if (/^function\(/.test(item[key])) {
@@ -213,8 +283,12 @@ function beautifyObjectHelper(item, indent) {
       //case "function": str += tabs(indent) + key + ":" + this.beautifyFunction(item[key].toString(), indent); break;
       case "number": str += tabs(indent) + key + ":" + item[key] + ","; break
       case "object":
-        if (item[key] instanceof Exit) {
-          str += beautify(item[key], key, indent); break
+        if (key === Constants.EXIT_TYPE + 's') {
+          let tmpExits = item[key]
+          for (let i in tmpExits){
+            str += beautify(tmpExits[i], tmpExits[i].name, indent);
+          }
+          break
         }
         else if (item[key] instanceof RegExp) {
           str += tabs(indent) + key + ":/" + item[key].source + "/,"; break
@@ -227,6 +301,10 @@ function beautifyObjectHelper(item, indent) {
         }
         else if (item[key].type === 'js') {
           str += tabs(indent) + key + ":function(" + (item[key].params ? item[key].params : '') + ") {\n" + indentLines(item[key].code, indent + 1) + tabs(indent) + "},"; break
+        }
+        else if (item[key].type === 'msg' || key === 'desc') {
+          
+          str += tabs(indent) + key + ":\"" + item[key].code + "\","
         }
     }
     str += "\n"
@@ -269,7 +347,7 @@ beautifyFunction(str, indent) {
 */
 function beautify(item, dir, indent) {
     //console.log(this.data)
-    let s = tabs(indent) + dir + ":new Exit(\"" + item.name + "\""
+    let s = tabs(indent) + dir + ":new Exit(\"" + item.data.name + "\""
     if (item.data.useType === "default") return s + "),"
     if (item.data.useType === "msg") return s + ", {\n" + tabs(indent+1) + "msg:\"" + item.data.msg + "\",\n" + tabs(indent) + "}),"
     if (item.data.useType === "custom") {

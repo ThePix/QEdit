@@ -1,11 +1,12 @@
 {
-  "name": "QEdit",
-  "productName": "QEdit",
-  "version": "1.0.0",
-  "description": "Editor for Quest 6",
+  "name": "qedit-kv_hack",
+  "productName": "QEdit-KV_Hack",
+  "version": "0.0.10",
+  "description": "Editor for Quest 6 (hacked by KV)",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
+    "dev": "electron-forge start  --inspect-electron",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
@@ -13,24 +14,21 @@
     "test": "jest"
   },
   "keywords": [],
-  "author": "AndyJ <the_pix@hotmail.com>",
+  "authors": "AndyJ <the_pix@hotmail.com> & KV",
   "license": "MIT",
   "jest": {
     "testEnvironment": "jest-environment-jsdom-fourteen"
   },
-  "repository": "github:ThePix/QEdit",
+  "repository": "github:KVonGit/QEdit",
   "config": {
     "forge": {
       "make_targets": {
-        "win32": [
-          "squirrel"
-        ],
+        "win32": [],
         "darwin": [
           "zip"
         ],
         "linux": [
-          "deb",
-          "rpm"
+          "deb"
         ]
       },
       "electronPackagerConfig": {
@@ -54,29 +52,32 @@
   },
   "dependencies": {
     "@rsuite/responsive-nav": "0.0.7",
-    "@types/react": "^16.9.34",
-    "ace-builds": "^1.4.11",
-    "acorn": "^7.1.1",
+    "@types/react": "^16.14.2",
+    "ace-builds": "^1.4.12",
+    "acorn": "^7.4.1",
     "constantinople": "^4.0.1",
     "cryptiles": "^4.1.3",
+    "css": "^1.6.0",
     "dom-parser": "^0.1.6",
     "electron-compile": "^6.4.4",
     "electron-devtools-installer": "^2.2.4",
-    "electron-prompt": "^1.5.1",
+    "electron-prompt": "^1.6.0",
     "electron-squirrel-startup": "^1.0.0",
-    "electron-store": "^5.1.1",
+    "electron-store": "^5.2.0",
     "eslint-plugin-react-hooks": "^3.0.0",
     "esm": "^3.2.25",
+    "fs-extra": "^5.0.0",
     "hoek": "^6.1.3",
     "jest-environment-jsdom-fourteen": "^1.0.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.20",
     "lodash.template": ">=4.5.0",
-    "mime": "^2.4.4",
-    "react": "^16.13.0",
+    "mime": "^2.4.7",
+    "react": "^16.14.0",
     "react-ace": "^8.1.0",
-    "react-dom": "^16.13.0",
-    "react-hot-loader": "^4.12.19",
-    "rsuite": "^4.4.0",
+    "react-devtools": "^4.10.1",
+    "react-dom": "^16.14.0",
+    "react-hot-loader": "^4.13.0",
+    "rsuite": "^4.8.6",
     "xml2json-light": "^1.0.6"
   },
   "devDependencies": {
@@ -87,11 +88,12 @@
     "clean-css": "^4.2.3",
     "electron-forge": "^5.2.4",
     "electron-prebuilt-compile": "4.0.0",
+    "electron-react-devtools": "^0.5.3",
     "eslint": "^6.8.0",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.18.3",
-    "jest": "^25.1.0"
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.22.0",
+    "jest": "^25.5.4"
   }
 }

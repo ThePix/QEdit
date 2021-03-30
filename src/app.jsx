@@ -9,11 +9,13 @@ import Menus from './menus'
 import QuestObjects from './questobjects'
 import Toolbar from './toolbar'
 
-//import Blockly from 'blockly/blockly_compressed';
-
 const prompt = require('electron-prompt')
-const {Menu, dialog, app} = require('electron').remote
 
+const {Menu, dialog, app} = require('electron').remote
+const homedir = require('os').homedir()
+const platform = require('os').platform()
+const arch = require('os').arch()
+const fs = require('fs')
 
 // Next four lines disable warning from React-hot-loader
 import { hot, setConfig } from 'react-hot-loader'
@@ -95,7 +97,7 @@ export default class App extends React.Component {
     this.find = this.find.bind(this)
   }
 
-  // Used to set upo the menus during set up
+  // Used to set up the menus during set up
   findMenuItem(template, label) {
     for (let i = 0; i < template.length; i++) {
       for (let j = 0; j < template[i].submenu.length; j++) {
@@ -123,8 +125,18 @@ export default class App extends React.Component {
   }
 
   openGame() {
+    let slash = platform === 'win32' ? '\\' : '/'
+    let docs = fs.existsSync(homedir + slash + 'Documents') ? 'Documents' : ''
+    if (docs === '') docs = fs.existsSync(homedir + slash + 'My Documents') ? 'My Documents' : ''
+    let gamePath = docs != '' ? homedir + slash + docs : homedir
+    gamePath += slash + 'quest_games'
+    //console.log(gamePath)
+    if (!fs.existsSync(gamePath)) {
+      console.log('Folders need creating')
+      fs.mkdirSync(gamePath, { recursive: true })
+    } 
     const dialogOptions = {
-      //defaultPath: "c:/",
+      defaultPath: gamePath,
       filters: [
         { name: "Quest files", extensions: Constants.FILEEXTENSIONS },
         { name: "All Files", extensions: ["*"] },
@@ -149,28 +161,43 @@ export default class App extends React.Component {
     var autosavePath = app.getPath('userData') + '/autosaves/'
     var autosaveFile = 'autosave' + this.autosaveCount + '.' + Constants.EXTENSION_ASL6
     this.saveGame(autosavePath + autosaveFile)
-    const interval = Preferences.get(Constants.AUTOSAVEINTERVAL)
-    if (interval !== 0) {
+    const interval = global.AUTOSAVEINTERVAL
+    //console.log("autosave . . .")
+    //console.log(new Date())
+    //console.log("interval:")
+    //console.log(interval)
+    if (interval && interval !== 0) {
       setTimeout(this.autosave.bind(this), interval * 60000)
     }
   }
 
   saveGame(filename) {
-    filename = filename || this.questObjects.getFilename()
-
+    filename = typeof(filename) === 'string' ? filename : this.questObjects.getFilename()
+    //console.log(filename)
     if (filename) {
       const result = FileStore.writeASLFile(this.questObjects.getObjects(), filename)
-      console.log(result)
+      //console.log(result)
       this.message(result)
     }
     else {
       this.saveGameAs()
     }
+    //console.log("Ran saveGame ", new Date())
   }
 
   saveGameAs() {
+    let slash = platform === 'win32' ? '\\' : '/'
+    let docs = fs.existsSync(homedir + slash + 'Documents') ? 'Documents' : ''
+    if (docs === '') docs = fs.existsSync(homedir + slash + 'My Documents') ? 'My Documents' : ''
+    let gamePath = docs != '' ? homedir + slash + docs : homedir
+    gamePath += slash + 'quest_games'
+    //console.log(gamePath)
+    if (!fs.existsSync(gamePath)) {
+      console.log('Folders need creating')
+      fs.mkdirSync(gamePath, { recursive: true })
+    }
     const dialogOptions = {
-      //defaultPath: "c:/",
+      defaultPath:gamePath,
       filters: [
         { name: "Quest files", extensions: Constants.FILEEXTENSIONS },
         { name: "All Files", extensions: ["*"] },
@@ -178,7 +205,7 @@ export default class App extends React.Component {
       title: 'Save file',
     }
     const filename = dialog.showSaveDialog(dialogOptions)
-    console.log(filename)
+    //console.log(filename)
     if (filename) {
       this.questObjects.setFilename(filename)
       this.saveGame(filename)
@@ -189,17 +216,20 @@ export default class App extends React.Component {
   }
 
   exportGame(filename) {
-    this.saveGame(filename) // make sure this is saved to asl6 first
     filename = this.questObjects.getFilename()
+    this.saveGame(filename) // make sure this is saved to asl6 first
+    
     if (!filename) {
-      console.log('Save your game before exporting')
+      window.alert('Save your game before exporting!')
+      //console.log('Save your game before exporting')
       this.message('Save your game before exporting')
       return
     }
 
-    const result = FileStore.writeJSFile(this.questObjects.getObjects(), filename)
-    console.log(result)
+    const result = FileStore.writeJSFile(this.questObjects.questObjects, filename)
+    //console.log(result)
     this.message(result)
+    
   }
 
   find() {
@@ -278,7 +308,50 @@ export default class App extends React.Component {
   }
 
   render() {
-    console.log(this.state)
+    //console.log(this.state)
+    //global.app = this  // This lets you access this from the console in the editor!
+    
+    // Add right-clicking.
+      // NOTE FROM KV: This app does not have real jQuery (as far as I can tell)
+    function getEl(el){
+      return window.document.getElementById(el);
+    }
+    global.getEl = getEl
+     const { remote } = require('electron')
+    const { Menu, MenuItem } = remote
+    const menu = new Menu()
+    menu.append(new MenuItem({ role: 'selectAll' }))
+    menu.append(new MenuItem({ role: 'copy' }))
+    menu.append(new MenuItem({ role: 'paste' }))
+    menu.append(new MenuItem({ type: 'separator' }))
+    menu.append(new MenuItem({ role: 'toggleDevTools' }))
+    menu.append(new MenuItem({label: 'Object',
+    submenu: [
+      { label: 'Add location', accelerator: 'CmdOrCtrl+L', click:() => {
+        this.questObjects.addObject(Constants.ROOM_TYPE)
+      }},
+      { label: 'Add item', accelerator: 'CmdOrCtrl+I',click:() => {
+        this.questObjects.addObject(Constants.ITEM_TYPE)
+      }},
+      { label: 'Add stub', click:() => {
+        this.questObjects.addObject(Constants.STUB_TYPE)
+      }},
+      { type: 'separator' },
+      { label: 'Add function', accelerator: 'Alt+CmdOrCtrl+F', click:() => {
+        this.questObjects.addObject(Constants.FUNCTION_TYPE)
+      }},
+      { label: 'Add command', accelerator: 'Alt+CmdOrCtrl+C',click:() => {
+        this.questObjects.addObject(Constants.COMMAND_TYPE)
+      }},
+      { label: 'Add template', accelerator: 'Alt+CmdOrCtrl+T', click:() => {
+        this.questObjects.addObject(Constants.TEMPLATE_TYPE)
+      }},
+    ]}))
+    
+    window.addEventListener('contextmenu', (e) => {
+      e.preventDefault()
+      menu.popup({ window: remote.getCurrentWindow() })
+    }, false)
     return (
       <Container>
         <Preferences
@@ -300,6 +373,9 @@ export default class App extends React.Component {
         </Content>
       </Container>
     )
+
+
+  
 // TODO: Implent darkMode
   }
 }

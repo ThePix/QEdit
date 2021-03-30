@@ -1,12 +1,11 @@
 node_modules
 out
 .eslintcache
-Blood Witch.aslx
-Blood Witch.asl6
 autosaves/*.*
-blockly/*.*
-blockly/javascript_compressed.js
-blockly/blockly_compressed.js
-blockly/blocks_compressed.js
-blockly/en.js
-Blood Witch - Copy.aslx
+package-lock.json
+games/*
+editincode
+yarn.lock
+debug.log
+go.bat
+test.log

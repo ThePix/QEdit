@@ -33,8 +33,14 @@ const createWindow = async () => {
     icon: path.join(__dirname, '/images/icon.png')
   });
 
+  
+
+  // Maximize the window!
+  mainWindow.maximize()
+
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`)
+  //mainWindow.webContents.openDevTools();
 
   // Open the DevTools.
   if (isDevMode) {
@@ -90,3 +96,4 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+
