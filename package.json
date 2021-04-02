@@ -1,8 +1,8 @@
 {
-  "name": "qedit-kv_hack",
-  "productName": "QEdit-KV_Hack",
-  "version": "0.0.10",
-  "description": "Editor for Quest 6 (hacked by KV)",
+  "name": "qedit",
+  "productName": "QEdit",
+  "version": "1.0.0",
+  "description": "Editor for Quest 6",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
@@ -14,12 +14,12 @@
     "test": "jest"
   },
   "keywords": [],
-  "authors": "AndyJ <the_pix@hotmail.com> & KV",
+  "author": "AndyJ <the_pix@hotmail.com>",
   "license": "MIT",
   "jest": {
     "testEnvironment": "jest-environment-jsdom-fourteen"
   },
-  "repository": "github:KVonGit/QEdit",
+  "repository": "github:ThePix/QEdit",
   "config": {
     "forge": {
       "make_targets": {
@@ -28,7 +28,8 @@
           "zip"
         ],
         "linux": [
-          "deb"
+          "deb",
+          "rpm"
         ]
       },
       "electronPackagerConfig": {
